@@ -1,5 +1,6 @@
 (ns os.view
-  (:require [os.header.view]))
+  (:require [wm.view]
+            [os.header.view]))
 
 (defn view
   []
@@ -7,6 +8,7 @@
    (os.header.view/view)
    [:br]
    [:br]
+   [wm.view/view]
    [:br]
    [:br]
    [:div "Launcher"]])

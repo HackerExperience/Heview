@@ -1,13 +1,13 @@
 (ns main
   (:require [reagent.core :as reagent]
-            [re-frame.core :as rf]
+            [he.core :as he]
             [core.view]
-            ;; We *have* to require `core.subs` and `core.events`, otherwise the
-            ;; Google Closure compiler won't load these namespaces.
+            ;; We *have* to require `core.subs` and `core.handlers`, otherwise
+            ;; the Google Closure compiler won't load these namespaces.
             ;; That is the only reason that a "dependency" tree must be created
             ;; for them (e.g. `core.subs` requires `game.subs` and `os.subs`).
             [core.subs]
-            [core.events]))
+            [core.handlers]))
 
 (defn render
   []
@@ -16,7 +16,10 @@
 (defn ^:export init
   []
   (js/console.log "init")
-  (rf/dispatch-sync [:initialize])
+  (he/dispatch-sync [:initialize])
+  ;; (he/dispatch-sync [:setup|boot-flow "SFMyNTY.g3QAAAACZAAEZGF0YW0AAAAkM2FjOWIxYTMtMzAxNy00NTM5LTg1NzAtOTE2YjQyMGU4MTM0ZAAGc2lnbmVkbgYAZtonymYB.cO1RIDGT5gzcWLLMeG8kMu4d5CtrCAgTkllNPMndcRs" "d6e2:a8de:618e:c407:16b:e9a:e7f1:3c0a"])
   (render))
 
-(defn reload! [] (println "reloading") (init))
+(defn reload!
+  []
+  (println "reloading") (init))

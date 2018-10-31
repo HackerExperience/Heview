@@ -1,12 +1,10 @@
 (ns os.header.view
-  (:require [re-frame.core :as rf]))
+  (:require [he.core :as he]))
 
 (defn view
   []
-  (let [ip @(rf/subscribe [:game|server|get-ip])]
+  (let [ip (he/subscribe [:game|server|get-ip])]
     [:div "Header"
      [:br]
      [:div
-      [:span ip]
-      [:br]
-      [:button {:on-click #(rf/dispatch [:os|header|inc])} "Inc"]]]))
+      [:span ip]]]))

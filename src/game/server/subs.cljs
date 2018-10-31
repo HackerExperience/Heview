@@ -6,8 +6,23 @@
   (:server db))
 
 (rf/reg-sub
+ :game|server|meta
+ :<- [:game|server]
+ (fn [db _]
+   (:meta db)))
+
+(rf/reg-sub
  :game|server|get-ip
  :<- [:game|server]
  (fn [db _]
    (:ip db)))
+
+;; TODO: Player online (skipping `remote`)
+(rf/reg-sub
+ :game|server|joinable
+ :<- [:game|server|meta]
+ (fn [meta _]
+   (into []
+      (for [meta-player (:player meta)]
+        (conj (:server_id meta-player))))))
 

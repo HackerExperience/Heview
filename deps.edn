@@ -1,0 +1,11 @@
+{:deps {org.clojure/core.match {:mvn/version "0.3.0-alpha5"}
+        com.bhauman/figwheel-main {:mvn/version "0.1.5"}
+        com.bhauman/rebel-readline-cljs {:mvn/version "0.1.4"}
+        re-frame {:mvn/version "0.10.5"}
+        cljs-ajax {:mvn/version "0.7.4"}
+        day8.re-frame/http-fx {:mvn/version "0.1.6"}
+        day8.re-frame/async-flow-fx {:mvn/version "0.0.11"}}
+ ;; setup some development paths
+ :paths ["src" "target" "resources"]
+ ;; setup a helpful alias to start the build
+ :aliases {:build {:main-opts ["-m" "figwheel.main" "-b" "dev" "-r"]}}}
