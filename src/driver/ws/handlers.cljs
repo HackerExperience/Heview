@@ -1,6 +1,6 @@
 (ns driver.ws.handlers
   (:require [he.core :as he]
-            [setup.db]
+            [web.setup.db]
             [driver.ws.db]))
 
 (he/reg-event-fx :driver|ws|connect
@@ -21,7 +21,7 @@
                           db :db} cofx]
                      (doseq [server-id joinable]
                        (driver.ws.db/join-server db server-id))
-                     {:db (setup.db/wait-for-servers db (count joinable))})))
+                     {:db (web.setup.db/wait-for-servers db (count joinable))})))
 
 (he/reg-event-dummy :driver|ws|connect-ok)
 

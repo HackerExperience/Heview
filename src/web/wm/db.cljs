@@ -1,4 +1,4 @@
-(ns wm.db)
+(ns web.wm.db)
 
 (def initial
   {})

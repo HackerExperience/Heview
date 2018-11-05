@@ -1,12 +1,12 @@
-(ns home.login.view
+(ns web.home.login.view
   (:require [he.core :as he]))
 
 (defn form-input-username
   []
   [:input
    {:placeholder "Username"
-    :value (he/subscribe [:home|login|form|username])
-    :on-change #(he/dispatch [:home|login|form|change-username
+    :value (he/subscribe [:web|home|login|form|username])
+    :on-change #(he/dispatch [:web|home|login|form|change-username
                               (-> % .-target .-value)])}])
 
 (defn form-input-password
@@ -14,8 +14,8 @@
   [:input
    {:type "password"
     :placeholder "Password"
-    :value (he/subscribe [:home|login|form|password])
-    :on-change #(he/dispatch [:home|login|form|change-password
+    :value (he/subscribe [:web|home|login|form|password])
+    :on-change #(he/dispatch [:web|home|login|form|change-password
                               (-> % .-target .-value)])}])
 
 ;; TODO: test `.-target .-value` with :advanced compiler optimizations
@@ -35,11 +35,11 @@
 
 (defn display-errors
   []
-  (let [error (he/subscribe [:home|login|form|error])]
+  (let [error (he/subscribe [:web|home|login|form|error])]
     [:span (str "Error: " error)]))
 
 (defn view []
-  (let [has-error? (he/subscribe [:home|login|form|has-error?])]
+  (let [has-error? (he/subscribe [:web|home|login|form|has-error?])]
     [:div
       [:form
         [:section

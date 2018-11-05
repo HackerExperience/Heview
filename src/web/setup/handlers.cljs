@@ -1,8 +1,8 @@
-(ns setup.handlers
+(ns web.setup.handlers
   (:require [day8.re-frame.async-flow-fx]
             [he.core :as he]
-            [core.db]
-            [setup.db]))
+            [web.db]
+            [web.setup.db :as setup.db]))
 
 (defn boot-flow
   [token account-id]
@@ -23,19 +23,19 @@
             :halt? true}]})
 
 (he/reg-event-db
- :setup|boot-ok
+ :web|setup|boot-ok
  (fn [db _]
-   (core.db/switch-mode db :setup :play {})))
+   (web.db/switch-mode db :setup :play {})))
 
 (he/reg-event-fx
- :setup|boot-fail
+ :web|setup|boot-fail
  (fn [{:keys [db]} _]
    {:db (setup.db/set-boot-failed db)
     :dispatch [:driver|ws|teardown]}))
 
 (he/reg-event-fx
-  :setup|boot-flow
+  :web|setup|boot-flow
   (fn [{:keys [db]} [_ token account-id]]
     {:db (-> db
-             (core.db/switch-mode :home :setup setup.db/initial)),
+             (web.db/switch-mode :home :setup web.db/initial)),
      :async-flow (boot-flow token account-id)}))

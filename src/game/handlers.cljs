@@ -1,6 +1,6 @@
 (ns game.handlers
   (:require [he.core :as he]
-            [setup.db]
+            [web.setup.db]
             [game.db]
             [game.account.handlers]))
 
@@ -20,8 +20,8 @@
 (he/reg-event-fx
  :game|bootstrap-server-ok
  (fn [{:keys [db]} _]
-   (let [new-db (setup.db/dec-servers-waiting db)
-         dispatch-data (if (zero? (setup.db/total-servers-waiting new-db))
+   (let [new-db (web.setup.db/dec-servers-waiting db)
+         dispatch-data (if (zero? (web.setup.db/total-servers-waiting new-db))
                          {:dispatch [:game|bootstrap-server-ok-all]}
                          {})]
      (merge {:db new-db} dispatch-data))))

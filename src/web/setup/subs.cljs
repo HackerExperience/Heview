@@ -1,4 +1,4 @@
-(ns setup.subs
+(ns web.setup.subs
   (:require [re-frame.core :as rf]))
 
 (defn setup
@@ -6,14 +6,14 @@
   (:setup db))
 
 (rf/reg-sub
- :setup|loading?
- :<- [:setup]
+ :web|setup|loading?
+ :<- [:web|setup]
  (fn [db _]
    (:loading? db)))
 
 (rf/reg-sub
- :setup|boot-failed?
- :<- [:setup]
+ :web|setup|boot-failed?
+ :<- [:web|setup]
  (fn [db _]
    (:boot-failed? db)))
 

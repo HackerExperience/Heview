@@ -1,4 +1,4 @@
-(ns wm.view)
+(ns web.wm.view)
 
 (defn view
   []

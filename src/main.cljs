@@ -16,8 +16,8 @@
 (defn ^:export init
   []
   (js/console.log "init")
-  (he/dispatch-sync [:initialize])
-  ;; (he/dispatch-sync [:setup|boot-flow "SFMyNTY.g3QAAAACZAAEZGF0YW0AAAAkM2FjOWIxYTMtMzAxNy00NTM5LTg1NzAtOTE2YjQyMGU4MTM0ZAAGc2lnbmVkbgYAZtonymYB.cO1RIDGT5gzcWLLMeG8kMu4d5CtrCAgTkllNPMndcRs" "d6e2:a8de:618e:c407:16b:e9a:e7f1:3c0a"])
+  ;; (he/dispatch-sync [:initialize])
+  (he/dispatch-sync [:web|setup|boot-flow "SFMyNTY.g3QAAAACZAAEZGF0YW0AAAAkNGE4M2NmYjYtYzNhMi00NDBjLTlmMjctNTE5ODNiNjAxODEwZAAGc2lnbmVkbgYANNCE4GYB.vF19WAQR-2q3C1XxbUm1OUT6jKhd3OrjFG0HsqIlxWM" "d6e2:a8de:618e:c407:16b:e9a:e7f1:3c0a"])
   (render))
 
 (defn reload!

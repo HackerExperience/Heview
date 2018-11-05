@@ -1,6 +1,6 @@
-(ns home.subs
+(ns web.home.subs
   (:require [re-frame.core :as rf]
-            [home.login.subs]))
+            [web.home.login.subs :as login.subs]))
 
 (defn home
   [db _]
@@ -10,4 +10,4 @@
 (rf/reg-sub
  :home|login
  :<- [:home]
- home.login.subs/login)
+ login.subs/login)

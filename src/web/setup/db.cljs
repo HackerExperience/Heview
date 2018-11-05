@@ -1,4 +1,4 @@
-(ns setup.db
+(ns web.setup.db
   (:require [core.db]))
 
 (def initial

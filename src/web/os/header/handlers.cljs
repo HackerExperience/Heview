@@ -1,4 +1,4 @@
-(ns os.header.handlers
+(ns web.os.header.handlers
   (:require [he.core :as he]))
 
 (he/reg-event-db :os|header|inc

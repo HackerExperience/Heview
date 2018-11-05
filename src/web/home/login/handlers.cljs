@@ -1,6 +1,6 @@
-(ns home.login.handlers
+(ns web.home.login.handlers
   (:require [he.core :as he]
-            [home.login.requests]))
+            [web.home.login.requests :as requests]))
 
 (he/reg-event-db :home|login|form|change-username
                  (fn [db [_ v]]
@@ -16,7 +16,7 @@
                  (fn [cofx _]
                    (let [{username :home|login|form|username
                           password :home|login|form|password} cofx]
-                     (home.login.requests/login username password))))
+                     (requests/login username password))))
 
 (he/reg-event-db :home|login|req-login-fail
                  (fn [db [_ [fun] result]]
