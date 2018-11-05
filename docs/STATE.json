@@ -1,0 +1,32 @@
+{
+  "game": {
+    "account": {
+      
+    },
+    "servers": {
+      "$cid": {
+        "logs": {
+          "entries": {
+            "$id": {
+              "timestamp": "timestamp",
+              "type": "Log.type",
+              "data": "map :: Log.data"
+            }
+          },
+          "sorted (derived)": ["Log.id"]
+        }
+      },
+      "meta": {
+        "player": [
+          {
+            "type": "string",
+            "server_id": "Server.id",
+            "nips": ["NIP.t"],
+            "endpoints": ["NIP.t"]
+          }
+        ]
+      }
+    },
+    "story": {}
+  }
+}

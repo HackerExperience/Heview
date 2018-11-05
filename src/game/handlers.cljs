@@ -1,5 +1,6 @@
 (ns game.handlers
   (:require [he.core :as he]
+            [setup.db]
             [game.db]
             [game.account.handlers]))
 
@@ -12,7 +13,8 @@
 
 (he/reg-event-fx :game|bootstrap-server
                  (fn [{:keys [db]} [_ server-id data]]
-                   {:db db,
+                   {:db (-> db
+                            (game.db/bootstrap-server data server-id)),
                     :dispatch [:game|bootstrap-server-ok]}))
 
 (he/reg-event-fx

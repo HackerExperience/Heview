@@ -11,12 +11,6 @@
  (fn [db _]
    (:meta db)))
 
-(rf/reg-sub
- :game|server|get-ip
- :<- [:game|server]
- (fn [db _]
-   (:ip db)))
-
 ;; TODO: Player online (skipping `remote`)
 (rf/reg-sub
  :game|server|joinable

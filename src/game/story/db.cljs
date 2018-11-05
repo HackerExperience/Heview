@@ -1,5 +1,5 @@
 (ns game.story.db)
 
-(defn initial
+(defn bootstrap-account
   [db data]
   (assoc-in db [:game :story] data))

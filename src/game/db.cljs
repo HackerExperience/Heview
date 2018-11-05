@@ -2,14 +2,16 @@
   (:require [game.story.db]
             [game.server.db]))
 
-(def initial
-  {:server {:ip 1}})
-
 (defn bootstrap-account
   [db data]
   (-> db
-      (game.story.db/initial (:storyline data))
-      (game.server.db/initial (:servers data))))
+      (game.story.db/bootstrap-account (:storyline data))
+      (game.server.db/bootstrap-account (:servers data))))
+
+(defn bootstrap-server
+  [db data server-cid]
+  (-> db
+      (game.server.db/bootstrap-server data server-cid)))
 
 ;; (defn bootstrap
 ;;   [data]

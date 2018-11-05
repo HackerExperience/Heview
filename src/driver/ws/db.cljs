@@ -55,13 +55,13 @@
 ;; Server ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn server-channel
-  [socket server-id]
-  (.channel socket (str "server:" server-id) (clj->js {})))
+  [socket server-cid]
+  (.channel socket (str "server:" server-cid) (clj->js {})))
 
 (defn server-join-ok
-  [server-id resp]
+  [server-cid resp]
   (let [data (js->clj (.-data resp) :keywordize-keys true)]
-    (he/dispatch [:game|bootstrap-server server-id data])))
+    (he/dispatch [:game|bootstrap-server server-cid data])))
 
 (defn server-join-fail
   [resp]
@@ -74,9 +74,9 @@
   (println resp))
 
 (defn join-server
-  [db server-id]
+  [db server-cid]
   (let [socket (get-socket-from-db db)
-        joined-channel (.join (server-channel socket server-id))]
-    (.receive joined-channel "ok" (partial server-join-ok server-id))
+        joined-channel (.join (server-channel socket server-cid))]
+    (.receive joined-channel "ok" (partial server-join-ok server-cid))
     (.receive joined-channel "error" server-join-fail)
     (.receive joined-channel "timeout" server-join-timeout)))
