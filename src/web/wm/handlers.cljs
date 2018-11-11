@@ -2,7 +2,8 @@
   (:require [cljs.core.match :refer-macros [match]]
             [he.core :as he]
             [game.server.db :as server.db]
-            [web.wm.db :as wm.db]))
+            [web.wm.db :as wm.db]
+            [web.apps.db :as apps.db]))
 
 ;; Bootstrap ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -17,6 +18,13 @@
 (he/reg-event-dummy :web|bootstrap-ok)
 
 ;; App ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(he/reg-event-db
+ :web|wm|app|switch-context
+ (fn [db [_ app-id]]
+   (apps.db/switch-context db app-id)))
+
+;; WM API ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (he/reg-event-fx
  :web|wm|app|launch
@@ -33,7 +41,3 @@
           [:ok new-db] {:db new-db}
           [:error reason] {:db db
                            :dispatch [:web|wm|app|close-failed reason]})))
-(he/reg-event-db
- :web|wm|app|switch-context
- (fn [db [_ app-id]]
-   (wm.db/switch-context db app-id)))

@@ -6,12 +6,6 @@
   (:wm db))
 
 (rf/reg-sub
- :web|wm|apps
- :<- [:web|wm]
- (fn [db _]
-   (:apps db)))
-
-(rf/reg-sub
  :web|wm|active-session
  :<- [:web|wm]
  (fn [db _]
@@ -30,20 +24,13 @@
    (get-in db [session-id :apps])))
 
 (rf/reg-sub
- :web|wm|apps|window-data
- :<- [:web|wm|apps]
- (fn [db [_ app-id]]
-   (get-in db [app-id :window])))
+ :web|wm|windows
+ :<- [:web|wm]
+ (fn [db _]
+   (:windows db)))
 
 (rf/reg-sub
- :web|wm|apps|context
- :<- [:web|wm|apps]
+ :web|wm|window-data
+ :<- [:web|wm|windows]
  (fn [db [_ app-id]]
-   (get-in db [app-id :meta :context])))
-
-(rf/reg-sub
- :web|wm|apps|state
- :<- [:web|wm|apps]
- (fn [db [_ app-id]]
-   (get-in db [app-id :state :current])))
-
+   (get db app-id)))

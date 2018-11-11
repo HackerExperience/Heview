@@ -39,29 +39,32 @@
           "apps": ["$app-id"]
         }
       },
-      "apps": {
+      "windows": {
         "$app-id": {
-          "state": {
-            "current": {},
-            "other": {}
-          },
-          "window": {
-            "position": {
-              "x": "int",
-              "y": "int",
-              "len_x": "int",
-              "len_y": "int"
-            }
-          },
-          "meta": {
-            "context": ":local | :remote",
-            "type": "$app-type",
-            "session": "$cid",
-            "active-context (app)": "$cid"
+          "position": {
+            "x": "int",
+            "y": "int",
+            "len_x": "int",
+            "len_y": "int"
           }
         }
       },
       "active-session": "$cid"
+    },
+
+    "apps": {
+      "$app-id": {
+        "state": {
+          "current": {},
+          "other": {}
+        },
+        "meta": {
+          "context": ":local | :remote",
+          "type": "$app-type",
+          "session": "$cid",
+          "active-context (app)": "$cid"
+        }
+      }
     }
   }
 }
