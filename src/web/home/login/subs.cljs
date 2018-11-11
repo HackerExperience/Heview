@@ -6,32 +6,32 @@
   (:login db))
 
 (rf/reg-sub
- :home|login|form
- :<- [:home|login]
+ :web|home|login|form
+ :<- [:web|home|login]
  (fn [db _]
    (:form db)))
 
 (rf/reg-sub
- :home|login|form|username
- :<- [:home|login|form]
+ :web|home|login|form|username
+ :<- [:web|home|login|form]
  (fn [db _]
    (:username db)))
 
 (rf/reg-sub
- :home|login|form|password
- :<- [:home|login|form]
+ :web|home|login|form|password
+ :<- [:web|home|login|form]
  (fn [db _]
    (:password db)))
 
 (rf/reg-sub
- :home|login|form|error
- :<- [:home|login|form]
+ :web|home|login|form|error
+ :<- [:web|home|login|form]
  (fn [db _]
    (:error db)))
 
 (rf/reg-sub
- :home|login|form|has-error?
- :<- [:home|login|form|error]
+ :web|home|login|form|has-error?
+ :<- [:web|home|login|form|error]
  (fn [error _]
    (not (clojure.string.blank? error))))
 

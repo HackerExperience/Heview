@@ -6,3 +6,7 @@
 (rf/reg-sub
  :game
  game.subs/game)
+
+(rf/reg-sub
+ :web
+ web.subs/web)

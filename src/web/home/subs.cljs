@@ -8,6 +8,6 @@
 
 
 (rf/reg-sub
- :home|login
- :<- [:home]
+ :web|home|login
+ :<- [:web|home]
  login.subs/login)

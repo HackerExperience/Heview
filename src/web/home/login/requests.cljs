@@ -6,7 +6,7 @@
   [db response]
   (let [token (:token response)
         account-id (:account_id response)]
-    {:dispatch [:setup|boot-flow token account-id]}))
+    {:dispatch [:web|setup|boot-flow token account-id]}))
 
 (defn on-login-failed
   [db {:keys [status]}]
@@ -20,6 +20,6 @@
   {:dispatch [:driver|rest|request "POST" "account/login"
               {:username username
                 :password password}
-              {:on-ok [:home|login|req-login-ok on-login-ok]
-               :on-fail [:home|login|req-login-fail on-login-failed]}]})
+              {:on-ok [:web|home|login|req-login-ok on-login-ok]
+               :on-fail [:web|home|login|req-login-fail on-login-failed]}]})
 

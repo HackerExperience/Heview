@@ -1,5 +1,4 @@
-(ns game.server.log.db
-  (:require [clojure.core.reducers :as r]))
+(ns game.server.log.db)
 
 (defn log-reducer
   "Reduces the raw bootstrap response into the proper internal format.
@@ -10,6 +9,6 @@
 (defn bootstrap-server
   [db data]
   (-> db
-      (assoc-in [:logs :entries] (r/reduce log-reducer {} data))))
+      (assoc-in [:logs :entries] (reduce log-reducer {} data))))
 
 

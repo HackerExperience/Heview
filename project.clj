@@ -10,8 +10,14 @@
                  [re-frame "0.10.5"]
                  [cljs-ajax "0.7.4"]
                  [day8.re-frame/http-fx "0.1.6"]
-                 [day8.re-frame/async-flow-fx "0.0.11"]]
+                 [day8.re-frame/async-flow-fx "0.0.11"]
+                 [org.clojure/core.incubator "0.1.4"]]
 
+  :plugins [[lein-nomis-ns-graph "0.14.1"]]
+
+  :main main
+
+  :source-paths ["src"]
   :resource-paths ["resources" "target"]
   
   :clean-targets ^{:protect false} ["target/public"]

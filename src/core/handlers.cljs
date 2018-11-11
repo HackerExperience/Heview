@@ -7,4 +7,5 @@
             [web.handlers]))
 
 (he/reg-event-db :initialize
-                 (fn [_ _] core.db/initial))
+                 (fn [_ _]
+                   core.db/initial))

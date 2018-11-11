@@ -48,9 +48,9 @@
   [db account-id]
   (let [socket (get-socket-from-db db)
         joined-channel (.join (account-channel socket account-id))]
-    (.receive joined-channel "ok" account-join-ok)
-    (.receive joined-channel "error" account-join-fail)
-    (.receive joined-channel "timeout" account-join-timeout)))
+    (.receive ^js joined-channel "ok" account-join-ok)
+    (.receive ^js joined-channel "error" account-join-fail)
+    (.receive ^js joined-channel "timeout" account-join-timeout)))
 
 ;; Server ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -77,6 +77,6 @@
   [db server-cid]
   (let [socket (get-socket-from-db db)
         joined-channel (.join (server-channel socket server-cid))]
-    (.receive joined-channel "ok" (partial server-join-ok server-cid))
-    (.receive joined-channel "error" server-join-fail)
-    (.receive joined-channel "timeout" server-join-timeout)))
+    (.receive ^js joined-channel "ok" (partial server-join-ok server-cid))
+    (.receive ^js joined-channel "error" server-join-fail)
+    (.receive ^js joined-channel "timeout" server-join-timeout)))

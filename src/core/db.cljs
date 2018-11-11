@@ -2,4 +2,4 @@
   (:require [web.db]))
 
 (def initial
-  (web.db/initial))
+  web.db/initial)

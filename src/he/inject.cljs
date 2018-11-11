@@ -33,7 +33,6 @@
    [re-frame.loggers :refer [console]]
    [re-frame.interop :as re-frame.interop]))
 
-
 (defn- ignore-dispose?
   [query-vector]
   (:ignore-dispose (meta query-vector)))

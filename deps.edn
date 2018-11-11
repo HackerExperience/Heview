@@ -4,7 +4,8 @@
         re-frame {:mvn/version "0.10.5"}
         cljs-ajax {:mvn/version "0.7.4"}
         day8.re-frame/http-fx {:mvn/version "0.1.6"}
-        day8.re-frame/async-flow-fx {:mvn/version "0.0.11"}}
+        day8.re-frame/async-flow-fx {:mvn/version "0.0.11"}
+        lein-nomis-ns-graph {:mvn/version "0.14.2"}}
  ;; setup some development paths
  :paths ["src" "target" "resources"]
  ;; setup a helpful alias to start the build

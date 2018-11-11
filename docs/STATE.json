@@ -28,5 +28,37 @@
       }
     },
     "story": {}
+  },
+
+  "web": {
+    "wm": {
+      "sessions": {
+        "$cid": {
+          "gateway": "cid",
+          "endpoint": "cid | nil",
+          "apps": ["$app-id"]
+        }
+      },
+      "apps": {
+        "$app-id": {
+          "state": {},
+          "window": {
+            "position": {
+              "x": "int",
+              "y": "int",
+              "len_x": "int",
+              "len_y": "int"
+            }
+          },
+          "meta": {
+            "context": ":local | :remote",
+            "type": "$app-type",
+            "session": "$cid",
+            "active_context (app)": "$cid"
+          }
+        }
+      },
+      "active_session": "$cid"
+    }
   }
 }

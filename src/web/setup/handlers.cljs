@@ -15,11 +15,14 @@
             :dispatch [:driver|ws|join-servers]}
            {:when :seen?
             :events [:game|bootstrap-server-ok-all]
-            :dispatch [:setup|boot-ok]
+            :dispatch [:web|bootstrap]}
+           {:when :seen?
+            :events [:web|bootstrap-ok]
+            :dispatch [:web|setup|boot-ok]
             :halt? true}
            {:when :seen-any-of?,
             :events [:game|bootstrap-account-fail],
-            :dispatch [:setup|boot-fail],
+            :dispatch [:web|setup|boot-fail],
             :halt? true}]})
 
 (he/reg-event-db

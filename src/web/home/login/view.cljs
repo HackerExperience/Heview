@@ -24,7 +24,7 @@
 (defn on-submit
   [e]
   (.preventDefault e)
-  (he/dispatch [:home|login|login]))
+  (he/dispatch [:web|home|login|login]))
 
 (defn form-submit
   []
@@ -43,8 +43,8 @@
     [:div
       [:form
         [:section
-          [:p (form-input-username)]
-          [:p (form-input-password)]
-          [:p (form-submit)]]
+          [:p [form-input-username]]
+          [:p [form-input-password]]
+          [:p [form-submit]]]
        (when has-error?
-         [:p (display-errors)])]]))
+         [:p [display-errors]])]]))

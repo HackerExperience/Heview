@@ -1,10 +1,27 @@
 (ns game.server.db
   (:require [game.server.log.db]))
 
+;; Bootstrap ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn format-meta-player
+  [data]
+  (map
+   (fn [x] (update x :type #(keyword %)))
+   data))
+
+(defn format-meta-remote
+  [data]
+  data)
+
+(defn format-meta
+  [data]
+  {:player (format-meta-player (:player data))
+   :remote (format-meta-remote (:remote data))})
+
 (defn bootstrap-account
   [db data]
   (-> db
-      (assoc-in [:game :server :meta] data)))
+      (assoc-in [:game :server :meta] (format-meta data))))
 
 (defn server-instance
   "Creates a state instance for one specific server."
@@ -20,3 +37,15 @@
   "
   [db data server-cid]
     (assoc-in db [:game :server server-cid] (server-instance data)))
+
+;; Model ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn get-gateways
+  [db]
+  (get-in db [:game :server :meta :player]))
+
+;; TODO (waiting backend support)
+(defn get-mainframe
+  [db]
+  (first
+   (filter #(= (:type %) :desktop) (get-gateways db))))
