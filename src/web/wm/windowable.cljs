@@ -1,27 +1,36 @@
 (ns web.wm.windowable
-  (:require [web.apps.log-viewer.db :as log-viewer.db]))
+  (:require [clojure.string :as str]
+            [web.apps.dispatcher :as apps.dispatcher]))
 
-(defmulti dispatch-open
-  (fn [app-type] app-type))
+(defn dispatch-open
+  [app-type]
+  (apps.dispatcher/dispatch-db app-type :on-open))
 
-(defmethod dispatch-open :log-viewer
-  [_]
-  (log-viewer.db/on-open))
+(defn dispatch-close
+  [app-type app-state]
+  (apps.dispatcher/dispatch-db app-type :on-close app-state))
 
-(defmulti dispatch-close
-  (fn [type state] type))
+;; (defmulti dispatch-open
+;;   (fn [app-type] app-type))
 
-(defmethod dispatch-close :log-viewer
-  [type state]
-  (log-viewer.db/on-close state))
+;; (defmethod dispatch-open :log-viewer
+;;   [_]
+;;   (log-viewer.db/on-open))
+
+;; (defmulti dispatch-close
+;;   (fn [type state] type))
+
+;; (defmethod dispatch-close :log-viewer
+;;   [type state]
+;;   (log-viewer.db/on-close state))
 
 (defn open
   [app-type]
   (dispatch-open app-type))
 
 (defn close
-  [{:keys [state meta]}]
-  (dispatch-close (:type meta) state))
+  [type state]
+  (dispatch-close type state))
 
 ;; (defprotocol IWindowable
 ;;   (close [this]))

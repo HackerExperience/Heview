@@ -33,3 +33,7 @@
           [:ok new-db] {:db new-db}
           [:error reason] {:db db
                            :dispatch [:web|wm|app|close-failed reason]})))
+(he/reg-event-db
+ :web|wm|app|switch-context
+ (fn [db [_ app-id]]
+   (wm.db/switch-context db app-id)))

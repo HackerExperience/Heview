@@ -16,9 +16,69 @@
   [db app-id]
   (get-in db [:web :wm :apps app-id]))
 
+(defn get-app-context
+  ([app]
+   (get-in app [:meta :context]))
+  ([db app-id]
+   (get-app-context (get-app db app-id))))
+
+(defn get-app-other-context
+  ([app]
+   (if (= :local (get-app-context app))
+     :remote
+     :local))
+  ([db app-id]
+   (get-app-other-context (get-app db app-id))))
+
+(defn get-app-type
+  ([app]
+   (get-in app [:meta :type]))
+  ([db app-id]
+   (get-app-type (get-app db app-id))))
+
 (defn get-app-state
+  ([app]
+   (get-in app [:state :current]))
+  ([db app-id]
+   (get-app-state (get-app db app-id))))
+
+(defn get-app-other-state
+  ([app]
+   (get-in app [:state :other]))
+  ([db app-id]
+   (get-app-state (get-app db app-id))))
+
+(defn update-app-state
+  [new-state db app-id]
+  (assoc-in db [:web :wm :apps app-id :state :current] new-state))
+
+(defn update-app-other-state
+  [new-state db app-id]
+  (assoc-in db [:web :wm :apps app-id :state :other] new-state))
+
+(defn update-app-db
+  [db app-id callback]
+  (-> db
+      (get-app-state app-id)
+      (callback)
+      (update-app-state db app-id)))
+
+(defn update-meta-context
+  [db app-id app]
+  (let [other-context (get-app-other-context app)]
+    (-> db
+        ;; TODO: Also need to update the `active-context` entry with the new cid
+        (assoc-in [:web :wm :apps app-id :meta :context] other-context))))
+
+(defn switch-context
   [db app-id]
-  (:state (get-app db app-id)))
+  (let [app (get-app db app-id)
+        current-state (get-app-state app)
+        other-state (get-app-other-state app)] ;; TODO: Initialize `other` properly
+    (as-> db db
+      (update-app-state other-state db app-id)
+      (update-app-other-state current-state db app-id)
+      (update-meta-context db app-id app))))
 
 ;; Bootstrap ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -51,17 +111,17 @@
 
 (defn add-app-state
   [db state app-id]
-  (assoc-in db [:web :wm :apps app-id :state] state))
+  (assoc-in db [:web :wm :apps app-id :state :current] state))
 
 (defn add-app-meta
-  [db session-id app-id app-type]
-  (let [default-context :local]
-    (assoc-in
-     db
-     [:web :wm :apps app-id :meta]
-     {:session session-id
-      :active-context default-context
-      :type app-type})))
+  [db session-id app-id app-type context]
+  (assoc-in
+    db
+    [:web :wm :apps app-id :meta]
+    {:session session-id
+     :context context
+     :active-context context ;; TODO: This context should be the session-id?
+     :type app-type}))
 
 (defn initial-window-data
   []
@@ -79,10 +139,11 @@
 (defn on-open-ok
   [db app-type data]
   (let [session-id (get-active-session db)
-        app-id (str (random-uuid))]
+        app-id (str (random-uuid))
+        context :local]
     (-> db
         (add-app-state data app-id)
-        (add-app-meta session-id app-id app-type)
+        (add-app-meta session-id app-id app-type context)
         (add-window-data app-id)
         (add-app-entry session-id app-id)
         (->>
@@ -129,6 +190,9 @@
 (defn close
   "Remove whatever was inserted on `open`"
   [db app-id]
-  (match (web.wm.windowable/close (get-app db app-id))
-         [:ok] (on-close-ok db app-id)
-         [:error reason] (on-close-error db reason)))
+  (let [app (get-app db app-id)
+        app-type (get-app-type app)
+        app-state (get-app-state app)]
+    (match (web.wm.windowable/close app-type app-state)
+          [:ok] (on-close-ok db app-id)
+          [:error reason] (on-close-error db reason))))

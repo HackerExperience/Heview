@@ -2,12 +2,22 @@
 
 (defn initial
   []
-  {:foo :bar})
+  {:counter 0})
 
-(defn on-open
+(defn counter-inc
+  [state]
+  (update state :counter #(inc %)))
+
+(defn counter-dec
+  [state]
+  (update state :counter #(dec %)))
+
+;; Interface
+
+(defn ^:export on-open
   []
   [:ok (initial)])
 
-(defn on-close
+(defn ^:export on-close
   [app-state]
   [:ok])

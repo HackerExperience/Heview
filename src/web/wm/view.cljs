@@ -1,18 +1,26 @@
 (ns web.wm.view
-  (:require [he.core :as he]))
+  (:require [he.core :as he]
+            [web.apps.dispatcher :as apps.dispatcher]))
+
+(defn header-context-switch
+  [app-id]
+  (let [context (he/subscribe [:web|wm|apps|context app-id])]
+    [:button
+     {:on-click #(he/dispatch [:web|wm|app|switch-context app-id])}
+     (str context " (switch)")]))
 
 (defn render-app-header
   [app-id window-data]
   [:div.header "HEaderrrr"
+   [header-context-switch app-id]
    [:button
     {:on-click #(he/dispatch [:web|wm|app|close app-id])}
     "Close"]])
 
 (defn render-app-body
   [app-id]
-  (let [app-state (he/subscribe [:web|wm|apps|state app-id])]
-    (println app-state)
-    [:div.body (str app-state)]))
+  [:div.body
+    [apps.dispatcher/dispatch-view :log-viewer app-id]])
 
 (defn render-app
   [app-id]

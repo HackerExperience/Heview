@@ -36,8 +36,14 @@
    (get-in db [app-id :window])))
 
 (rf/reg-sub
+ :web|wm|apps|context
+ :<- [:web|wm|apps]
+ (fn [db [_ app-id]]
+   (get-in db [app-id :meta :context])))
+
+(rf/reg-sub
  :web|wm|apps|state
  :<- [:web|wm|apps]
  (fn [db [_ app-id]]
-   (get-in db [app-id :state])))
+   (get-in db [app-id :state :current])))
 

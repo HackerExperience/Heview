@@ -41,7 +41,10 @@
       },
       "apps": {
         "$app-id": {
-          "state": {},
+          "state": {
+            "current": {},
+            "other": {}
+          },
           "window": {
             "position": {
               "x": "int",
@@ -54,11 +57,11 @@
             "context": ":local | :remote",
             "type": "$app-type",
             "session": "$cid",
-            "active_context (app)": "$cid"
+            "active-context (app)": "$cid"
           }
         }
       },
-      "active_session": "$cid"
+      "active-session": "$cid"
     }
   }
 }
