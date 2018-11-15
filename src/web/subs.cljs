@@ -29,6 +29,7 @@
 
 (rf/reg-sub
  :web|state
+ :<- [:web]
  (fn [db _]
    (:state db)))
 

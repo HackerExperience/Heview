@@ -4,9 +4,6 @@
             [web.wm.windowable]
             [web.apps.db :as apps.db]))
 
-(def initial
-  {})
-
 ;; Model ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn get-active-session

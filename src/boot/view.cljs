@@ -1,4 +1,4 @@
-(ns web.setup.view
+(ns boot.view
   (:require [he.core :as he]))
 
 (defn splash-screen
@@ -10,9 +10,9 @@
   [:div "Error screen..."])
 
 (defn view []
-  (let [loading? (he/subscribe [:web|setup|loading?])
-        boot-failed? (he/subscribe [:web|setup|boot-failed?])]
-    [:div "Setup"
+  (let [loading? (he/subscribe [:boot|loading?])
+        boot-failed? (he/subscribe [:boot|failed?])]
+    [:div "Boot"
      (cond
        loading? (splash-screen)
        boot-failed? (error-screen))]))
