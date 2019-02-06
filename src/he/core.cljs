@@ -42,3 +42,8 @@
 (defn dispatch-sync
   [event]
   (rf/dispatch-sync event))
+
+(defn tip-down
+  [content]
+  [:div.tip
+   [:span.tip-down content]])

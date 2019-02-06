@@ -1,5 +1,5 @@
 (ns game.server.db
-  (:require [game.server.log.db]))
+  (:require [game.server.log.db :as log.db]))
 
 ;; Bootstrap ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -27,7 +27,7 @@
   "Creates a state instance for one specific server."
   [data]
   (-> {}
-      (game.server.log.db/bootstrap-server (:logs data))))
+      (log.db/bootstrap-server (:logs data))))
 
 (defn bootstrap-server
   "Adds the server data (state instance) to the global app state (db).
@@ -36,7 +36,7 @@
   effectively adding the context (i.e. the `server-cid`)
   "
   [db data server-cid]
-    (assoc-in db [:game :server server-cid] (server-instance data)))
+  (assoc-in db [:game :server server-cid] (server-instance data)))
 
 ;; Model ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

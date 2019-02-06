@@ -40,9 +40,10 @@
 
 (defn view []
   (let [has-error? (he/subscribe [:web|home|login|form|has-error?])]
-    [:div
-      [:form
+    [:div#home-login.home-login-container
+      [:form.login-form
         [:section
+          [:i.fas.fa-user]
           [:p [form-input-username]]
           [:p [form-input-password]]
           [:p [form-submit]]]

@@ -3,10 +3,14 @@
             [he.core :as he]
             [boot.view]
             [web.os.view :as os.view]
-            [web.home.view :as home.view]))
+            [web.home.view :as home.view]
+            [web.lock.view :as lock.view]))
 
 (defn home-view []
-  (home.view/view))
+  (let [has-meta-cookie? (he/subscribe [:web|meta|cookie-exists?])]
+    (if has-meta-cookie?
+      (lock.view/view)
+      (home.view/view))))
 
 (defn boot-view []
   (boot.view/view))

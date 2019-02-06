@@ -1,14 +1,13 @@
 {
   "game": {
     "account": {
-      
     },
-    "servers": {
+    "server": {
       "$cid": {
-        "logs": {
-          "entries": {
+        "log": {
+          "entry": {
             "$id": {
-              "timestamp": "timestamp",
+              "datetime": "Datetime.t",
               "type": "Log.type",
               "data": "map :: Log.data"
             }
@@ -41,15 +40,35 @@
       },
       "windows": {
         "$app-id": {
+          "moving?": "bool",
+          "focused?": "bool",
           "position": {
             "x": "int",
-            "y": "int",
-            "len_x": "int",
-            "len_y": "int"
-          }
+            "y": "int"
+          },
+          "length": {
+            "x": "int",
+            "y": "int"
+          },
+          "drag-click": {
+            "x": "int",
+            "y": "int"
+          },
+          "z-index": "int"
         }
       },
-      "active-session": "$cid"
+      "next-open": {
+        "x": "int",
+        "y": "int"
+      },
+      "next-z-index": "int",
+      "focused-window": "$app-id | nil",
+      "window-moving?": "$app-id | nil",
+      "active-session": "$cid",
+      "viewport": {
+        "x": "int",
+        "y": "int"
+      }
     },
 
     "apps": {
@@ -62,7 +81,13 @@
           "context": ":local | :remote",
           "type": "$app-type",
           "session": "$cid",
-          "active-context (app)": "$cid"
+          "active-context (app)": "$cid",
+          "popup": {
+            "parent-id": "$app-id",
+            "app-type": "$app-type",
+            "popup-type": "$popup-type"
+          } | "nil",
+          "children": ["$app-id"]
         }
       }
     }

@@ -6,28 +6,61 @@
   [method type & args]
   (apps.dispatcher/dispatch-db type method args))
 
-(defn open
-  [type]
-  (dispatch-db :on-open type))
+(defn dispatch-popup-db
+  [method app-type popup-type & args]
+  (apps.dispatcher/dispatch-popup-db app-type popup-type method args))
 
-(defn close
-  [type state]
-  (dispatch-db :on-close type state))
+;; Apps
 
-;; (defprotocol IWindowable
-;;   (close [this]))
+(defn will-open
+  [type ctx]
+  (dispatch-db :will-open type ctx))
+(defn did-open
+  [type ctx]
+  (dispatch-db :did-open type ctx))
 
-;; ;; Apps
+(defn will-close
+  [type ctx app-id state & args]
+  (dispatch-db :will-close type ctx app-id state args))
+(defn did-close
+  [type ctx app-id state & args]
+  (dispatch-db :did-close type ctx app-id state args))
 
-;; (defrecord LogViewer [current-filter]
-;;   IWindowable
-;;   (close [this]
-;;     (log-viewer.db/on-close this)))
+(defn will-focus
+  [type ctx app-id state & args]
+  (dispatch-db :will-focus type ctx app-id state args))
+(defn did-focus
+  [type ctx app-id state & args]
+  (dispatch-db :did-focus type ctx app-id state args))
 
+;; Popup
 
-;; (extend-protocol IWindowable
-;;   LogViewer
-;;   (close [this]
-;;     (close (LogViewer. this))))
+(defn popup-may-open
+  [type popup-type ctx parent-id args xargs]
+  (dispatch-db :popup-may-open type ctx popup-type parent-id args xargs))
+(defn popup-will-open
+  [app-type popup-type ctx parent-id args xargs]
+  (dispatch-popup-db :popup-will-open app-type popup-type ctx parent-id args xargs))
+(defn popup-did-open
+  [app-type popup-type ctx parent-id args xargs]
+  (dispatch-popup-db :popup-did-open app-type popup-type ctx parent-id args xargs))
 
+(defn popup-may-close
+  [type popup-type ctx family-ids state args]
+  (dispatch-db :popup-may-close type ctx popup-type family-ids state args))
+(defn popup-will-close
+  [type popup-type ctx family-ids state args xargs]
+  (dispatch-popup-db :popup-will-close type popup-type ctx family-ids state args xargs))
+(defn popup-did-close
+  [type popup-type ctx family-ids state args xargs]
+  (dispatch-popup-db :popup-did-close type popup-type ctx family-ids state args xargs))
 
+(defn popup-may-focus
+  [type popup-type ctx family-ids state args]
+  (dispatch-db :popup-may-focus type ctx popup-type family-ids state args))
+(defn popup-will-focus
+  [type popup-type ctx family-ids state args xargs]
+  (dispatch-popup-db :popup-will-focus type popup-type ctx family-ids state args xargs))
+(defn popup-did-focus
+  [type popup-type ctx family-ids state args xargs]
+  (dispatch-popup-db :popup-did-focus type popup-type ctx family-ids state args xargs))

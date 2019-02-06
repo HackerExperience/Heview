@@ -1,0 +1,18 @@
+TODOS
+
+-----
+
+Custom scroll:
+
+Due to browser inconsistencies and lack of proper support, we should create our own scrolling mechanism in order to have full control over its design.
+
+How to:
+
+1 - Hide native scrollbar (it still scrolls, it's just hidden)
+2 - Add our own div on its place
+3 - Calculate scroll based on div size and current view X Y
+4 - Change our scroll's marker based on value from 3
+5 - Listen to `on-scroll`
+6 - Detect `on-mouse-down` on div, and based on mouse position use JS's `scrollTo`
+
+-----

@@ -1,5 +1,13 @@
 (ns he.utils)
 
+(defn vec-remove
+  "Removes the entry from vector `vector` at index `index`"
+  [vector index]
+  (vec
+   (concat
+    (subvec vector 0 index)
+    (subvec vector (inc index)))))
+
 ;; Taken from https://stackoverflow.com/a/14488425/1454986
 (defn dissoc-in
   "Dissociates an entry from a nested associative structure returning a new

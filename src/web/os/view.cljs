@@ -1,15 +1,25 @@
 (ns web.os.view
-  (:require [web.wm.view :as wm.view]
+  (:require [he.core :as he]
+            [web.wm.view :as wm.view]
             [web.os.header.view :as header.view]
             [web.os.dock.view :as dock.view]))
 
+(defn context-menu-handler
+  [event]
+  (.preventDefault event)
+  (.stopPropagation event))
+
+(defn on-resize-fn []
+  (he/dispatch [:web|wm|viewport-resized]))
+
+(defn os-event-tracker []
+  (.addEventListener js/window "resize" on-resize-fn))
+
 (defn view
   []
-  [:div.os
+  [:div#os
+   {:on-context-menu context-menu-handler} ;; TODO
+   (os-event-tracker)
    [header.view/view]
-   [:br]
-   [:br]
    [wm.view/view]
-   [:br]
-   [:br]
    [dock.view/view]])

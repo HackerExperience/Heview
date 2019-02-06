@@ -1,9 +1,15 @@
 (ns game.server.subs
-  (:require [re-frame.core :as rf]))
+  (:require [re-frame.core :as rf]
+            [game.server.log.subs :as log.subs]))
 
 (defn server
   [db _]
   (:server db))
+
+(rf/reg-sub
+ :game|server|log
+ :<- [:game|server]
+ log.subs/log)
 
 (rf/reg-sub
  :game|server|meta
@@ -11,6 +17,7 @@
  (fn [db _]
    (:meta db)))
 
+;; No longer used
 ;; TODO: Player online (skipping `remote`)
 (rf/reg-sub
  :game|server|joinable

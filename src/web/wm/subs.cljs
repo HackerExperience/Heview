@@ -6,6 +6,12 @@
   (:wm db))
 
 (rf/reg-sub
+ :web|wm|has-window-moving?
+ :<- [:web|wm]
+ (fn [db _]
+   (:window-moving? db)))
+
+(rf/reg-sub
  :web|wm|active-session
  :<- [:web|wm]
  (fn [db _]
@@ -34,3 +40,15 @@
  :<- [:web|wm|windows]
  (fn [db [_ app-id]]
    (get db app-id)))
+
+(rf/reg-sub
+ :web|wm|window|moving?
+ :<- [:web|wm|windows]
+ (fn [db [_ app-id]]
+   (get-in db [app-id :moving?])))
+
+(rf/reg-sub
+ :web|wm|window|focused?
+ :<- [:web|wm|windows]
+ (fn [db [_ app-id]]
+   (get-in db [app-id :focused?])))

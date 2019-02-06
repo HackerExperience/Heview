@@ -19,6 +19,12 @@
    (get-in db [app-id :meta :context])))
 
 (rf/reg-sub
+ :web|apps|meta
+ :<- [:web|apps]
+ (fn [db [_ app-id]]
+   (get-in db [app-id :meta])))
+
+(rf/reg-sub
  :web|apps|type
  :<- [:web|apps]
  (fn [db [_ app-id]]

@@ -1,14 +1,26 @@
 (ns web.os.dock.view
   (:require [he.core :as he]))
 
-(defn launch-app
+(defn open-app
   [app-type]
   [:button
-   {:on-click #(he/dispatch [:web|wm|app|launch app-type])}
-   (str "Launch " app-type)])
+   {:on-click #(he/dispatch [:web|wm|app|open app-type])}
+   (str "Open " app-type)])
+
+(defn view-launcher []
+  [:div.launcher
+   [open-app :log-viewer]
+   [open-app :explorer]])
+
+(defn view-panel-left []
+  [:div#os-dock-panel-left])
+
+(defn view-panel-right []
+  [:div#os-dock-panel-right])
 
 (defn view
   []
-  [:div "Launcher"
-   [:br]
-   [launch-app :log-viewer]])
+  [:div#os-dock
+   [view-panel-left]
+   [view-launcher]
+   [view-panel-right]])

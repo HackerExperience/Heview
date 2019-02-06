@@ -1,39 +1,51 @@
 {:source-paths ["src"]
  :dependencies [[org.clojure/core.match "0.3.0-alpha5"]
-                ;; [reagent "0.7.0"]
-                [re-frame "0.10.5"]
+                [reagent "0.7.0"]
+                [re-frame "0.10.6"]
                 [cljs-ajax "0.7.4"]
                 [day8.re-frame/http-fx "0.1.6"]
                 [day8.re-frame/async-flow-fx "0.0.11"]
+                [com.yetanalytics/sse-fx "0.1.1"]
+                [com.smxemail/re-frame-cookie-fx "0.0.2"]
+                [com.andrewmcveigh/cljs-time "0.5.2"]
                 ;; [org.clojure/core.incubator "0.1.4"]
+                [garden "1.3.6"]
+                [com.taoensso/tempura "1.2.1"]
                 [day8.re-frame/test "0.1.5"]
                 ;; [karma-reporter "1.0.1"]
-                [binaryage/devtools "0.8.1"]
-                [day8.re-frame/re-frame-10x "0.3.3-react16"]]
+                [binaryage/devtools "0.9.10"]
+                [day8.re-frame/re-frame-10x "0.3.6-react16"]
+                [re-frisk "0.5.4"]
+
+                [cider/cider-nrepl "0.18.0"]
+                ]
 
  ;; TODO: How-to dev dependencies?
 
  :builds {:app {
-                ;; :output-dir "target/"
-                ;; :asset-path "."
-                ;; :target :browser
-                ;; :modules {:main {:entries [main]}}
-                ;; :compiler-options {:closure-warnings {:global-this :off}
-                ;;                    :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true
-                ;;                                      "day8.re_frame.tracing.trace_enabled_QMARK_" true}}
-                ;; :devtools {:after-load main/reload!
-                ;;            :http-root "target"
-                ;;            :http-port 8080
-                ;;            :preloads [day8.re-frame-10x.preload]}}
-
                 :output-dir "target/"
                 :asset-path "."
                 :target :browser
                 :modules {:main {:entries [main]}}
-                :compiler-options {:closure-warnings {:global-this :off}}
+                :compiler-options {:closure-warnings {:global-this :off}
+                                   :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true
+                                                     "day8.re_frame.tracing.trace_enabled_QMARK_" true}}
                 :devtools {:after-load main/reload!
                            :http-root "target"
-                           :http-port 8080}}
+                           :http-port 8080
+                           :preloads [devtools.preload
+                                      ;day8.re-frame-10x.preload
+                                      re-frisk.preload]}}
+
+                ;; :output-dir "target/"
+                ;; :asset-path "."
+                ;; :target :browser
+                ;; :modules {:main {:entries [main]}}
+                ;; :compiler-options {:closure-warnings {:global-this :off}}
+                ;; :devtools {:after-load main/reload!
+                ;;            :http-root "target"
+                ;;            :http-port 8080
+                ;;            }}
 
           ;; :ci {:output-to "target/ci.js"
           ;;      :asset-path "."
@@ -47,7 +59,8 @@
                  :asset-path "."
                  :target :browser
                  :modules {:main {:entries [main]}}
-                 :compiler-options {:closure-warnings {:global-this :off}
+                 :compiler-options {:optimizations :advanced
+                                    :closure-warnings {:global-this :off}
                                     :infer-externs :auto
                                     :fn-invoke-direct true}}}
  :ssl {:keystore "resources/ssl.jks"

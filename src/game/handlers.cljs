@@ -1,9 +1,11 @@
 (ns game.handlers
   (:require [he.core :as he]
-            [web.setup.db]
             [game.db]
-            [game.account.handlers]))
+            [game.requests]
+            [game.account.handlers]
+            [game.server.handlers]))
 
+;; Bootstrap ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (he/reg-event-fx :game|bootstrap|account
                  (fn [{:keys [db]} [_ data]]
@@ -19,3 +21,18 @@
 (he/reg-event-dummy :game|bootstrap|account-ok)
 (he/reg-event-dummy :game|bootstrap-account-fail)
 (he/reg-event-dummy :game|bootstrap|servers-ok)
+
+;; Game
+
+(he/reg-event-fx :game|logout
+                 (fn [_ _]
+                   (game.requests/logout)))
+
+(he/reg-event-fx :game|req-logout-ok
+                 (fn [{:keys [db]} [_ [fun] result]]
+                   (fun db result)))
+
+(he/reg-event-fx :game|req-logout-fail
+                 (fn [{:keys [db]} [_ [fun] result]]
+                   (fun db result)))
+

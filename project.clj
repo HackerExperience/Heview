@@ -11,6 +11,7 @@
                  [cljs-ajax "0.7.4"]
                  [day8.re-frame/http-fx "0.1.6"]
                  [day8.re-frame/async-flow-fx "0.0.11"]
+                 [garden "1.3.6"]
                  [org.clojure/core.incubator "0.1.4"]]
 
   :plugins [[lein-nomis-ns-graph "0.14.1"]]

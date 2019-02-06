@@ -1,9 +1,10 @@
 (ns web.subs
   (:require [re-frame.core :as rf]
             [web.home.subs :as home.subs]
-            [web.setup.subs :as setup.subs]
+            [web.lock.subs :as lock.subs]
             [web.wm.subs :as wm.subs]
-            [web.apps.subs :as apps.subs]))
+            [web.apps.subs :as apps.subs]
+            [web.os.subs :as os.subs]))
 
 (defn web
   [db _]
@@ -12,10 +13,6 @@
 (rf/reg-sub
  :web|home
  home.subs/home)
-
-(rf/reg-sub
- :web|setup
- setup.subs/setup)
 
 (rf/reg-sub
  :web|wm
@@ -28,8 +25,25 @@
  apps.subs/apps)
 
 (rf/reg-sub
- :web|state
+ :web|lock
+ :<- [:web]
+ lock.subs/lock)
+
+(rf/reg-sub
+ :web|meta
  :<- [:web]
  (fn [db _]
-   (:state db)))
+  (:meta db)))
 
+;; TODO: Check according to expiration date
+(rf/reg-sub
+ :web|meta|cookie-exists?
+ :<- [:web|meta]
+ (fn [db _] 
+   (some? (:username db))))
+
+(rf/reg-sub
+ :web|meta|username
+ :<- [:web|meta]
+ (fn [db _]
+   (:username db)))
