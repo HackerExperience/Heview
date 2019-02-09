@@ -12,8 +12,9 @@
 
 (he/reg-event-fx
  :driver|sse|subscribe
- (fn [{:keys [db]} _]
-   (let [csrf-token (game.db/get-csrf-token db)]
+ (fn [{gdb :db} _]
+   (let [game-db (game.db/get-context gdb)
+         csrf-token (game.db/get-csrf-token game-db)]
      {::event-source/init
       {:uri (get-uri csrf-token)
        :handle-open [:driver|sse|on-open]

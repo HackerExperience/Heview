@@ -20,6 +20,11 @@
  wm.subs/wm)
 
 (rf/reg-sub
+ :web|os
+ :<- [:web]
+ os.subs/os)
+
+(rf/reg-sub
  :web|apps
  :<- [:web]
  apps.subs/apps)

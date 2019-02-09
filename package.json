@@ -18,6 +18,7 @@
   "dependencies": {
     "create-react-class": "^15.6.3",
     "highlight.js": "^9.13.1",
+    "ip-address": "^5.8.9",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-flip-move": "^3.0.3",

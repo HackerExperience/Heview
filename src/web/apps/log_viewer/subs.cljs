@@ -1,6 +1,7 @@
 (ns web.apps.log-viewer.subs
   (:require [re-frame.core :as rf]
-            [web.apps.log-viewer.db :as log-viewer.db]))
+            [web.apps.log-viewer.db :as log-viewer.db]
+            [web.apps.log-viewer.popups.subs]))
 
 (rf/reg-sub
  :web|apps|log-viewer|counter

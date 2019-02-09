@@ -87,7 +87,10 @@
 
 (defn add-child-entry
   [db parent-id child-id]
-  (update-in db [parent-id :meta :children] #(conj % child-id)))
+  ;; The `parent-id` may be nil in the case of some OS-based popups
+  (if-not (nil? parent-id)
+    (update-in db [parent-id :meta :children] #(conj % child-id))
+    db))
 
 (defn add-child-info
   [db child-id popup-info]

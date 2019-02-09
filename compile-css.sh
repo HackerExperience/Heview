@@ -8,4 +8,5 @@ if [[ -f css.trigger ]]; then
     clojure src/web/style.clj
 
     echo -e "$(cat assets/css/normalize.css)\n\n\n$(cat target/he.css)" > target/he.css
+    echo -e "$(cat assets/css/vendor.css)\n\n\n$(cat target/he.css)" > target/he.css
 fi

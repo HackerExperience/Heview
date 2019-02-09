@@ -18,7 +18,7 @@
   {:config config})
 
 (defn ^:export popup-will-open
-  [[app-db _] parent-id args xargs]
+  [{app-db :app} parent-id args xargs]
   (let [query-parent (apps.db/query app-db parent-id)
         blocking-popup-id (apps.db/query-has-blocking-popups query-parent)]
     (if-not blocking-popup-id
@@ -26,7 +26,7 @@
       [:vibrate-focus blocking-popup-id])))
 
 (defn ^:export popup-did-open
-  [[_ wm-db] parent-id [config] xargs]
+  [{wm-db :wm} parent-id [config] xargs]
   (let [parent-window (wm.db/query wm-db parent-id)
         next-position (wm.db/query-calculate-next-position
                        wm-db parent-window default-length :popup)]

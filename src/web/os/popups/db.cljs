@@ -1,4 +1,6 @@
-(ns web.os.popups.db)
+(ns web.os.popups.db
+  (:require [web.os.popups.confirm.db]
+            [web.os.popups.os-error.db]))
 
 (defn ^:export popup-may-open
   [_ctx popup-type parent-id args xargs]

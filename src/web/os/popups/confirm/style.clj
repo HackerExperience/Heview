@@ -1,6 +1,5 @@
 (ns web.os.popups.confirm.style
-  (:require [garden.selectors :refer [attr=]]
-            [web.ui.vars :as ui]))
+  (:require [web.ui.vars :as ui]))
 
 (defn body []
   [:.os-cfm-body
@@ -37,7 +36,7 @@
     [:.primary
      {:background (ui/color-primary-light-rgba "0.7")
       :border (str "1px solid" ui/color-primary-lightest)
-      :color ui/color-secondary}
+      :color ui/color-background}
      [:&:hover
       {:background (ui/color-primary-lighter-rgba "0.8")
        :color "#000"}]]
@@ -47,7 +46,7 @@
      {:margin-left "15px"}]]])
 
 (defn local-style []
-  [(attr= :data-app-type :os-confirm)
+  [:.app-type-os-confirm
    {}
    [:.os-cfm-container
     {:background (ui/color-primary-darker-rgba "0.2")

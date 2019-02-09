@@ -22,6 +22,10 @@
   [app-type & args]
   (he.dispatch/call (str "web.apps." (name app-type) ".view/view") args))
 
+(defn dispatch-full-view
+  [app-type & args]
+  (he.dispatch/call (str "web.apps." (name app-type) ".view/full-view") args))
+
 ;; Popups
 
 (defn get-popup-prefix
@@ -42,4 +46,10 @@
   [app-type popup-type & args]
   (he.dispatch/call
    (str (get-popup-prefix app-type) (name popup-type) ".view/view")
+   args))
+
+(defn dispatch-popup-full-view
+  [app-type popup-type & args]
+  (he.dispatch/call
+   (str (get-popup-prefix app-type) (name popup-type) ".view/full-view")
    args))

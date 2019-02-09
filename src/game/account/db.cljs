@@ -1,12 +1,24 @@
 (ns game.account.db)
 
+;; Context
+
+(defn get-context
+  [global-db]
+  (get-in global-db [:game :account]))
+
+(defn set-context
+  [global-db updated-local-db]
+  (assoc-in global-db [:game :account] updated-local-db))
+
+;; Bootstrap
+
 (defn account-instance
   [data]
   (:profile data))
 
 (defn bootstrap-account
-  [db data]
-  (assoc-in db [:game :account] (account-instance data)))
+  [data]
+  (account-instance data))
 
 ;; Model
 

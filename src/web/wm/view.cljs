@@ -1,5 +1,6 @@
 (ns web.wm.view
-  (:require [reagent.core :as reagent]
+  (:require [clojure.string :as str]
+            [reagent.core :as reagent]
             [re-frame.core :as rf]
             [he.core :as he]
             [web.apps.view :as apps.view]))
@@ -26,15 +27,20 @@
         (str (name app-type) "-" (name popup-type)))
       (str (name type)))))
 
-(defn data-attributes
+(defn app-classes
   [app-id]
   (let [moving? (he/subscribe [:web|wm|window|moving? app-id])
         focused? (he/subscribe [:web|wm|window|focused? app-id])
-        app-type (get-app-type app-id)]
-    {:data-app-id app-id
-     :data-app-type app-type
-     :data-app-moving moving?
-     :data-app-focused focused?}))
+        app-type (get-app-type app-id)
+        moving-class (when moving? "app-moving")
+        focused-class (when focused? "app-focused")
+        app-type-class (str "app-type-" (name app-type))]
+    {:id app-id
+     :class (str/join " " [moving-class focused-class app-type-class])}))
+
+(defn app-events
+  [app-id]
+  {:on-mouse-down #(he/dispatch [:web|wm|window|focus app-id])})
 
 (defn header-context-switch
   [app-id]
@@ -83,9 +89,8 @@
 
 (defn add-header-events
   [app-id]
-  (let [moving? (he/subscribe [:web|wm|window|moving? app-id])]
-    {:on-mouse-down (partial header-on-mouse-down app-id)
-     :on-mouse-up (partial header-on-mouse-up app-id)}))
+  {:on-mouse-down (partial header-on-mouse-down app-id)
+   :on-mouse-up (partial header-on-mouse-up app-id)})
 
 (defn render-app-header
   [app-id]
@@ -103,15 +108,23 @@
 
 (defn render-app
   [app-id]
-  (let [window-data (he/subscribe [:web|wm|window-data app-id])]
-    [:div.app
-     (merge
-      (inline-style window-data)
-      (data-attributes app-id))
-     [:div.app-container
-      {:on-mouse-down #(he/dispatch [:web|wm|window|focus app-id])}
-      [render-app-header app-id]
-      [render-app-body app-id]]]))
+  (let [window-data (he/subscribe [:web|wm|window-data app-id])
+        {{full-view :full-view} :config} window-data
+        attributes (merge
+                    (inline-style window-data)
+                    (app-classes app-id)
+                    (app-events app-id))]
+    (if full-view
+      [:div.full-app-entrypoint
+       [:div.full-app
+        attributes
+        [:div.full-app-container
+         [apps.view/full-view app-id]]]]
+      [:div.app
+       attributes
+       [:div.app-container
+        [render-app-header app-id]
+        [render-app-body app-id]]])))
 
 (defn on-move-fn
   [event]

@@ -1,6 +1,7 @@
 (ns web.wm.handlers
   (:require [cljs.core.match :refer-macros [match]]
             [he.core :as he]
+            [he.error]
             [game.server.db :as server.db]
             [web.wm.db :as wm.db]
             [web.apps.db :as apps.db]
@@ -10,9 +11,12 @@
 
 (defn- ctx
   [gdb]
-  (let [app-db (apps.db/get-context gdb)
+  (let [game-db (get-in gdb [:game]) ;; todo
+        app-db (apps.db/get-context gdb)
         wm-db (wm.db/get-context gdb)]
-    [app-db wm-db]))
+    {:game game-db
+     :app app-db
+     :wm wm-db}))
 
 (defn- wrap-perform
   [result]
@@ -32,8 +36,9 @@
 (he/reg-event-fx
  :web|bootstrap
  (fn [{gdb :db} _]
-   (let [gateways (server.db/get-gateways gdb)
-         mainframe (server.db/get-mainframe gdb)
+   (let [server-db (server.db/get-context gdb)
+         gateways (server.db/get-gateways server-db)
+         mainframe (server.db/get-mainframe server-db)
          new-db (as-> {} ldb
                      (wm.db/bootstrap ldb gateways mainframe)
                      (wm.db/set-context gdb ldb))]
@@ -288,7 +293,7 @@
 (defn js-vibrate-add
   [app-id interval]
   (js/setTimeout
-   #(let [element (.querySelector js/document (str "[data-app-id='" app-id "']"))]
+   #(let [element (.querySelector js/document (str "#" app-id))]
       (.add (.-classList element) "app-vibrate"))
    interval))
 

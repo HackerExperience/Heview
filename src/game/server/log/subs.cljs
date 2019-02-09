@@ -12,3 +12,13 @@
  :<- [:game|server]
  (fn [db [_ server-cid]]
    (get-in db [server-cid :log :entry])))
+
+(rf/reg-sub
+ :game|server|log|dropdown-map
+ (fn [_ _]
+   log.db/dropdown-map))
+
+(rf/reg-sub
+ :game|server|log|fields-data
+ (fn [_ [_ log-type]]
+   (log.db/get-log-fields log-type)))

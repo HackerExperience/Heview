@@ -1,6 +1,5 @@
 (ns web.apps.log-viewer.style
   (:require [garden.core :refer [css]]
-            [garden.selectors :refer [attr=]]
             [web.ui.vars :as ui]))
 
 (defn header []
@@ -48,7 +47,9 @@
      [:i
       {:position :absolute
        :top "5px"
-       :right "7px"}]]]])
+       :right "7px"}
+      [:&:hover
+       {:color ui/color-primary-lightest}]]]]])
 
 (defn body []
   [:.lv-body
@@ -130,7 +131,7 @@
     :align-items :center}])
 
 (defn local-style []
-  [(attr= :data-app-type :log-viewer)
+  [:.app-type-log-viewer
    {}
    [:.lv-container
     {:height "100%"

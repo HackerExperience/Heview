@@ -9,12 +9,15 @@
             "$id": {
               "datetime": "Datetime.t",
               "type": "Log.type",
-              "data": "map :: Log.data"
+              "data": "map :: Log.data",
+              "value": {
+                "text": "String.t",
+                "html": "hiccup"
+              }
             }
-          },
-          "sorted (derived)": ["Log.id"]
+          }
         }
-      },
+      }
       "meta": {
         "player": [
           {
@@ -92,4 +95,25 @@
       }
     }
   }
+}
+
+// State for each app
+{
+  "log-viewer": {
+    "state": {
+      "selected": "Log.id | nil"
+    },
+    "popups": {
+      "log-edit": {
+        "state": {
+          "server-cid": "$cid",
+          "log-id": "Log.id",
+          "log": "Log.t" // Copy of `game.server.$cid.log.entry.$id`
+        }
+      }
+    }
+  },
+  // OS popups
+
+  ""
 }

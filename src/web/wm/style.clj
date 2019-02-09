@@ -1,6 +1,5 @@
 (ns web.wm.style
   (:require [garden.core :refer [css]]
-            [garden.selectors :refer [attr=]]
             [web.ui.vars :as ui]
             [web.apps.style :as apps.style]))
 
@@ -77,13 +76,19 @@
       :position :relative}]
     [:.app-vibrate
      {:border (str "1px solid" ui/color-primary)}]
-    [(attr= :data-app-moving :true)
+    [:.app-moving
      {:cursor :move}]
-    [(attr= :data-app-focused :true)
+    [:.app-focused
      {:background-color "rgba(10, 26, 30, 0.825)"
       :box-shadow (str
                    "0 0 2px 2px " (ui/color-primary-rgba "0.5")
                    ","
                    "0 0 4px 4px " (ui/color-primary-rgba "0.25"))}]
+    [:.full-app
+     {:position :absolute
+      :transform "translateZ(0)"}
+     [:.full-app-container
+      {:height "100%"
+       :width "100%"}]]
     [(apps.style/local-style)]]
    (apps.style/global-style)])

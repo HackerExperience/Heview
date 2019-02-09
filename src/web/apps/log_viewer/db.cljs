@@ -16,10 +16,10 @@
 (defn format-log
   [[log_id log]]
   (let [{datetime :datetime
-         text :text} log]
+         {html :html} :value} log]
     [log_id
      {:date (he.date/format datetime log-viewer-datetime-formatter)
-      :text text}]))
+      :html html}]))
 
 (defn get-selected-id
   [state]

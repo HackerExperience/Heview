@@ -62,11 +62,12 @@
 
 (he/reg-event-fx
   :boot|boot-flow
-  (fn [{:keys [db]} [_ csrf-token]]
-    {:db (-> db
-             (core.db/switch-mode :home :boot {})
-             (game.db/set-csrf-token csrf-token))
-     :async-flow (boot-flow)}))
+  (fn [{gdb :db} [_ csrf-token]]
+    (let [game-db (game.db/get-context gdb)
+          new-game-db (game.db/set-csrf-token game-db csrf-token)
+          new-gdb (game.db/set-context gdb new-game-db)]
+      {:db (core.db/switch-mode new-gdb :home :boot {})
+       :async-flow (boot-flow)})))
 
 (he/reg-event-fx
  :boot|sync

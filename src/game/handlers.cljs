@@ -10,7 +10,7 @@
 (he/reg-event-fx :game|bootstrap|account
                  (fn [{:keys [db]} [_ data]]
                    {:db (-> db
-                            (game.db/bootstrap-account data)),
+                            (game.db/bootstrap-account data))
                     :dispatch [:game|bootstrap|account-ok]}))
 
 (he/reg-event-fx :game|bootstrap|servers

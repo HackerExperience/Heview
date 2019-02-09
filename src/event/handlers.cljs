@@ -10,7 +10,7 @@
 
 (defn get-domain-info
   [payload]
-  [(keyword (get payload :domain)) (keyword (get payload :domain_id))])
+  [(keyword (:domain payload)) (:domain_id payload)])
 
 (defn call-dispatcher
   [event-name payload]

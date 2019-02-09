@@ -22,7 +22,8 @@
    [:div.lv-search-input
     [:input.ui-input
      {:placeholder "Search"}]
-    [:i.fa.fa-search]]])
+    [:i.fa.fa-search
+     {:tip "Search the logs for a specific word"}]]])
 
 (defn render-entry
   [log-id log]
@@ -31,7 +32,8 @@
     [:div.lv-entry-date-dmy "26/01/2019"]
     [:div.lv-entry-date-hms "19:29:18.123"]]
    [:div.lv-entry-separator]
-   [:div.lv-entry-body "localhost logged in"]])
+   [:div.lv-entry-body
+    (:html log)]])
 
 (defn on-down-edit-log
   [app-id server-cid log-id event]
@@ -68,7 +70,7 @@
   [app-id server-cid]
   (let [entries (he/subscribe [:web|apps|log-viewer|entries server-cid])
         selected-id (he/subscribe [:web|apps|log-viewer|selected-entry app-id])]
-    [:div.lv-entries.ui-scroll
+    [:div.lv-entries
      (for [[log-id log] entries]
        ^{:key log-id} [:div.lv-entry-container
                        (add-entry-events app-id log-id)

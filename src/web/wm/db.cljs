@@ -184,6 +184,11 @@
      :y (:y opts)}
     (get-next-open-position db)))
 
+(defn extract-window-config
+  [opts]
+  (let [full-view (get opts :full-view false)]
+    {:full-view full-view}))
+
 (defn initial-window-data
   [db opts]
   (let [next-z-index (get-next-z-index db)
@@ -194,7 +199,8 @@
     {:moving? false
      :position {:x open-x :y open-y}
      :length {:x len-x :y len-y}
-     :z-index next-z-index}))
+     :z-index next-z-index
+     :config (extract-window-config (:config opts))}))
 
 (defn add-window-data
   [db app-id opts]
@@ -283,7 +289,6 @@
 (defn- apply-viewport-boundary-y
   [raw-y child-len-y viewport-y]
   (let [real-length-y (+ raw-y child-len-y)]
-    (print real-length-y)
     (cond
       (<= raw-y 0) (.abs js/Math raw-y)
       (>= real-length-y viewport-y) (let [diff (- real-length-y viewport-y)]
@@ -301,8 +306,10 @@
 
 (defn calculate-next-position-y
   [{pad-y :y} {len-y :y} {child-len-y :len-y} {viewport-y :y}]
-  (let [y-spacing (int (* 0.25 len-y))
-        raw-new-y (if (>= pad-y (int (/ viewport-y 2)))
+  (let [y-spacing (int (* 0.3 len-y))
+        raw-new-y (if (and
+                       (>= pad-y (int (/ viewport-y 2)))
+                       (>= child-len-y len-y))
                     (- pad-y y-spacing)
                     (+ pad-y y-spacing))]
     (apply-viewport-boundary-y raw-new-y child-len-y viewport-y)))

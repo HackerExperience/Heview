@@ -1,4 +1,6 @@
-(ns he.utils)
+(ns he.utils
+  (:require [clojure.string :as str]
+   ["ip-address" :as ip-address]))
 
 (defn vec-remove
   "Removes the entry from vector `vector` at index `index`"
@@ -22,3 +24,17 @@
            (dissoc m k)))
        m)
      (dissoc m k)))
+
+(defn get-canonical-id
+  [ipv6-id]
+  (.canonicalForm (new ip-address/Address6 ipv6-id)))
+
+(defn valid-ipv4?
+  [ipv4]
+  (.isValid (new ip-address/Address4 ipv4)))
+
+(defn valid-file-name?
+  [file-name]
+  (if (str/blank? file-name)
+    false
+    (not (.test #"[^a-zA-Z0-9]" file-name))))

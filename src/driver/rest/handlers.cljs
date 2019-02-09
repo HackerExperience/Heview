@@ -33,7 +33,8 @@
   (fn [{:keys [db]}
        [_ method path response-type body
         {[ok-ev & ok-params] :on-ok, [fail-ev & fail-params] :on-fail}]]
-    (let [csrf-token (game.db/get-csrf-token db)] ;; todo: put this on rest.db
+    (let [game-db (game.db/get-context db)
+          csrf-token (game.db/get-csrf-token game-db)] ;; todo: put this on rest.db
       {:http-xhrio
        {:method method,
         :uri (get-uri path),

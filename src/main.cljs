@@ -11,8 +11,6 @@
             [core.handlers]
 
             ;; Temporary requires, until they are required by someone else (?)
-            [web.os.popups.confirm.db]
-            [web.os.popups.confirm.view]
             [web.os.popups.db]
             ))
 

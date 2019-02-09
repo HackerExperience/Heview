@@ -18,9 +18,31 @@
   [app-id]
   (let [{app-type :type
          popup-info :popup
-         session-id :session} (he/subscribe [:web|apps|meta app-id])
-        server-cid (keyword session-id)]
+         server-cid :session} (he/subscribe [:web|apps|meta app-id])]
     (if (= app-type :popup)
       (view-popup app-id server-cid popup-info)
       (view-app app-id server-cid app-type))))
+
+
+(defn full-view-popup
+  [app-id server-cid popup-info]
+  (let [{popup-app-type :app-type
+         popup-type :popup-type
+         parent-app-id :parent-id} popup-info]
+    [apps.dispatcher/dispatch-popup-full-view
+     popup-app-type popup-type app-id server-cid]))
+
+(defn full-view-app
+  [app-id server-cid app-type]
+  [apps.dispatcher/dispatch-full-view app-type app-id server-cid])
+
+(defn full-view
+  [app-id]
+  (let [{app-type :type
+         popup-info :popup
+         server-cid :session} (he/subscribe [:web|apps|meta app-id])]
+    (if (= app-type :popup)
+      (full-view-popup app-id server-cid popup-info)
+      (full-view-app app-id server-cid app-type))))
+
 
