@@ -7,11 +7,16 @@
    :len-y 150})
 
 (defn open-opts
-  [next-position]
+  [next-position config]
   {:len-x (:len-x default-length)
    :len-y (:len-y default-length)
    :x (:x next-position)
-   :y (:y next-position)})
+   :y (:y next-position)
+   :config {:show-context false
+            :show-minimize false
+            :show-taskbar false
+            :title (get config :title "Warning!")
+            :icon-class "fas fa-skull-crossbones"}})
 
 (defn initial-state
   [config]
@@ -30,7 +35,7 @@
   (let [parent-window (wm.db/query wm-db parent-id)
         next-position (wm.db/query-calculate-next-position
                        wm-db parent-window default-length :popup)]
-    [:ok (initial-state config) (open-opts next-position)]))
+    [:ok (initial-state config) (open-opts next-position config)]))
 
 (defn ^:export popup-will-close
   [_ctx [parent-id _app-id] _state args xargs]

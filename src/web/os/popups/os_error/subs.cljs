@@ -1,14 +1,15 @@
 (ns web.os.popups.os-error.subs
-  (:require [re-frame.core :as rf]))
+  (:require [re-frame.core :as rf]
+            [he.core :as he]))
 
 (rf/reg-sub
  :web|os|popups|os-error|reason
- :<- [:web|apps]
- (fn [db [_ app-id]]
-   (get-in db [app-id :state :current :reason])))
+ he/with-app-state
+ (fn [[state] _]
+   (:reason state)))
 
 (rf/reg-sub
  :web|os|popups|os-error|source
- :<- [:web|apps]
- (fn [db [_ app-id]]
-   (get-in db [app-id :state :current :source])))
+ he/with-app-state
+ (fn [[state] _]
+   (:source state)))

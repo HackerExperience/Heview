@@ -1,4 +1,5 @@
-(ns web.os.db)
+(ns web.os.db
+  (:require [web.os.popups.db]))
 
 ;; Context
 
@@ -12,7 +13,25 @@
 
 ;; Model
 
-(defn throw-runtime-error
-  [db reason]
+(defn init-os
+  [db]
   (-> db
-      (assoc-in [:runtime-error] reason)))
+      (assoc :open-errors [])))
+
+(defn has-os-error?
+  [db {reason :reason}]
+  (some #(= reason %) (:open-errors db)))
+
+(defn add-os-error
+  [db {reason :reason}]
+  (update db :open-errors #(conj % reason)))
+
+(defn remove-os-error
+  [db reason]
+  (update db :open-errors #(he.utils/vec-remove % (.indexOf % reason))))
+
+;; Bootstrap
+
+(defn bootstrap
+  [db]
+  (init-os db))

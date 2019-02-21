@@ -1,9 +1,7 @@
 (ns web.os.view
   (:require [he.core :as he]
-            [he.error]
             [web.wm.view :as wm.view]
-            [web.os.header.view :as header.view]
-            [web.os.dock.view :as dock.view]
+            [web.hud.view :as hud.view]
             [web.os.popups.view]))
 
 (defn context-menu-handler
@@ -20,7 +18,7 @@
 
 (defn on-javascript-runtime-error
   [event]
-  (he.error/throw-runtime-error (.-message event) :js))
+  (he.error/runtime (.-message event) :js))
 
 (defn os-event-tracker []
   (.addEventListener js/window "resize" on-resize-fn)
@@ -32,6 +30,5 @@
   [:div#os
    {:on-context-menu context-menu-handler} ;; TODO
    (os-event-tracker)
-   [header.view/view]
-   [wm.view/view]
-   [dock.view/view]])
+   [hud.view/view]
+   [wm.view/view]])

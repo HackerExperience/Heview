@@ -10,7 +10,7 @@
 (defn view-launcher []
   [:div.launcher
    [open-app :log-viewer]
-   [open-app :explorer]])
+   [open-app :remote-access]])
 
 (defn view-panel-left []
   [:div#os-dock-panel-left])

@@ -1,5 +1,6 @@
 (ns web.os.popups.os-error.view
-  (:require [he.core :as he]))
+  (:require [cljs.core.match :refer-macros [match]]
+            [he.core :as he]))
 
 (defn header-on-mouse-move
   [app-id event]
@@ -33,9 +34,10 @@
 (defn close-app
   "Close all cloned error windows. Each cloned window will have the same ID,
   hence the loop."
-  [app-id]
+  [app-id message]
 
   (he/dispatch [:web|wm|app|close app-id])
+  (he/dispatch [:web|os|error|runtime-close message])
 
   (js/setTimeout
    #(loop []
@@ -46,35 +48,36 @@
    50))
 
 (defn render-header
-  [app-id]
+  [app-id reason]
   (let [source (he/subscribe [:web|os|popups|os-error|source app-id])
-        source-nice-name (if (= source :js)
-                           "Javascript"
-                           "Internal")
+        source-nice-name (match source
+                                :js "Javascript"
+                                :truss "Assertion"
+                                _else "Internal")
         title (str "he.exe - " source-nice-name " Runtime error")]
     [:div.os-err-header
      (add-header-events app-id)
      [:div.os-err-title title]
      [:div.os-err-close
-      {:on-click #(close-app app-id)}]]))
+      {:on-click #(close-app app-id reason)}]]))
 
 (defn render-body
-  [app-id]
-  (let [message (he/subscribe [:web|os|popups|os-error|reason app-id])]
-    [:div.os-err-body
-     [:div.os-err-icon]
-     [:div.os-err-message message]]))
+  [app-id reason]
+  [:div.os-err-body
+   [:div.os-err-icon]
+   [:div.os-err-message reason]])
 
 (defn render-footer
-  [app-id]
+  [app-id reason]
   [:div.os-err-footer
    [:button
-    {:on-click #(close-app app-id)}
+    {:on-click #(close-app app-id reason)}
     "OK"]])
 
 (defn ^:export full-view
   [app-id server-cid]
-  [:div.os-err-container
-   [render-header app-id]
-   [render-body app-id]
-   [render-footer app-id]])
+  (let [reason (he/subscribe [:web|os|popups|os-error|reason app-id])]
+    [:div.os-err-container
+     [render-header app-id reason]
+     [render-body app-id reason]
+     [render-footer app-id reason]]))

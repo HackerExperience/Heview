@@ -41,7 +41,8 @@
       {:background (ui/color-primary-lighter-rgba "0.8")
        :color "#000"}]]
     [:button
-     {:height "26px"}]
+     {:height "26px"
+      :min-width "75px"}]
     ["button + button"
      {:margin-left "15px"}]]])
 
