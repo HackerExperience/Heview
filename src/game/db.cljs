@@ -40,9 +40,22 @@
         (account.db/set-context bs-acc-account)
         (story.db/set-context bs-acc-story))))
 
+(defn bootstrap-server-first-pass
+  [server-db [server-cid bootstrap]]
+  (server.db/bootstrap-server server-db bootstrap server-cid))
+
+(defn bootstrap-server-second-pass
+  [server-db bootstrap]
+  (let [server-index (get-in bootstrap [:account :servers])
+        player-index (:player server-index)
+        remote-index (:remote server-index)]
+    (as-> server-db db
+        (reduce server.db/bootstrap-server-add-endpoints db player-index)
+        (reduce server.db/bootstrap-server-add-link db remote-index))))
+
 (defn bootstrap-server
-  [gdb [server-cid bootstrap]]
-  (let [server-db (server.db/get-context gdb)
-        bs-server (server.db/bootstrap-server server-db bootstrap server-cid)]
-    (-> gdb
-        (server.db/set-context bs-server))))
+  [gdb full-bootstrap]
+  (as-> (server.db/get-context gdb) server-db
+    (reduce bootstrap-server-first-pass server-db (:servers full-bootstrap))
+    ;(bootstrap-server-second-pass server-db full-bootstrap)
+    (server.db/set-context gdb server-db)))

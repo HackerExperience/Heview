@@ -13,6 +13,16 @@
 
 ;; Bootstrap ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn format-nip
+  [[network-id ip]]
+  {:network-id network-id
+   :ip ip})
+
+;; TODO: Move to utils
+(defn nip->cid
+  [network-id ip]
+  (str ip "@" network-id))
+
 (defn format-meta-player
   [data]
   (map
@@ -23,10 +33,19 @@
   [data]
   data)
 
+(defn bootstrap-account-gateways-reducer
+  [acc gateway-info]
+  (assoc acc (:server_id gateway-info) {:endpoints (:endpoints gateway-info)}))
+
+(defn bootstrap-account-endpoints-reducer
+  [acc endpoint-info]
+  (let [endpoint-nip (nip->cid (:network_id endpoint-info) (:ip endpoint-info))]
+    (assoc acc endpoint-nip {:link endpoint-info})))
+
 (defn format-meta
   [data]
-  {:player (format-meta-player (:player data))
-   :remote (format-meta-remote (:remote data))})
+  {:gateways (reduce bootstrap-account-gateways-reducer {} (:player data))
+   :endpoints (reduce bootstrap-account-endpoints-reducer {} (:remote data))})
 
 ;; (defn bootstrap-account
 ;;   [db data]
@@ -38,11 +57,33 @@
   (-> {}
       (assoc-in [:meta] (format-meta data))))
 
+(defn initial-instance-meta
+  [instance data]
+  (assoc instance :meta {:hostname (:name data)
+                         :nips (:nips data)}))
+
+(defn initial-instance
+  [data]
+  (-> {}
+      (initial-instance-meta data)))
+
 (defn server-instance
   "Creates a state instance for one specific server."
   [data]
-  (-> {}
+  (-> (initial-instance data)
       (log.db/bootstrap-server (:logs data))))
+
+(defn bootstrap-server-add-endpoints
+  [db {endpoints :endpoints gateway-id :server_id}]
+  (assoc-in db [gateway-id :endpoints] endpoints))
+
+(defn bootstrap-server-add-link
+  [db link-info]
+  (println "Adding remote link")
+  (println link-info)
+  (let [endpoint-cid (nip->cid (:network_id link-info) (:ip link-info))]
+    (println endpoint-cid)
+    (assoc-in db [endpoint-cid :link] link-info)))
 
 (defn bootstrap-server
   "Adds the server data (state instance) to the global app state (db).
@@ -57,10 +98,13 @@
 
 (defn get-gateways
   [db]
-  (get-in db [:meta :player]))
+  (get-in db [:meta :gateways]))
+
+(defn get-gateways-ids
+  [db]
+  (keys (get-gateways db)))
 
 ;; TODO (waiting backend support)
 (defn get-mainframe
   [db]
-  (first
-   (filter #(= (:type %) :desktop) (get-gateways db))))
+  (first (get-gateways-ids db)))

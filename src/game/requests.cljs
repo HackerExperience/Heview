@@ -1,4 +1,5 @@
-(ns game.requests)
+(ns game.requests
+  (:require [driver.rest.request :as request]))
 
 (defn on-logout-ok
   [_ _]
@@ -10,9 +11,6 @@
   (println (str "logout fail: " response))
   {:dispatch-n (list [:driver|sse|close] [:initialize])})
 
-(defn logout
-  []
-  {:dispatch [:driver|rest|request "POST" "logout" :simple
-              {}
-              {:on-ok [:game|req-logout-ok on-logout-ok]
-               :on-fail [:game|req-logout-fail on-logout-fail]}]})
+(defn logout []
+  (request/logout {:on-ok [:game|req-logout-ok on-logout-ok]
+                   :on-fail [:game|req-logout-fail on-logout-fail]}))
