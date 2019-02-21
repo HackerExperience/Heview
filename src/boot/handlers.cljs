@@ -32,7 +32,7 @@
   {:first-dispatch [:game|bootstrap|account (:account bootstrap)],
    :rules [{:when :seen?,
             :events [:game|bootstrap|account-ok],
-            :dispatch [:game|bootstrap|servers (:servers bootstrap)]}
+            :dispatch [:game|bootstrap|servers bootstrap]}
            {:when :seen?
             :events [:game|bootstrap|servers-ok]
             :dispatch [:web|bootstrap]}
@@ -75,12 +75,12 @@
    (boot.requests/sync)))
 
 (he/reg-event-fx :boot|req-sync-ok
-                 (fn [db [_ [fun] result]]
-                   (fun db result)))
+                 (fn [db [_ fun result xargs]]
+                   (fun db result xargs)))
 
 (he/reg-event-fx :boot|req-sync-fail
-                 (fn [db [_ [fun] result]]
-                   (fun db result)))
+                 (fn [db [_ fun result xargs]]
+                   (fun db result xargs)))
 
 (he/reg-event-fx
  :boot|sync-flow

@@ -2,6 +2,7 @@
   (:require [com.yetanalytics.sse-fx.events :refer [register-all!]]
             [com.yetanalytics.sse-fx.event-source :as event-source]
             [he.core :as he]
+            [driver.rest.request :as request]
             [game.db]))
 
 (event-source/register!)
@@ -29,20 +30,6 @@
    {::event-source/close
     {:keys :all}}))
 
-(defn ping-dispatcher []
-  [:driver|rest|request "GET" "ping" :simple {} {:on-ok [] :on-error []}])
-
-(defn event-dispatcher
-  [event payload]
-  [:event|dispatcher event payload])
-
-(defn parse-payload
-  [payload]
-  (let [event (get payload :event :ping)]
-    (if (= event :ping)
-      (ping-dispatcher)
-      (event-dispatcher event payload))))
-
 (defn keywordize-keys
   [map]
   (into {}
@@ -54,19 +41,28 @@
 
 (he/reg-event-fx
  :driver|sse|on-message
- (fn [db [_ _ raw_msg]]
+ (fn [_ [_ _ raw_msg]]
    (let [payload (keywordize-keys (get raw_msg "payload"))
-         dispatcher (parse-payload payload)]
-     {:dispatch dispatcher})))
+         event (get payload :event :ping)]
+     {:dispatch [:event|dispatcher event payload]})))
+
+(he/reg-event-fx
+ :driver|sse|on-ping
+ (fn [_ _]
+   (request/ping {:on-ok [:dev|null] :on-fail []})))
 
 (he/reg-event-dummy :driver|sse|on-open)
 
 (he/reg-event-fx
  :driver|sse|on-error
- (fn [db [_ _ error]]
+ (fn [{gdb :db} [_ _ error]]
    (println (str "SSE Error: " error))
-   {:dispatch
-    [:driver|rest|request "GET" "ping" :simple {} {:on-ok [] :on-error []}]}))
+
+   ;; Why request on ping?
+   ;; {:dispatch
+   ;;  [:driver|rest|request "GET" "ping" :simple {} {:on-ok [] :on-error []}]}
+
+   {:db gdb}))
 
 (he/reg-event-db
  :driver|sse|on-close

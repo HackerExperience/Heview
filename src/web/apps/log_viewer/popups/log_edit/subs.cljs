@@ -1,11 +1,12 @@
 (ns web.apps.log-viewer.popups.log-edit.subs
-  (:require [re-frame.core :as rf]))
+  (:require [re-frame.core :as rf]
+            [he.core :as he]))
 
 (rf/reg-sub
  :web|apps|log-viewer|log-edit
- :<- [:web|apps]
- (fn [db [_ app-id]]
-   (get-in db [app-id :state :current])))
+ he/with-app-state
+ (fn [[state]]
+   state))
 
 (rf/reg-sub
  :web|apps|log-viewer|log-edit|log

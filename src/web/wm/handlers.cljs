@@ -1,7 +1,6 @@
 (ns web.wm.handlers
   (:require [cljs.core.match :refer-macros [match]]
             [he.core :as he]
-            [he.error]
             [game.server.db :as server.db]
             [web.wm.db :as wm.db]
             [web.apps.db :as apps.db]
@@ -33,28 +32,29 @@
 
 ;; Bootstrap ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(he/reg-event-fx
- :web|bootstrap
- (fn [{gdb :db} _]
+(he/reg-event-db
+ :web|wm|bootstrap
+ (fn [gdb _]
    (let [server-db (server.db/get-context gdb)
-         gateways (server.db/get-gateways server-db)
-         mainframe (server.db/get-mainframe server-db)
-         new-db (as-> {} ldb
-                     (wm.db/bootstrap ldb gateways mainframe)
-                     (wm.db/set-context gdb ldb))]
-     {:db new-db
-      :dispatch [:web|bootstrap-ok]})))
-
-(he/reg-event-dummy :web|bootstrap-ok)
+         gateways (server.db/get-gateways-ids server-db)
+         mainframe (server.db/get-mainframe server-db)]
+     (as-> {} ldb
+       (wm.db/bootstrap ldb gateways mainframe)
+       (wm.db/set-context gdb ldb)))))
 
 ;; App ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (he/reg-event-db
  :web|wm|app|switch-context
  (fn [gdb [_ app-id]]
-   (as-> (apps.db/get-context gdb) ldb
-     (apps.db/switch-context ldb app-id)
-     (apps.db/set-context gdb ldb))))
+   (let [wm-db (wm.db/get-context gdb)
+         app-db (apps.db/get-context gdb)
+         app-context (apps.db/get-app-context app-db app-id)
+         other-context-cid (wm.db/get-other-server-cid wm-db app-context)
+         _ (when (nil? other-context-cid)
+             (he.error/runtime "Shouldn't be able to switch context"))
+         new-app-db (apps.db/switch-context app-db app-id other-context-cid)]
+     (apps.db/set-context gdb new-app-db))))
 
 ;; WM ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -73,8 +73,13 @@
 
 (he/reg-event-fx
  :web|wm|app|open
- (fn [{gdb :db} [_ app-type]]
-   (dispatch-perform (wm.windowable/will-open app-type (ctx gdb)))))
+ (fn [{gdb :db} [_ app-type app-context]]
+   (let [app-context (if (nil? app-context)
+                       (as-> (wm.db/get-context gdb) ldb
+                         (wm.db/get-active-session-context ldb))
+                       app-context)]
+     (dispatch-perform
+      (wm.windowable/will-open app-type (ctx gdb) app-context)))))
 
 (defn- proceed-open-popup
   [ctx [app-type popup-type parent-id args xargs]]
@@ -154,15 +159,16 @@
 
 ;;
 
-(he/reg-event-db
- :web|wm|window|focus
- (fn [gdb [_ app-id]]
-   (let [ldb (wm.db/get-context gdb)]
-     (if-not (wm.db/window-focused? ldb app-id)
-       (as-> ldb ldb
-         (wm.db/focus-window ldb app-id)
-         (wm.db/set-context gdb ldb))
-       gdb))))
+;; (he/reg-event-db
+;;  :web|wm|window|focus
+;;  (fn [gdb [_ app-id]]
+;;    (println "Focusing")
+;;    (let [ldb (wm.db/get-context gdb)]
+;;      (if-not (wm.db/window-focused? ldb app-id)
+;;        (as-> ldb ldb
+;;          (wm.db/focus-window ldb app-id)
+;;          (wm.db/set-context gdb ldb))
+;;        gdb))))
 
 (defn proceed-focus-popup
   [ctx state [app-type popup-type family-ids args xargs]]
@@ -197,18 +203,18 @@
 ;; WM > Perform > Open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- on-open-ok
-  [gdb app-type state opts popup-info]
+  [gdb app-type state opts popup-info app-context]
   (let [ldb-app (apps.db/get-context gdb)
         ldb-wm (wm.db/get-context gdb)
 
         app-id (str (random-uuid)) ;; todo: co-fx
-        context :local
         session-id (wm.db/get-active-session ldb-wm)
+        server-cid (wm.db/get-server-cid ldb-wm app-context)
 
         new-ldb-wm (wm.db/on-open ldb-wm app-id session-id opts)
         new-ldb-app (apps.db/on-open
-                     ldb-app app-id session-id app-type context state
-                     popup-info)
+                     ldb-app app-id session-id server-cid app-type app-context
+                     state popup-info)
 
         new-gdb (-> gdb
                     (wm.db/set-context new-ldb-wm)
@@ -216,9 +222,9 @@
     {:db new-gdb}))
 
 (defn- perform-open-app
-  [gdb [app-type]]
-  (match (wm.windowable/did-open app-type (ctx gdb))
-         [:ok state opts] (on-open-ok gdb app-type state opts nil)
+  [gdb [app-type app-context]]
+  (match (wm.windowable/did-open app-type (ctx gdb) app-context)
+         [:ok state opts] (on-open-ok gdb app-type state opts nil app-context)
          [:error reason] {:db gdb
                           :dispatch [:web|wm|app|open-failed reason]}))
 
@@ -227,7 +233,11 @@
   (match (wm.windowable/popup-did-open
           app-type popup-type (ctx gdb) parent-id args xargs)
          [:ok state opts]
-         (on-open-ok gdb app-type state opts [popup-type parent-id])
+         (let [popup-info [popup-type parent-id]
+               ;; Popups always open within the same context as their parents
+               parent-context (as-> (apps.db/get-context gdb) app-db
+                                (apps.db/get-app-context app-db parent-id))]
+           (on-open-ok gdb app-type state opts popup-info parent-context))
          [:error reason] {:db gdb
                           :dispatch [:web|wm|app|open-failed reason]}))
 
@@ -293,7 +303,7 @@
 (defn js-vibrate-add
   [app-id interval]
   (js/setTimeout
-   #(let [element (.querySelector js/document (str "#" app-id))]
+   #(let [element (.getElementById js/document app-id)]
       (.add (.-classList element) "app-vibrate"))
    interval))
 
@@ -301,7 +311,7 @@
 (defn js-vibrate-remove
   [app-id interval]
   (js/setTimeout
-   #(let [element (.querySelector js/document (str "[data-app-id='" app-id "']"))]
+   #(let [element (.getElementById js/document app-id)]
       (.remove (.-classList element) "app-vibrate"))
    interval))
 
@@ -351,5 +361,21 @@
           [:confirm & args] (perform-confirm gdb args)
           [:dispatch & args] (perform-dispatch gdb args)
           [:noop] (perform-noop gdb)
-          ;(perform-open-popup gdb [app-type popup-type args])
-          else (println (str "ELSE" else)))))
+          else (he.error/runtime (str "Unknown perform WM action: " else)))))
+
+;; WM > Sessions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(he/reg-event-db
+ :web|wm|on-remote-login
+ (fn [gdb [_ gateway-cid remote-cid]]
+   (as-> (wm.db/get-context gdb) ldb
+     (wm.db/create-endpoint-session ldb gateway-cid remote-cid)
+     (wm.db/set-session-endpoint ldb gateway-cid remote-cid)
+     (wm.db/set-context gdb ldb))))
+
+(he/reg-event-db
+ :web|wm|set-active-session
+ (fn [gdb [_ server-cid]]
+   (as-> (wm.db/get-context gdb) ldb
+     (wm.db/set-active-session ldb server-cid)
+     (wm.db/set-context gdb ldb))))

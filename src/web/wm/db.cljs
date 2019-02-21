@@ -1,9 +1,12 @@
 (ns web.wm.db
   (:require [cljs.core.match :refer-macros [match]]
-            [he.utils]
-            [web.apps.db :as apps.db]))
+            [web.apps.db :as apps.db]
+            [web.wm.validators :as v]))
 
 ;; Context ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def v-db
+  (partial v/v v/db))
 
 (defn get-context
   [global-db]
@@ -11,13 +14,27 @@
 
 (defn set-context
   [global-db updated-local-db]
-  (assoc-in global-db [:web :wm] updated-local-db))
+  (assoc-in global-db [:web :wm] (v-db updated-local-db)))
 
 ;; Model ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn get-session
+  [db session-id]
+  (get-in db [:sessions session-id]))
 
 (defn get-active-session
   [db]
   (get-in db [:active-session]))
+
+(defn get-active-session-context
+  [db]
+  (if (.test #"@" (get-active-session db))
+    :remote
+    :local))
+
+(defn set-active-session
+  [db server-cid]
+  (assoc db :active-session server-cid))
 
 (defn get-window-data
   [db app-id]
@@ -67,6 +84,47 @@
     (assoc-in db [:viewport] {:x viewport-x
                               :y viewport-y})))
 
+(defn get-server-cid
+  [db context]
+  (let [session-id (get-active-session db)
+        session (get-session db session-id)]
+    (if (= context :local)
+      (:gateway session)
+      (:endpoint session))))
+
+(defn get-other-server-cid
+  [db context]
+  (let [session-id (get-active-session db)
+        session (get-session db session-id)]
+    (println session-id)
+    (println "Le session is" session)
+    (if (= context :remote)
+      (:gateway session)
+      (:endpoint session))))
+
+(defn initial-session-gateway-state
+  [gateway-cid]
+  {:gateway gateway-cid
+   :endpoint nil
+   :apps []})
+
+(defn initial-session-endpoint-state
+  [gateway-cid endpoint-cid]
+  {:gateway gateway-cid
+   :endpoint endpoint-cid
+   :apps []})
+
+(defn set-session-endpoint
+  [db session-id endpoint-cid]
+  (assoc-in db [:sessions session-id :endpoint] endpoint-cid))
+
+(defn create-endpoint-session
+  [db gateway-cid endpoint-cid]
+  (assoc-in
+   db
+   [:sessions endpoint-cid]
+   (initial-session-endpoint-state gateway-cid endpoint-cid)))
+
 ;; WM > Window Movement ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn get-window-moving
@@ -76,8 +134,8 @@
 ; TODO
 (defn get-window-size
   [db app-id]
-  {:x 530
-   :y 400})
+  (let [{{x :x y :y} :length} (get-window-data db app-id)]
+    {:x x :y y}))
 
 (defn start-moving-window
   [db app-id click-position]
@@ -101,21 +159,22 @@
 
 (defn apply-window-boundaries
   [db app-id {x :x y :y}]
-  (let [{viewport-x :x
-         viewport-y :y} (get-viewport db)
-        {window-size-x :x
-         window-size-y :y} (get-window-size db app-id)
-        screen-max-x (- viewport-x window-size-x)
-        screen-max-y (- viewport-y window-size-y)
-        capped-x (cond
-                   (< x 1) 1
-                   (> x screen-max-x) screen-max-x
-                   :else x)
-        capped-y (cond
-                   (< y 43) 43
-                   (> y screen-max-y) screen-max-y
-                   :else y)]
-    {:x capped-x :y capped-y}))
+  (let [{viewport-x :x viewport-y :y} (get-viewport db)
+        {window-size-x :x window-size-y :y} (get-window-size db app-id)
+        header-length 90
+        footer-length 43
+        screen-max-x (- viewport-x window-size-x 1)
+        screen-max-y (- viewport-y window-size-y footer-length)
+        screen-max-x (if (neg? screen-max-x) 1 screen-max-x)
+        screen-max-y (if (neg? screen-max-y) header-length screen-max-y)]
+    {:x (cond
+          (< x 1) 1
+          (> x screen-max-x) screen-max-x
+          :else x)
+     :y (cond
+          (< y header-length) header-length
+          (> y screen-max-y) screen-max-y
+          :else y)}))
 
 (defn update-window-position
   [db app-id move-x move-y]
@@ -186,16 +245,25 @@
 
 (defn extract-window-config
   [opts]
-  (let [full-view (get opts :full-view false)]
-    {:full-view full-view}))
+  {:full-view (get opts :full-view false)
+   :title (get opts :title "Window title")
+   :icon-class (get opts :icon-class "fab fa-windows")
+   :show-taskbar (get opts :show-taskbar true)
+   :show-context (get opts :show-context true)
+   :show-minimize (get opts :show-minimize true)
+   :show-close (get opts :show-close true)
+   :contextable (get opts :contextable true)
+
+   ;; This doesn't belong here, but I'm leaving here for "performance" reasons
+   ;; (to not create yet another n subscriptions on `web|hud|taskbar|entries`).
+   ;; Move someplace else if you (me) ever need this data on another context.
+   :open-timestamp (.now js/Date)})
 
 (defn initial-window-data
   [db opts]
   (let [next-z-index (get-next-z-index db)
-        {open-x :x
-         open-y :y} (get-open-position db opts)
-        {len-x :len-x
-         len-y :len-y} (get-window-length opts)]
+        {open-x :x open-y :y} (get-open-position db opts)
+        {len-x :len-x len-y :len-y} (get-window-length opts)]
     {:moving? false
      :position {:x open-x :y open-y}
      :length {:x len-x :y len-y}
@@ -238,18 +306,12 @@
 
 ;; Bootstrap ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn initial-session-state
-  [gateway]
-  {:gateway (:server_id gateway)
-   :endpoint nil
-   :apps []})
-
 (defn reducer-init-local-sessions
-  [acc-db gateway]
+  [acc-db gateway-id]
   (assoc-in
    acc-db
-   [:sessions (:server_id gateway)]
-   (initial-session-state gateway)))
+   [:sessions gateway-id]
+   (initial-session-gateway-state gateway-id)))
 
 (defn init-local-sessions
   [db gateways]
@@ -262,14 +324,15 @@
       (assoc-in [:next-open] {:x 150 :y 150})
       (assoc-in [:focused-window] nil)
       (assoc-in [:window-moving?] nil)
+      (assoc-in [:windows] {})
       (recalculate-viewport)))
 
 (defn bootstrap
-  [db gateways mainframe]
+  [db gateways mainframe-id]
   (-> db
       (init-local-sessions gateways)
       (init-wm)
-      (assoc-in [:active-session] (:server_id mainframe))))
+      (assoc-in [:active-session] mainframe-id)))
 
 ;; Query ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -301,8 +364,11 @@
         x-spacing (- 1 x-rate)
         x-spacing-width (* x-spacing len-x)
         x-spacing-half (int (/ x-spacing-width 2))
-        raw-new-x (+ pad-x x-spacing-half)]
-    (apply-viewport-boundary-x raw-new-x child-len-x viewport-x)))
+        raw-new-x (+ pad-x x-spacing-half)
+        bounded-x (apply-viewport-boundary-x raw-new-x child-len-x viewport-x)]
+    (if (pos? bounded-x)
+      bounded-x
+      1)))
 
 (defn calculate-next-position-y
   [{pad-y :y} {len-y :y} {child-len-y :len-y} {viewport-y :y}]
@@ -311,8 +377,11 @@
                        (>= pad-y (int (/ viewport-y 2)))
                        (>= child-len-y len-y))
                     (- pad-y y-spacing)
-                    (+ pad-y y-spacing))]
-    (apply-viewport-boundary-y raw-new-y child-len-y viewport-y)))
+                    (+ pad-y y-spacing))
+        bounded-y (apply-viewport-boundary-y raw-new-y child-len-y viewport-y)]
+    (if (pos? bounded-y)
+      bounded-y
+      90)))
 
 (defn query-calculate-next-position-popup
   [db parent-window child-length]

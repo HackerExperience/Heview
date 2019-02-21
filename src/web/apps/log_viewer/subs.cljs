@@ -4,12 +4,6 @@
             [web.apps.log-viewer.popups.subs]))
 
 (rf/reg-sub
- :web|apps|log-viewer|counter
- :<- [:web|apps]
- (fn [db [_ app-id]]
-   (get-in db [app-id :state :current :counter])))
-
-(rf/reg-sub
  :web|apps|log-viewer|entries
  (fn [[_ server-cid] _]
    [(rf/subscribe [:game|server|log|entries server-cid])])
@@ -18,7 +12,8 @@
 
 (rf/reg-sub
  :web|apps|log-viewer|selected-entry
- :<- [:web|apps]
- (fn [db [_ app-id]]
-   (get-in db [app-id :state :current :selected])))
+ (fn [[_ app-id] _]
+   [(rf/subscribe [:web|apps|state app-id])])
+ (fn [[state] _]
+   (:selected state)))
 

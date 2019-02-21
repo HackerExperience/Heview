@@ -13,11 +13,11 @@
 ;; Apps
 
 (defn will-open
-  [type ctx]
-  (dispatch-db :will-open type ctx))
+  [type ctx args]
+  (dispatch-db :will-open type ctx args))
 (defn did-open
-  [type ctx]
-  (dispatch-db :did-open type ctx))
+  [type ctx args]
+  (dispatch-db :did-open type ctx args))
 
 (defn will-close
   [type ctx app-id state & args]

@@ -32,6 +32,7 @@
        }]]
     [:.app-header
      {:display :flex
+      :flex-direction :row
       :z-index 1
       :flex "0"
       :min-height "30px"
@@ -42,33 +43,62 @@
      [:.app-header-icon
       {:color ui/color-primary-light
        :margin-left "10px"
-       :flex-basis "1em"
-       :align-self :center}]
+       :align-self :center
+       }]
+     [:.app-header-icon-separator
+      {:margin-left "6px"
+       :margin-right "6px"
+       :border-left (str "1px solid " ui/color-primary)
+       :height "50%"}]
      [:.app-header-title
-      {:flex-grow "1"
-       :overflow :hidden
+      {:overflow :hidden
+       :flex "1 1"
+       :margin-right "0"
        :white-space :nowrap
-       :text-align :center
        :color ui/color-primary-light
+       :text-overflow :ellipsis
        :font-weight :bold}]
+     [:.app-header-context
+      {:display :flex
+       :flex-direction :row
+       :margin-right "10px"
+       :background ui/color-primary-dark
+       :color (ui/color-primary-light-rgba "0.725")
+       :padding "0px 2px"
+       :border (str "1px solid " ui/color-primary)}
+      [:span
+       {:font-size "10px"
+        :text-shadow (str "0 0 " ui/color-primary-light)
+        :margin-top "3px"}]
+      [:i
+       {:font-size "10px"
+        :align-self :center
+        :margin-left "3px"}]
+      [:&:hover
+       {:color ui/color-primary-lightest
+        :border (str "1px solid " ui/color-primary-light)
+        :cursor :pointer}]]
+     [:.app-header-context-disabled
+      [:i
+       {:display :none}]
+      [:&:hover
+       {:cursor :initial
+        :color (ui/color-primary-light-rgba "0.725")
+        :border (str "1px solid " ui/color-primary)}]]
      [:.app-header-actions
-      {:flex-basis "3em"
-       :display :inline-flex
+      {:display :flex
        :z-index 2
-       :margin-bottom "3px"
-       :min-width "1em"
-       :position :relative}
+       :margin-right "5px"
+       :margin-left :auto
+       :position :relative
+       :color (ui/color-primary-light-rgba "0.700")}
       [:.app-header-action
-       {:flex-basis "1em"
-        :border "1px solid hsla(0,0%,40%,.5)"
-        :width "1em"
-        :height "1em"
-        :margin-left ".1em"
-        :border-radius "100%"}]
-      [:.app-header-action-minimize
-       {:background "#abcdef"}]
-      [:.app-header-action-close
-       {:background "#e56c5c"}]]]
+       {:font-size "16px"
+        :margin-left "3px"}
+       [:i
+        [:&:hover
+         {:color ui/color-primary-light
+          :cursor :pointer}]]]]]
     [:.app-body
      {:flex "1"
       ;; Must be `max-height`. `height` will not work on Firefox

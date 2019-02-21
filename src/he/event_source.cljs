@@ -35,8 +35,6 @@
                               e))
          on-error (fn [e]
                     (.error js/console "Unhandled EventSource Error" e))}}]
-  (println "Setting up")
-  (println config)
   (let [es (js/EventSource. uri (clj->js config))]
     (set! (.-onopen es)
           (fn [e]

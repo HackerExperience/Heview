@@ -4,7 +4,8 @@
             [web.ui.style]
             [web.home.style]
             [web.os.style]
-            [web.wm.style]))
+            [web.wm.style]
+            [web.hud.style]))
 
 (defn global-style []
   [["*" "*::before" "*::after"
@@ -21,6 +22,8 @@
 (defn style
   []
   [(global-style)
+   [(web.hud.style/local-style)]
+   [(web.hud.style/global-style)]
    [(web.ui.style/local-style)]
    [(web.ui.style/global-style)]
    [(web.home.style/local-style)]

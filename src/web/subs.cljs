@@ -4,7 +4,8 @@
             [web.lock.subs :as lock.subs]
             [web.wm.subs :as wm.subs]
             [web.apps.subs :as apps.subs]
-            [web.os.subs :as os.subs]))
+            [web.os.subs :as os.subs]
+            [web.hud.subs :as hud.subs]))
 
 (defn web
   [db _]

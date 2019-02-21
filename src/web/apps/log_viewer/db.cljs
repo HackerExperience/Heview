@@ -4,7 +4,9 @@
 
 (def open-opts
   {:len-x 530
-   :len-y 400})
+   :len-y 400
+   :config {:icon-class "fa fa-archive"
+            :title "Log Viewer"}})
 
 (defn initial
   []
@@ -47,10 +49,10 @@
 ;; WM API
 
 (defn ^:export will-open
-  [_ctx]
-  [:open-app :log-viewer])
+  [_ctx app-context]
+  [:open-app :log-viewer app-context])
 (defn ^:export did-open
-  [_ctx]
+  [_ctx app-context]
   [:ok (initial) open-opts])
 
 (defn ^:export will-close
@@ -62,7 +64,7 @@
 
 (defn ^:export will-focus
   [_ctx app-id _state _args]
-  [:focus app-id {:meu :xargs}])
+  [:focus app-id])
 (defn ^:export did-focus
   [_]
   [:ok])
@@ -71,7 +73,7 @@
 
 (defn log-edit-may-open
   [ctx parent-id args]
-  [:open-popup :log-viewer :log-edit parent-id args {:xargs :doido}])
+  [:open-popup :log-viewer :log-edit parent-id args])
 
 (defn ^:export popup-may-open
   [ctx popup-type parent-id args]
@@ -80,7 +82,7 @@
          [_] [:open-popup :log-viewer popup-type parent-id args]))
 (defn ^:export popup-may-close
   [_ctx popup-type family-ids _state args]
-  [:close-popup :log-viewer popup-type family-ids args {:xargs :noix}])
+  [:close-popup :log-viewer popup-type family-ids args])
 (defn ^:export popup-may-focus
   [_ctx popup-type family-ids _state args]
-  [:focus-popup :log-viewer popup-type family-ids args {:xargs :novo}])
+  [:focus-popup :log-viewer popup-type family-ids args])

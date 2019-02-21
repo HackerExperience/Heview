@@ -14,6 +14,16 @@
 
 ;; Model ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(def launcher-config
+  [{:icon-class "fa fa-archive"
+    :name "Log Viewer"
+    :can-display-fn nil
+    :on-click-event [:web|wm|app|open :log-viewer]}
+   {:icon-class "fas fa-network-wired"
+    :name "Remote Access"
+    :can-display-fn nil
+    :on-click-event [:web|wm|app|open :remote-access]}])
+
 (defn fetch
   [db app-id]
   (get-in db [app-id]))
@@ -72,7 +82,7 @@
     nil))
 
 (defn add-meta
-  [db session-id app-id app-type context popup-info]
+  [db session-id server-cid app-id app-type context popup-info]
   (let [popup-entry (derive-popup-entry app-type popup-info)
         public-app-type (if-not (nil? popup-entry)
                           :popup
@@ -80,7 +90,7 @@
     (assoc-in db [app-id :meta]
      {:session session-id
       :context context
-      :active-context context ;; TODO: This context should be the session-id?
+      :context-cid server-cid
       :type public-app-type
       :popup popup-entry
       :children []})))
@@ -123,29 +133,43 @@
   [db new-state app-id]
   (assoc-in db [app-id :state :other] new-state))
 
+(defn validate-state
+  [state validator]
+  (if-not (nil? validator)
+    (validator state)
+    state))
+
 (defn update-db
-  [old-db app-id callback]
+  [old-db app-id callback validator]
   (as-> old-db new-db
       (get-state old-db app-id)
       (callback new-db)
+      (validate-state new-db validator)
       (update-state old-db new-db app-id)))
 
+(defn with-app-state
+  [db app-id callback]
+  (-> db
+      (get-state app-id)
+      (callback)))
+
 (defn update-meta-context
-  [db app-id app]
+  [db app-id app new-context-cid]
   (let [other-context (get-other-context app)]
     (-> db
-        ;; TODO: Also need to update the `active-context` entry with the new cid
-        (assoc-in [app-id :meta :context] other-context))))
+        (assoc-in [app-id :meta :context] other-context)
+        (assoc-in [app-id :meta :context-cid] new-context-cid))))
 
 (defn switch-context
-  [db app-id]
+  [db app-id new-context-cid]
+  (println "Other cid is" new-context-cid)
   (let [app (fetch db app-id)
         current-state (get-state app)
         other-state (get-other-state app)] ;; TODO: Initialize `other` properly
     (as-> db db
       (update-state db other-state app-id)
       (update-other-state db current-state app-id)
-      (update-meta-context db app-id app))))
+      (update-meta-context db app-id app new-context-cid))))
 
 ;; Query
 
@@ -179,10 +203,10 @@
 ;; Interface
 
 (defn on-open
-  [db app-id session-id app-type context state popup-info]
+  [db app-id session-id server-cid app-type context state popup-info]
   (-> db
       (update-state state app-id)
-      (add-meta session-id app-id app-type context popup-info)
+      (add-meta session-id server-cid app-id app-type context popup-info)
       (add-child-info app-id popup-info)))
 
 (defn on-close

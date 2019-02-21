@@ -2,6 +2,7 @@
   (:require [reagent.core :as reagent]
             [re-frisk.core :refer [enable-re-frisk!]]
             [he.core :as he]
+            [he.error]
             [core.view]
             ;; We *have* to require `core.subs` and `core.handlers`, otherwise
             ;; the Google Closure compiler won't load these namespaces.
@@ -10,27 +11,38 @@
             [core.subs]
             [core.handlers]
 
-            ;; Temporary requires, until they are required by someone else (?)
-            [web.os.popups.db]
-            ))
+            [taoensso.truss :as truss]))
 
 (defn render
   []
   (reagent/render
-   [core.view/view] (js/document.getElementById "app"))
-  ;(.addEventListener js/window "mouseup" #()) TODO
-  )
+   [core.view/view] (js/document.getElementById "app")))
+
+
+(defn truss-error-handler
+  [delayed-map]
+  (let [error-data @delayed-map
+        error-data (assoc error-data :msg_ @(:msg_ error-data))]
+    (he.error/truss-error error-data)
+    ;; Even if an error happens, return the wrong value. The user's been
+    ;; notified, so we might as well proceed and see what else breaks.
+    (:val error-data)))
 
 (defn ^:export init
   []
   (enable-re-frisk!)
   (js/console.log "init")
   (he/dispatch-sync [:initialize])
+  (truss/set-error-fn! truss-error-handler)
   (render))
 
 ;; Reload (do nothing)
 (defn reload-noop []
   nil)
+
+;; Reload and redraw all components
+(defn reload-redraw []
+  (reagent/force-update-all))
 
 ;; Reload to initial state
 (defn reload-scratch []
@@ -50,7 +62,8 @@
 
 (defn reload!
   [_]
-  (reload-noop)
+  ;(reload-noop)
+  (reload-redraw)
   ;(reload-scratch)
   ;(reload-relogin)
   )

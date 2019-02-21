@@ -12,15 +12,15 @@
 
 (he/reg-event-fx
  :web|lock|req-check-session-ok
- (fn [{:keys [db]} [_ [fun] result]]
+ (fn [{:keys [db]} [_ fun result xargs]]
    (merge
     {:db (lock.db/unset-loading-status db)}
-    (fun db result))))
+    (fun db result xargs))))
 
 (he/reg-event-fx
  :web|lock|req-check-session-fail
- (fn [{:keys [db]} [_ [fun] result]]
-    (fun db result)))
+ (fn [{:keys [db]} [_ fun result xargs]]
+    (fun db result xargs)))
 
 (he/reg-event-db
  :web|lock|form|set-password
@@ -39,10 +39,10 @@
 
 (he/reg-event-fx
  :web|lock|form|req-login-ok
- (fn [{:keys [db]} [_ [fun] result]]
-   (fun db result)))
+ (fn [{:keys [db]} [_ fun result xargs]]
+   (fun db result xargs)))
 
 (he/reg-event-fx
  :web|lock|form|req-login-fail
- (fn [{:keys [db]} [_ [fun] result]]
-   (fun db result)))
+ (fn [{:keys [db]} [_ fun result xargs]]
+   (fun db result xargs)))

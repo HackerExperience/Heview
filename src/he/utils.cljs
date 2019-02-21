@@ -38,3 +38,7 @@
   (if (str/blank? file-name)
     false
     (not (.test #"[^a-zA-Z0-9]" file-name))))
+
+(defn in?
+  [coll element]
+  (some #(= element %) coll))

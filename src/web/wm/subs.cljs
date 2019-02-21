@@ -1,9 +1,27 @@
 (ns web.wm.subs
-  (:require [re-frame.core :as rf]))
+  (:require [re-frame.core :as rf]
+            [he.core :as he]))
 
 (defn wm
   [db _]
   (:wm db))
+
+;; WM ;;
+
+(rf/reg-sub
+ :web|wm|viewport
+ :<- [:web|wm]
+ (fn [db _]
+   (:viewport db)))
+
+;; Windows ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn with-window-data-callback
+  [[_ app-id]]
+  [(he/subscribed [:web|wm|window|data app-id])])
+
+(def with-window-data
+  #(with-window-data-callback %))
 
 (rf/reg-sub
  :web|wm|has-window-moving?
@@ -12,34 +30,22 @@
    (:window-moving? db)))
 
 (rf/reg-sub
- :web|wm|active-session
- :<- [:web|wm]
- (fn [db _]
-   (:active-session db)))
-
-(rf/reg-sub
- :web|wm|session
- :<- [:web|wm]
- (fn [db _]
-   (:sessions db)))
-
-(rf/reg-sub
- :web|wm|session|apps
- :<- [:web|wm|session]
- (fn [db [_ session-id]]
-   (get-in db [session-id :apps])))
-
-(rf/reg-sub
  :web|wm|windows
  :<- [:web|wm]
  (fn [db _]
    (:windows db)))
 
 (rf/reg-sub
- :web|wm|window-data
+ :web|wm|window|data
  :<- [:web|wm|windows]
  (fn [db [_ app-id]]
    (get db app-id)))
+
+(rf/reg-sub
+ :web|wm|window|config
+ with-window-data
+ (fn [[window]]
+   (:config window)))
 
 (rf/reg-sub
  :web|wm|window|moving?
@@ -52,3 +58,56 @@
  :<- [:web|wm|windows]
  (fn [db [_ app-id]]
    (get-in db [app-id :focused?])))
+
+;; Session ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn with-session-data-callback
+  [[_ session-id]]
+  [(he/subscribed [:web|wm|session session-id])])
+
+(def with-session-data
+  #(with-session-data-callback %))
+
+(rf/reg-sub
+ :web|wm|active-session
+ :<- [:web|wm]
+ (fn [db _]
+   (:active-session db)))
+
+(rf/reg-sub
+ :web|wm|current-session
+ :<- [:web|wm|active-session]
+ (fn [session-id]
+   (he/subscribe [:web|wm|session session-id])))
+
+(rf/reg-sub
+ :web|wm|current-session|apps
+ :<- [:web|wm|current-session]
+ (fn [session]
+   (:apps session)))
+
+(rf/reg-sub
+ :web|wm|sessions
+ :<- [:web|wm]
+ (fn [db _]
+   (:sessions db)))
+
+(rf/reg-sub
+ :web|wm|session
+ :<- [:web|wm|sessions]
+ (fn [db [_ session-id]]
+   (get db session-id)))
+
+(rf/reg-sub
+ :web|wm|session|apps
+ with-session-data
+ (fn [[session]]
+   (:apps session)))
+
+(rf/reg-sub
+ :web|wm|session|context-cid
+ with-session-data
+ (fn [[session] [_ _ context]]
+   (if (= context :local)
+     (:gateway session)
+     (:endpoint session))))

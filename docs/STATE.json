@@ -81,10 +81,10 @@
           "other": {}
         },
         "meta": {
-          "context": ":local | :remote",
           "type": "$app-type",
           "session": "$cid",
-          "active-context (app)": "$cid",
+          "context": ":local | :remote",
+          "context-cid (app)": "$cid",
           "popup": {
             "parent-id": "$app-id",
             "app-type": "$app-type",

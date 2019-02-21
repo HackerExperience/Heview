@@ -1,8 +1,7 @@
 (ns web.apps.dispatcher
   (:require [he.dispatch]
-            [web.apps.log-viewer.db]
             [web.apps.log-viewer.view]
-            [web.apps.log-viewer.popups.log-edit.db]))
+            [web.apps.remote-access.view]))
 
 (defn- get-app-prefix
   [app-type]
@@ -13,10 +12,7 @@
 (defn dispatch-db
   [app-type fun & args]
   (he.dispatch/call (str (get-app-prefix app-type) ".db/" (name fun))
-                    ;(first (apply conj args))
-                    (apply conj args)
-
-                    ))
+                    (apply conj args)))
 
 (defn dispatch-view
   [app-type & args]
@@ -38,9 +34,7 @@
   [app-type popup-type fun & args]
   (he.dispatch/call
    (str (get-popup-prefix app-type) (name popup-type) ".db/" (name fun))
-   ;(first (apply conj args))
-   (apply conj args)
-   ))
+   (apply conj args)))
 
 (defn dispatch-popup-view
   [app-type popup-type & args]

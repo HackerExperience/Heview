@@ -43,35 +43,43 @@
   {:on-mouse-down #(he/dispatch [:web|wm|window|focus app-id])})
 
 (defn header-context-switch
-  [app-id]
-  (let [context (he/subscribe [:web|apps|context app-id])]
-    [:button
-     {:on-click #(he/dispatch [:web|wm|app|switch-context app-id])}
-     (str context " (switch)")]))
+  [app-id config]
+  (let [session (he/subscribe [:web|wm|current-session])
+        context-name (he/subscribe [:web|apps|context-nice-name app-id])
+        can-switch? (and
+                     (not (nil? (:endpoint session)))
+                     (get config :contextable true))]
+    (when (:show-context config)
+      [:div.app-header-context
+       (if can-switch?
+         {:on-click #(he/dispatch [:web|wm|app|switch-context app-id])
+          :tip "Switch context"}
+         {:class :app-header-context-disabled})
+       [:span context-name]
+       [:i.fas.fa-sync-alt]])))
 
-(defn action-minimize
-  [app-id]
-  [:div.app-header-action.app-header-action-minimize
-   {:on-click #(he/dispatch [:web|wm|app|minimize app-id])}])
-
-(defn action-close
-  [app-id]
-  [:div.app-header-action.app-header-action-close
-   {:on-click #(he/dispatch [:web|wm|app|close app-id])}])
-
-(defn header-icon []
+(defn header-icon
+  [config]
   [:div.app-header-icon
-   [:i.fa.fa-archive]])
+   [:i
+    {:class (:icon-class config)}]])
 
-(defn header-title []
-  [:div.app-header-title "Window title"])
+(defn header-title
+  [config]
+  [:div.app-header-title (:title config)])
 
 (defn header-actions
-  [app-id]
+  [app-id config]
   [:div.app-header-actions
-   {:on-mouse-down #(.stopPropagation %)}
-   [action-minimize app-id]
-   [action-close app-id]])
+   {:on-click #(.stopPropagation %)}
+   (when (:show-minimize config)
+     [:div.app-header-action
+      {:on-click #(he/dispatch [:web|wm|app|minimize app-id])}
+      [:i.far.fa-window-minimize]])
+   (when (:show-close config)
+     [:div.app-header-action
+      {:on-click #(he/dispatch [:web|wm|app|close app-id])}
+      [:i.far.fa-window-close]])])
 
 (defn header-on-mouse-down
   [app-id event]
@@ -94,12 +102,14 @@
 
 (defn render-app-header
   [app-id]
-  [:div.app-header
-   (add-header-events app-id)
-   [header-icon]
-   [header-title]
-   ;; [header-context-switch app-id]
-   [header-actions app-id]])
+  (let [config (he/subscribe [:web|wm|window|config app-id])]
+    [:div.app-header
+     (add-header-events app-id)
+     [header-icon config]
+     [:div.app-header-icon-separator]
+     [header-title config]
+     [header-context-switch app-id config]
+     [header-actions app-id config]]))
 
 (defn render-app-body
   [app-id]
@@ -108,7 +118,7 @@
 
 (defn render-app
   [app-id]
-  (let [window-data (he/subscribe [:web|wm|window-data app-id])
+  (let [window-data (he/subscribe [:web|wm|window|data app-id])
         {{full-view :full-view} :config} window-data
         attributes (merge
                     (inline-style window-data)
@@ -159,15 +169,14 @@
     (fn []
       [window-tracker-inner {:moving-id @moving-id}])))
 
-(defn render-session
-  [sid]
-  (let [apps (he/subscribe [:web|wm|session|apps sid])]
+(defn view []
+  (let [apps (he/subscribe [:web|wm|current-session|apps])]
     [:div#wm
      [window-tracker]
      (for [app-id apps]
        ^{:key app-id} [render-app app-id])]))
 
-(defn view
-  []
-  (let [session-id (he/subscribe [:web|wm|active-session])]
-    [render-session session-id]))
+;; (defn view
+;;   []
+;;   (let [session-id (he/subscribe [:web|wm|active-session])]
+;;     [render-session session-id]))

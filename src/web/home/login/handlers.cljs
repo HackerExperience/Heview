@@ -19,9 +19,9 @@
                      (requests/login username password))))
 
 (he/reg-event-db :web|home|login|req-login-fail
-                 (fn [db [_ [fun] result]]
-                   (fun db result)))
+                 (fn [db [_ fun result xargs]]
+                   (fun db result xargs)))
 
 (he/reg-event-fx :web|home|login|req-login-ok
-                 (fn [db [_ [fun] result]]
-                   (fun db result)))
+                 (fn [db [_ fun result xargs]]
+                   (fun db result xargs)))

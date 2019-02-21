@@ -26,6 +26,10 @@
   [id]
   @(rf/subscribe id))
 
+(defn subscribed
+  [id]
+  (rf/subscribe id))
+
 
 ;; TODO: Can't make this to work right now
 ;; (defn reg-sub
@@ -47,3 +51,10 @@
   [content]
   [:div.tip
    [:span.tip-down content]])
+
+(defn with-app-state-callback
+  [[_ app-id]]
+  [(rf/subscribe [:web|apps|state app-id])])
+
+(def with-app-state
+  #(with-app-state-callback %))

@@ -1,11 +1,12 @@
 (ns web.home.login.requests
-  (:require [cljs.core.match :refer-macros [match]]))
+  (:require [cljs.core.match :refer-macros [match]]
+            [driver.rest.request :as request]))
 
 (defn on-login-ok
-  [_ {:keys [csrf_token]}]
-  {:dispatch [:boot|boot-flow csrf_token]})
+  [_ [_ {csrf-token :csrf_token}]]
+  {:dispatch [:boot|boot-flow csrf-token]})
 
-(defn on-login-failed
+(defn on-login-fail
   [db {:keys [status]}]
   (let [error-msg (match status
                          404 "User not found"
@@ -15,9 +16,7 @@
 
 (defn login
   [username password]
-  {:dispatch [:driver|rest|request "POST" "login" :simple
-              {:username username
-               :password password}
-              {:on-ok [:web|home|login|req-login-ok on-login-ok]
-               :on-fail [:web|home|login|req-login-fail on-login-failed]}]})
+  (request/account-login
+   username password {:on-ok [:web|home|login|req-login-ok on-login-ok]
+                      :on-fail [:web|home|login|req-login-fail on-login-fail]}))
 

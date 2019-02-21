@@ -13,7 +13,9 @@
   {:len-x (:len-x default-length)
    :len-y (:len-y default-length)
    :x (:x next-position)
-   :y (:y next-position)})
+   :y (:y next-position)
+   :config {:contextable false
+            :icon-class "fas fa-pen"}})
 
 (defn initial-state
   [game-db server-cid log-id]
@@ -97,8 +99,8 @@
             :event [:web|wm|perform [:focus app-id]]}
     :btn-2 {:text "Yes, close"
             :class [:secondary]
-            :event (close-callback parent-id app-id xargs)}}
-   {:xargs :louco}])
+            :event (close-callback parent-id app-id xargs)}
+    :title "Discard changes?"}])
 
 (defn ^:export popup-will-close
   [_ctx [parent-id app-id] state args xargs]
@@ -111,7 +113,7 @@
   [:ok])
 
 (defn ^:export popup-will-focus
-  [{app-db :app} [parent-id app-id] _state _args _xargs]
+  [{app-db :app} [_ app-id] _state _args _xargs]
   (let [query-app (apps.db/query app-db app-id)
         blocking-popup-id (apps.db/query-has-blocking-popups query-app)]
     (if-not blocking-popup-id

@@ -1,6 +1,8 @@
 (ns web.apps.subs
   (:require [re-frame.core :as rf]
-            [web.apps.log-viewer.subs]))
+            [he.core :as he]
+            [web.apps.log-viewer.subs]
+            [web.apps.remote-access.subs]))
 
 (defn apps
   [db _]
@@ -17,6 +19,22 @@
  :<- [:web|apps]
  (fn [db [_ app-id]]
    (get-in db [app-id :meta :context])))
+
+(rf/reg-sub
+ :web|apps|context-cid
+ :<- [:web|apps]
+ (fn [db [_ app-id]]
+   (get-in db [app-id :meta :context-cid])))
+
+(rf/reg-sub
+ :web|apps|context-nice-name
+ (fn [[_ app-id]]
+   [(he/subscribed [:web|apps|context app-id])
+    (he/subscribed [:web|apps|context-cid app-id])])
+ (fn [[context server-cid]]
+   (if (= context :local)
+     (he/subscribe [:game|server|hostname server-cid])
+     (:ip (he/subscribe [:game|server|endpoint|link server-cid])))))
 
 (rf/reg-sub
  :web|apps|meta

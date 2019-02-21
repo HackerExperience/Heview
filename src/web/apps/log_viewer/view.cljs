@@ -35,7 +35,7 @@
    [:div.lv-entry-body
     (:html log)]])
 
-(defn on-down-edit-log
+(defn on-click-edit-log
   [app-id server-cid log-id event]
   (.stopPropagation event)
   (.preventDefault event)
@@ -52,7 +52,7 @@
    [:div.lv-selected-action-area.ui-btn-area-large
     [:button.ui-btn.btn-icon
      {:tip "Edit the log contents"
-      :on-click #(on-down-edit-log app-id server-cid log-id %)}
+      :on-click #(on-click-edit-log app-id server-cid log-id %)}
      [:i.fa.fa-edit]]
     [:button.ui-btn.btn-icon
      {:tip "Search for previous revisions"}
@@ -78,7 +78,8 @@
                          [render-selected-entry app-id server-cid log-id log]
                          [render-entry log-id log])])]))
 
-(defn render-action-area []
+(defn render-action-area
+  [app-id server-cid]
   [:div.lv-action-area.ui-btn-area
    [:button.ui-btn.btn-dual
     {:tip "Forge (create) a new log"}
@@ -101,7 +102,8 @@
 
 (defn view-footer
   [app-id server-cid]
-  [:div.lv-footer.ui-app-footer [render-action-area]])
+  [:div.lv-footer.ui-app-footer
+   [render-action-area app-id server-cid]])
 
 (defn ^:export view
   [app-id server-cid]

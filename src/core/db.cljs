@@ -24,7 +24,7 @@
 (defn home->boot
   [db initial client]
   (-> db
-      (he.utils/dissoc-in [client :home])
+      (he.utils/dissoc-in [:home])
       (assoc-in [:core :state] :boot)
       (assoc-in [:boot] initial)))
 
