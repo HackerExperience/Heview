@@ -50,14 +50,14 @@
    [render-entry log-id log]
    [:div.lv-selected-separator]
    [:div.lv-selected-action-area.ui-btn-area-large
-    [:button.ui-btn.btn-icon
+    [:button.ui-btn.btn-icon.lv-selected-action-edit
      {:tip "Edit the log contents"
       :on-click #(on-click-edit-log app-id server-cid log-id %)}
      [:i.fa.fa-edit]]
-    [:button.ui-btn.btn-icon
+    [:button.ui-btn.btn-icon.lv-selected-action-search
      {:tip "Search for previous revisions"}
      [:i.fa.fa-search]]
-    [:button.ui-btn.btn-icon
+    [:button.ui-btn.btn-icon.lv-selected-action-delete
      {:tip "Delete the log entry"}
      [:i.fa.fa-trash-alt]]]])
 

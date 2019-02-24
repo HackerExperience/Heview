@@ -159,17 +159,6 @@
 
 ;;
 
-;; (he/reg-event-db
-;;  :web|wm|window|focus
-;;  (fn [gdb [_ app-id]]
-;;    (println "Focusing")
-;;    (let [ldb (wm.db/get-context gdb)]
-;;      (if-not (wm.db/window-focused? ldb app-id)
-;;        (as-> ldb ldb
-;;          (wm.db/focus-window ldb app-id)
-;;          (wm.db/set-context gdb ldb))
-;;        gdb))))
-
 (defn proceed-focus-popup
   [ctx state [app-type popup-type family-ids args xargs]]
   (wm.windowable/popup-will-focus

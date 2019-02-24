@@ -58,6 +58,12 @@
        [:span context-name]
        [:i.fas.fa-sync-alt]])))
 
+(defn header-seq-id
+  [app-id]
+  (let [seq-id (he/subscribe [:web|wm|window|seq-id app-id])]
+    [:div.app-header-seq-id
+     [:span seq-id]]))
+
 (defn header-icon
   [config]
   [:div.app-header-icon
@@ -102,9 +108,12 @@
 
 (defn render-app-header
   [app-id]
-  (let [config (he/subscribe [:web|wm|window|config app-id])]
+  (let [config (he/subscribe [:web|wm|window|config app-id])
+        hemacs-enabled? (he/subscribe [:web|hemacs|enabled?])]
     [:div.app-header
      (add-header-events app-id)
+     (when hemacs-enabled?
+       [header-seq-id app-id])
      [header-icon config]
      [:div.app-header-icon-separator]
      [header-title config]

@@ -10,7 +10,7 @@
   [[:#wm
     {:height "100%"}
     [:.app
-     {:border (str "1px solid" ui/color-primary-lightest)
+     {:border (str "1px solid " ui/color-primary-lightest)
       :border-radius "0px"
       :box-shadow (str
                    "0 0 1px 1px " (ui/color-primary-light-rgba "0.25")
@@ -38,8 +38,16 @@
       :min-height "30px"
       :position :relative
       :align-items :center
-      :border-bottom (str "1px solid" ui/color-primary-lightest)
+      :border-bottom (str "1px solid " ui/color-primary-lightest)
       :background-color ui/color-primary-darkest}
+     [:.app-header-seq-id
+      {:margin-left "7px"
+       :margin-right "-3px"
+       :border (str "1px solid " ui/color-secondary)
+       :background-color ui/color-secondary-darkest;
+       :color ui/color-secondary-light
+       :padding "1px 3px"
+       }]
      [:.app-header-icon
       {:color ui/color-primary-light
        :margin-left "10px"

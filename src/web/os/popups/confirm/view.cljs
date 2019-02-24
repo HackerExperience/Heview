@@ -7,10 +7,11 @@
 
 (defn render-button
   [app-id btn-config]
-  [:button.ui-btn
-   {:on-click #(on-click app-id btn-config %)
-    :class (:class btn-config)}
-   (:text btn-config)])
+  [:div.os-cfm-button
+   [:button.ui-btn
+    {:on-click #(on-click app-id btn-config %)
+     :class (:class btn-config)}
+    (:text btn-config)]])
 
 (defn render-buttons
   [app-id config]

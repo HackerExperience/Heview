@@ -5,6 +5,7 @@
             [web.home.style]
             [web.os.style]
             [web.wm.style]
+            [web.hemacs.style]
             [web.hud.style]))
 
 (defn global-style []
@@ -22,6 +23,8 @@
 (defn style
   []
   [(global-style)
+   [(web.hemacs.style/local-style)]
+   [(web.hemacs.style/global-style)]
    [(web.hud.style/local-style)]
    [(web.hud.style/global-style)]
    [(web.ui.style/local-style)]

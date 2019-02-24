@@ -14,6 +14,12 @@
  (fn [db _]
    (:viewport db)))
 
+(rf/reg-sub
+ :web|wm|focused-window
+ :<- [:web|wm]
+ (fn [db _]
+   (:focused-window db)))
+
 ;; Windows ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn with-window-data-callback
@@ -58,6 +64,12 @@
  :<- [:web|wm|windows]
  (fn [db [_ app-id]]
    (get-in db [app-id :focused?])))
+
+(rf/reg-sub
+ :web|wm|window|seq-id
+ with-window-data
+ (fn [[window]]
+   (:seq-id window)))
 
 ;; Session ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

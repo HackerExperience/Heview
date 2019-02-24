@@ -43,7 +43,7 @@
     [:button
      {:height "26px"
       :min-width "75px"}]
-    ["button + button"
+    [".os-cfm-button + .os-cfm-button"
      {:margin-left "15px"}]]])
 
 (defn local-style []

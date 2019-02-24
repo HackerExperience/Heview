@@ -1,7 +1,6 @@
 (ns web.apps.log-viewer.popups.log-edit.view
   (:require [he.core :as he]
-            [re-com.core :refer [single-dropdown]
-             :refer-macros [handler-fn]]))
+            [re-com.core :refer [single-dropdown]]))
 
 (defn on-type-selection
   [app-id selected-type]

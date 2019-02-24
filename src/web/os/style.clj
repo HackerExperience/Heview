@@ -1,5 +1,6 @@
 (ns web.os.style
   (:require [garden.core :refer [css]]
+            [web.ui.vars :as ui]
             [web.os.popups.style :as popups.style]))
 
 (defn local-style []

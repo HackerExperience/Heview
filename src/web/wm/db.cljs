@@ -71,6 +71,35 @@
       (assoc-in db [:next-open] {:x next-open-x :y next-open-y}))
     db))
 
+(defn get-visible-apps
+  [db session-id]
+  (:visible-apps (get-session db session-id)))
+
+(defn get-next-seq-id
+  [db]
+  (:next-seq-id db))
+
+(defn increment-next-seq-id
+  [db]
+  (update db :next-seq-id inc))
+
+(defn reset-next-seq-id
+  [db]
+  (assoc db :next-seq-id 1))
+
+(defn recalculate-window-seq-ids-reducer
+  [db app-id]
+  (let [next-seq-id (get-next-seq-id db)]
+    (-> db
+        (assoc-in [:windows app-id :seq-id] next-seq-id)
+        (increment-next-seq-id))))
+  ;; [db (+ seq-id 1)])
+
+(defn recalculate-window-seq-ids
+  [db session-id]
+  (let [visible-apps (get-visible-apps db session-id)]
+    (reduce recalculate-window-seq-ids-reducer db visible-apps)))
+
 ;; WM
 
 (defn get-viewport
@@ -268,7 +297,8 @@
      :position {:x open-x :y open-y}
      :length {:x len-x :y len-y}
      :z-index next-z-index
-     :config (extract-window-config (:config opts))}))
+     :config (extract-window-config (:config opts))
+     :seq-id (get-next-seq-id db)}))
 
 (defn add-window-data
   [db app-id opts]
@@ -276,7 +306,9 @@
 
 (defn add-app-entry
   [db session-id app-id]
-  (update-in db [:sessions session-id :apps] #(vec (conj % app-id))))
+  (-> db
+      (update-in [:sessions session-id :visible-apps] #(vec (conj % app-id)))
+      (update-in [:sessions session-id :apps] #(vec (conj % app-id)))))
 
 (defn on-open
   [db app-id session-id opts]
@@ -284,6 +316,7 @@
       (add-window-data app-id opts)
       (add-app-entry session-id app-id)
       (set-focused-window app-id)
+      (increment-next-seq-id)
       (increment-next-z-index)
       (increment-next-open-position opts)))
 
@@ -291,10 +324,13 @@
 
 (defn remove-app-entry
   [db session-id app-id]
-  (assoc-in
-   db
-   [:sessions session-id :apps]
-   (remove #(= app-id %) (get-in db [:sessions session-id :apps]))))
+  (-> db
+      (assoc-in
+       [:sessions session-id :visible-apps]
+       (remove #(= app-id %) (get-in db [:sessions session-id :visible-apps])))
+      (assoc-in
+       [:sessions session-id :apps]
+       (remove #(= app-id %) (get-in db [:sessions session-id :apps])))))
 
 (defn on-close
   [db app-id]
@@ -302,7 +338,9 @@
     (-> db
         (he.utils/dissoc-in [:windows app-id])
         (unfocus-on-close app-id)
-        (remove-app-entry session-id app-id))))
+        (remove-app-entry session-id app-id)
+        (reset-next-seq-id)
+        (recalculate-window-seq-ids session-id))))
 
 ;; Bootstrap ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -320,6 +358,7 @@
 (defn init-wm
   [db]
   (-> db
+      (assoc-in [:next-seq-id] 1)
       (assoc-in [:next-z-index] 100)
       (assoc-in [:next-open] {:x 150 :y 150})
       (assoc-in [:focused-window] nil)

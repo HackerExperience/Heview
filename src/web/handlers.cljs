@@ -4,6 +4,7 @@
             [he.core :as he]
             [web.home.handlers]
             [web.lock.handlers]
+            [web.hemacs.handlers]
             [web.hud.handlers]
             [web.os.handlers]
             [web.wm.handlers]
@@ -18,6 +19,7 @@
    {:dispatch-n (list [:web|wm|bootstrap]
                       [:web|os|bootstrap]
                       [:web|hud|bootstrap]
+                      [:web|hemacs|bootstrap]
                       [:web|bootstrap-ok])}))
 
 (he/reg-event-dummy :web|bootstrap-ok)

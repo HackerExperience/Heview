@@ -42,6 +42,7 @@
 
 ;; Reload and redraw all components
 (defn reload-redraw []
+  ;; NOTE: It might break stuff, e.g. by duplicating `addEventListener`s around
   (reagent/force-update-all))
 
 ;; Reload to initial state

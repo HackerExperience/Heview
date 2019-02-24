@@ -5,6 +5,7 @@
             [web.wm.subs :as wm.subs]
             [web.apps.subs :as apps.subs]
             [web.os.subs :as os.subs]
+            [web.hemacs.subs :as hemacs.subs]
             [web.hud.subs :as hud.subs]))
 
 (defn web
@@ -41,11 +42,16 @@
  (fn [db _]
   (:meta db)))
 
+(rf/reg-sub
+ :web|hemacs
+ :<- [:web]
+ hemacs.subs/hemacs)
+
 ;; TODO: Check according to expiration date
 (rf/reg-sub
  :web|meta|cookie-exists?
  :<- [:web|meta]
- (fn [db _] 
+ (fn [db _]
    (some? (:username db))))
 
 (rf/reg-sub

@@ -16,3 +16,7 @@ How to:
 6 - Detect `on-mouse-down` on div, and based on mouse position use JS's `scrollTo`
 
 -----
+
+Our own `dropdown` component (similar to re-com but not)
+
+-----
