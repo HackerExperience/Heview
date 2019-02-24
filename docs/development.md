@@ -55,7 +55,7 @@ you understand how its state is handled. See docs at `docs/STATE.json`.
 
 ### Pre-requisites
 
-- `clojure` (1.9.0).
+- `clojure` (1.10.0).
 - `npm` (6.4.x). Older versions probably OK.
 - `helix`. [Instructions](https://github.com/hackerexperience/helix).
 
@@ -65,17 +65,17 @@ you understand how its state is handled. See docs at `docs/STATE.json`.
     cd heview
     npm install
     npm run watch
-    
+
 If all goes well, you should have a working version at `http://localhost:8080`.
 
 ### Generating release code
 
-Release (production) code runs several optimizations, and should be used in 
+Release (production) code runs several optimizations, and should be used in
 any production environment.
 
     shadow-cljs release prod
-    
-If the `prod` versions yields any runtime errors, add a `--debug` flag to the 
+
+If the `prod` versions yields any runtime errors, add a `--debug` flag to the
 command above, so you can know exactly which method is crashing.
 
 ## Misc
