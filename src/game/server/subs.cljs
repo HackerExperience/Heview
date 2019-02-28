@@ -1,6 +1,7 @@
 (ns game.server.subs
   (:require [re-frame.core :as rf]
             [he.core :as he]
+            [game.server.process.subs]
             [game.server.log.subs :as log.subs]))
 
 (defn with-server-data-callback
@@ -35,8 +36,6 @@
  :game|server|hostname
  with-server-data
  (fn [[server]]
-   (println "Chamando hostname")
-   (println server)
    (get-in server [:meta :hostname])))
 
 (rf/reg-sub

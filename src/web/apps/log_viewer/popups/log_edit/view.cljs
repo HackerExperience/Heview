@@ -4,6 +4,11 @@
 
 (defn on-type-selection
   [app-id selected-type]
+  ;; Clear existing fields
+  (let [app (.getElementById js/document app-id)
+        inputs (array-seq (.querySelectorAll app ".lv-led-edit-field-input"))]
+    (doseq [el-input inputs]
+      (set! (.-value el-input) "")))
   (he/dispatch
    [:web|apps|log-viewer|log-edit|on-type-selection app-id selected-type]))
 
@@ -102,7 +107,6 @@
      [:i.far.fa-question-circle]]
     [:span "Log type"]
     [:div.lv-led-edit-type-select
-     ;[:select "a"]
      [log-type-dropdown app-id]]]
    [render-edit-fields-container app-id]])
 
@@ -130,8 +134,9 @@
     [:button.ui-btn.btn-dual
      [:i.far.fa-times-circle]
      [:span "Cancel"]]
-    [:button.ui-btn.btn-dual.btn-primary
-     {:tip "Update the log contents"}
+    [:button.ui-btn.btn-dual.btn-primary.lv-led-button-edit
+     {:tip "Update the log contents"
+      :on-click #(he/dispatch [:web|apps|log-viewer|log-edit|log|edit app-id])}
      [:i.fa.fa-edit]
      [:span "Edit"]]]])
 
@@ -139,4 +144,4 @@
   [app-id server-cid]
   [:div.lv-led-container
    [view-body app-id]
-   [view-footer]])
+   [view-footer app-id]])

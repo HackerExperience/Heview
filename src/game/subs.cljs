@@ -10,3 +10,8 @@
   :game|server
   :<- [:game]
   game.server.subs/server)
+
+(rf/reg-sub
+ :game|tick
+ (fn [db _]
+   (:tick db)))

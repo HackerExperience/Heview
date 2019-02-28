@@ -277,6 +277,10 @@
 
 ;; WM > Perform > Focus ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; TODO: Timing error here. Sometimes, if you quickly focus a window that you
+;; just closed, this will execute after the window has been closed, and truss
+;; will complain (correctly). If this happens again, add a check that the
+;; window hasn't closed.
 (defn- perform-focus
   [gdb [app-id _xargs]]
   (let [ldb (wm.db/get-context gdb)]

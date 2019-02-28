@@ -8,6 +8,7 @@
  (fn [[_ server-cid] _]
    [(rf/subscribe [:game|server|log|entries server-cid])])
  (fn [[entries] _]
+   (println entries)
    (map log-viewer.db/format-log entries)))
 
 (rf/reg-sub

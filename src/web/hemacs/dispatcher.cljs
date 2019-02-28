@@ -4,6 +4,7 @@
             [web.os.popups.confirm.hemacs :as os-confirm-mode]
             [web.apps.log-viewer.hemacs :as log-viewer-mode]
             [web.apps.log-viewer.popups.log-edit.hemacs :as log-edit-mode]
+            [web.apps.task-manager.hemacs :as task-manager-mode]
             [web.hemacs.mode.insert :as insert-mode]))
 
 (def mode-map
@@ -16,7 +17,9 @@
 
    ;; apps
    :log-viewer log-viewer-mode/process-input
-   :log-viewer-log-edit log-edit-mode/process-input})
+   :log-viewer-log-edit log-edit-mode/process-input
+   :task-manager task-manager-mode/process-input
+   })
 
 (defn- get-path-app
   [app-type]

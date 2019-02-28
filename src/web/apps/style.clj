@@ -2,11 +2,13 @@
   (:require [garden.core :refer [css]]
             [web.ui.vars :as ui]
             [web.apps.log-viewer.style :as lv.style]
-            [web.apps.log-viewer.popups.style :as lv.popups.style]))
+            [web.apps.log-viewer.popups.style :as lv.popups.style]
+            [web.apps.task-manager.style :as tm.style]))
 
 (defn local-style []
   [(lv.style/local-style)
-   (lv.popups.style/local-style)])
+   (lv.popups.style/local-style)
+   (tm.style/local-style)])
 
 (defn global-style []
   [[:.ui-app-header

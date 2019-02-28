@@ -1,6 +1,7 @@
 (ns web.apps.log-viewer.popups.log-edit.db
   (:require [he.utils]
             [game.server.log.db :as log.db]
+            [game.server.log.db.data :as log.db.data]
             [web.apps.db :as apps.db]
             [web.wm.db :as wm.db]))
 
@@ -16,6 +17,8 @@
    :y (:y next-position)
    :config {:contextable false
             :icon-class "fas fa-pen"}})
+
+;; Model
 
 (defn initial-state
   [game-db server-cid log-id]
@@ -41,6 +44,25 @@
       state
       (assoc-in state [:invalid-fields] (conj (:invalid-fields state) field-id)))))
 
+(defn get-server-cid
+  [state]
+  (:server-cid state))
+
+(defn get-log-id
+  [state]
+  (:log-id state))
+
+(defn get-log
+  [state]
+  (:log state))
+
+;; Log Edit request
+
+(defn log-edit-callback
+  [app-id]
+  {:on-ok [:web|apps|log-viewer|log-edit|log|edit|ok app-id]
+   :on-fail [:web|apps|log-viewer|log-edit|log|edit|fail app-id]})
+
 ;; Public API
 
 ;; Events API
@@ -49,9 +71,9 @@
   [state field-id field-type new-field-value]
   (let [old-log (:log state)
         new-log (assoc-in old-log [:data field-id] new-field-value)
-        new-log-value (log.db/derive-log-text new-log)
+        new-log-value (log.db.data/derive-log-text new-log)
         new-log (assoc-in new-log [:value] new-log-value)
-        valid? (log.db/validate-log-value field-type new-field-value)]
+        valid? (log.db.data/validate-log-value field-type new-field-value)]
     (-> state
         (assoc-in [:log] new-log)
         (assoc-in [:changed?] true)
@@ -61,10 +83,10 @@
   [state new-type]
   ;; TODO: VAlidate log-type
   (let [old-log (:log state)
-        new-log (-> old-log
-                    (assoc-in [:type] new-type)
-                    (assoc-in [:data] (log.db/get-initial-data new-type)))
-        new-log (assoc-in new-log [:value] (log.db/derive-log-text new-log))]
+        new-log (as-> old-log $
+                    (assoc-in $ [:type] new-type)
+                    (assoc-in $ [:data] (log.db.data/get-initial-data new-type))
+                    (assoc-in $ [:value] (log.db.data/derive-log-text $)))]
     (-> state
         (assoc-in [:log] new-log)
         (assoc-in [:changed?] true)

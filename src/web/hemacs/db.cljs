@@ -41,7 +41,7 @@
    :name "Insert Mode"})
 
 (def initial-db
-  {:enabled? false
+  {:enabled? true
    :prev-mode nil
    :mode desktop-mode
 

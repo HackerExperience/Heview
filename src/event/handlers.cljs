@@ -7,15 +7,30 @@
 
 (defn call-event-handler
   [event-name args]
-  (he.dispatch/call (str "event.events/" event-name) args))
+  (let [fun-path (str "event.events/" event-name)]
+    (if (he.dispatch/function-exists? fun-path)
+      (he.dispatch/call fun-path args)
+      (do
+        (he.error/runtime (str "Unhandled event: " event-name))
+        ;; (cljs.pprint/pprint (nth args 1))
+        [:dev|null]))))
 
 (defn dash-event-name
   [event-name]
   (str/replace event-name #"_" "-"))
 
+(defn format-id
+  [domain-id]
+  (if (and
+       (map? domain-id)
+       (contains? domain-id :network_id)
+       (contains? domain-id :ip))
+    (str (:ip domain-id) "@" (:network_id domain-id))
+    domain-id))
+
 (defn get-domain-info
   [payload]
-  [(keyword (:domain payload)) (:domain_id payload)])
+  [(keyword (:domain payload)) (format-id (:domain_id payload))])
 
 (defn dispatcher-special
   [event-name payload]

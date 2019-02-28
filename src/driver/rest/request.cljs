@@ -5,7 +5,8 @@
 (defn format-cid
   [server-cid]
   (-> server-cid
-      (str/replace #":" ",")))
+      (str/replace #":" ",")
+      (str/replace #"@" "$")))
 
 (defn format-nip
   [network-id ip]
@@ -70,6 +71,15 @@
    :get
    (str "server/" (format-cid server-cid) "/browse?address=" address)
    {}
+   custom))
+
+(defn log-forge-edit
+  [server-cid [log-id log] custom]
+  (build-params
+   :post
+   (str "server/" (format-cid server-cid) "/log/" (format-cid log-id) "/edit")
+   {:log_type (:type log)
+    :log_data (:data log)}
    custom))
 
 (defn server-login

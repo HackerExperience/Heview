@@ -1,7 +1,8 @@
 (ns web.apps.dispatcher
   (:require [he.dispatch]
             [web.apps.log-viewer.view]
-            [web.apps.remote-access.view]))
+            [web.apps.remote-access.view]
+            [web.apps.task-manager.view]))
 
 (defn- get-app-prefix
   [app-type]

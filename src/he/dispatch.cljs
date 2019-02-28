@@ -10,13 +10,28 @@
 
 (defn call
   [function-name args]
-  (println function-name)
   (let [fun (js/eval (->js function-name))]
     (apply fun args)))
 
+(defn get-def
+  [var-name]
+  (js/eval (->js var-name)))
+
 (defn call-me-maybe
   [function-name args]
+  ;; TODO: use `exists?`
   (try
     (apply (js/eval (->js function-name)) args)
     (catch :default e
       nil)))
+
+(defn call-me-maybe-log
+  [function-name args]
+  (try
+    (apply (js/eval (->js function-name)) args)
+    (catch :default e
+      (he.error/runtime (str "Log unknown function: " function-name)))))
+
+(defn function-exists?
+  [function-name]
+  (not (nil? (js/eval (->js function-name)))))

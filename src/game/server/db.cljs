@@ -1,5 +1,6 @@
 (ns game.server.db
-  (:require [game.server.log.db :as log.db]))
+  (:require [game.server.log.db :as log.db]
+            [game.server.process.db :as process.db]))
 
 ;; Context ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -71,7 +72,9 @@
   "Creates a state instance for one specific server."
   [data]
   (-> (initial-instance data)
-      (log.db/bootstrap-server (:logs data))))
+      (log.db/bootstrap-server (:logs data))
+      (process.db/bootstrap-server (:processes data))
+      ))
 
 (defn bootstrap-server-add-endpoints
   [db {endpoints :endpoints gateway-id :server_id}]
@@ -79,8 +82,6 @@
 
 (defn bootstrap-server-add-link
   [db link-info]
-  (println "Adding remote link")
-  (println link-info)
   (let [endpoint-cid (nip->cid (:network_id link-info) (:ip link-info))]
     (println endpoint-cid)
     (assoc-in db [endpoint-cid :link] link-info)))
@@ -92,6 +93,8 @@
   effectively adding the context (i.e. the `server-cid`).
   The wrapping is done by the caller of this method (i.e. `game.db` itself)."
   [db data server-cid]
+  (println "Bootstraping server")
+  ;; (cljs.pprint/pprint data)
   (assoc-in db [(name server-cid)] (server-instance data)))
 
 ;; Model ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

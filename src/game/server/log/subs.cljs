@@ -1,6 +1,7 @@
 (ns game.server.log.subs
   (:require [re-frame.core :as rf]
-            [game.server.log.db :as log.db]))
+            [game.server.log.db :as log.db]
+            [game.server.log.db.data :as log.db.data]))
 
 ;; Nope (not specifying `server_cid`)
 (defn log
@@ -16,7 +17,7 @@
 (rf/reg-sub
  :game|server|log|dropdown-map
  (fn [_ _]
-   log.db/dropdown-map))
+   log.db.data/dropdown-map))
 
 (rf/reg-sub
  :game|server|log|fields-data

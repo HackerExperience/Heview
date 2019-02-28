@@ -2,7 +2,8 @@
   (:require [re-frame.core :as rf]
             [he.core :as he]
             [web.apps.log-viewer.subs]
-            [web.apps.remote-access.subs]))
+            [web.apps.remote-access.subs]
+            [web.apps.task-manager.subs]))
 
 (defn apps
   [db _]

@@ -87,7 +87,10 @@
  (fn [_ [_ bootstrap]]
     {:async-flow (sync-flow bootstrap)}))
 
-(he/reg-event-dummy :boot|sync-flow-ok)
+(he/reg-event-fx
+ :boot|sync-flow-ok
+ (fn [_ _]
+   {:dispatch [:game|post-boot-hook]}))
 (he/reg-event-dummy :boot|sync-flow-fail)
 (he/reg-event-dummy :boot|subscribe-ok)
 (he/reg-event-dummy :boot|subscribe-fail)

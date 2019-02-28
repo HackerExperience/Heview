@@ -3,7 +3,8 @@
             [com.yetanalytics.sse-fx.event-source :as event-source]
             [he.core :as he]
             [driver.rest.request :as request]
-            [game.db]))
+            [game.db]
+            ))
 
 (event-source/register!)
 
@@ -31,13 +32,18 @@
     {:keys :all}}))
 
 (defn keywordize-keys
-  [map]
-  (into {}
-        (for [[k v] map]
-          [(keyword k)
-           (if (map? v)
-             (keywordize-keys v)
-             v)])))
+  [entry]
+  (if (map? entry)
+    (into {}
+          (for [[k v] entry]
+            [(keyword k)
+             (cond
+               (map? v) (keywordize-keys v)
+               (vector? v) (keywordize-keys v)
+               :else v)]))
+    (into []
+          (for [v entry]
+            (keywordize-keys v)))))
 
 (he/reg-event-fx
  :driver|sse|on-message

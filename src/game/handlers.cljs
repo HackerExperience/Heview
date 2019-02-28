@@ -16,6 +16,8 @@
 
 (he/reg-event-fx :game|bootstrap|servers
                  (fn [{:keys [db]} [_ bootstrap]]
+                   (println "Handler bs server")
+                   ;; (cljs.pprint/pprint db)
                    {:db (game.db/bootstrap-server db bootstrap)
                     ;(reduce game.db/bootstrap-server db servers-bootstraps)
                     :dispatch [:game|bootstrap|servers-ok]}))
@@ -39,6 +41,18 @@
                    (fun db result xargs)))
 
 ;; Misc
+
+(he/reg-event-fx
+ :game|post-boot-hook
+ (fn [{gdb :db} _]
+   {:db (assoc gdb :tick (int (/ (.now js/Date) 1000)))
+    :dispatch-n (list [:game|tick])}))
+
+(he/reg-event-fx
+ :game|tick
+ (fn [{gdb :db} _]
+   {:db (update gdb :tick inc)
+    :dispatch-later [{:ms 1000 :dispatch [:game|tick]}]}))
 
 (he/reg-event-fx :dev|null
                  (fn [{gdb :db} _]

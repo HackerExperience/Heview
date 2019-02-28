@@ -10,20 +10,18 @@
 (defn input-a [_]
   (hemacs/multiple-match
    {"l" "log viewer"
-    "ra" "remote access"}
+    "t" "task manager"
+    "r" "remote access"}
    {"fw" "firewall"}))
-
-(defn input-af [_]
-  (hemacs/multiple-match
-   {"i" "finance"
-    "e" "explorer"}
-   {"w" "firewall"}))
-
-(defn input-afi [_]
-  (hemacs/exact-match))
 
 (defn input-al [_]
   (hemacs/exact-match [:web|wm|app|open :log-viewer]))
+
+(defn input-ar [_]
+  (hemacs/exact-match [:web|wm|app|open :remote-access]))
+
+(defn input-at [_]
+  (hemacs/exact-match [:web|wm|app|open :task-manager]))
 
 (defn winum
   [num gdb {session-id :session-id}]
@@ -59,9 +57,9 @@
     (match buffer
            ["Space"] (input-spc args)
            ["Space" "a"] (input-a args)
-           ["Space" "a" "f"] (input-af args)
-           ["Space" "a" "f" "i"] (input-afi args)
            ["Space" "a" "l"] (input-al args)
+           ["Space" "a" "r"] (input-ar args)
+           ["Space" "a" "t"] (input-at args)
            ["Space" "1"] (input-1 args)
            ["Space" "2"] (input-2 args)
            ;; ["2"] (input-2 args)

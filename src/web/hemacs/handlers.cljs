@@ -39,7 +39,6 @@
 (he/reg-event-db
  :web|hemacs|input-focused-in
  (fn [gdb _]
-   (println "Focusing in")
    (as-> (hemacs.db/get-context gdb) ldb
      (hemacs.db/input-focused-in ldb)
      (hemacs.db/set-context gdb ldb))))
@@ -47,7 +46,6 @@
 (he/reg-event-db
  :web|hemacs|input-focused-out
  (fn [gdb _]
-   (println "Focusing out")
    (as-> (hemacs.db/get-context gdb) ldb
      (hemacs.db/input-focused-out ldb)
      (hemacs.db/set-context gdb ldb))))

@@ -22,7 +22,11 @@
    {:icon-class "fas fa-network-wired"
     :name "Remote Access"
     :can-display-fn nil
-    :on-click-event [:web|wm|app|open :remote-access]}])
+    :on-click-event [:web|wm|app|open :remote-access]}
+   {:icon-class "fas fa-tasks"
+    :name "Task Manager"
+    :can-display-fn nil
+    :on-click-event [:web|wm|app|open :task-manager]}])
 
 (defn fetch
   [db app-id]

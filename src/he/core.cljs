@@ -55,6 +55,11 @@
 (defn with-app-state-callback
   [[_ app-id]]
   [(rf/subscribe [:web|apps|state app-id])])
-
 (def with-app-state
   #(with-app-state-callback %))
+
+(defn with-game-server-data-callback
+  [[_ server-cid]]
+  [(rf/subscribe [:game|server|data server-cid])])
+(def with-game-server-data
+  #(with-game-server-data-callback %))
