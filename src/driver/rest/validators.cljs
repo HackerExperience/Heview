@@ -31,4 +31,5 @@
 (defn request-status [x]
   "Handle status code within the range we work with"
   (and (have? int? x)
-       (have? #(<= 200 % 520) x)))
+       (utils.v/have-true? (or (<= 200 x 520)
+                               (= x -1)))))

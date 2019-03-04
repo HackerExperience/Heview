@@ -3,6 +3,9 @@
             [he.core :as he]
             [game.server.process.js :as process.js]))
 
+(def time-left-span-class ".tm-process-info-eta-span")
+(def progress-bar-class ".tm-process-info-eta-bar-progress")
+
 (defn render-flag-area []
   [:div.tm-flag-area
    [:div.tm-flag
@@ -63,9 +66,6 @@
     (process-info-updater-fn-timer elements proc-id)
     (process-info-updater-fn-progress elements proc-id)
     [ref-timer ref-progress]))
-
-(def time-left-span-class ".tm-process-info-eta-span")
-(def progress-bar-class ".tm-process-info-eta-bar-progress")
 
 (defn render-process-info-eta [process-id _tick]
   (let [state (reagent/atom {:process-id process-id
@@ -157,15 +157,21 @@
     [:span server-ip]]
    [render-processes-entries app-id server-processes selected-id]])
 
+(defn render-localhost-empty []
+  (let [empty-msg "There are no running processes at localhost :("]
+    [:div.tm-server-processes
+     [:span.tm-server-processes-empty empty-msg]]))
+
 (defn render-localhost-processes
   [app-id processes selected-id]
-  [:div.tm-server-entry
-   [:div.tm-server-header
-    [:span "localhost"]]
-   (if-not (empty? processes)
-     [render-processes-entries app-id processes selected-id]
-     [:div.tm-server-processes
-      [:span.tm-server-processes-empty "There are no running processes :("]])])
+  (let [context (he/subscribe [:web|apps|context app-id])]
+    (when-not (= context :remote)
+      [:div.tm-server-entry
+       [:div.tm-server-header
+        [:span "localhost"]]
+       (if-not (empty? processes)
+         [render-processes-entries app-id processes selected-id]
+         [render-localhost-empty])])))
 
 (defn view-body
   [app-id server-cid]

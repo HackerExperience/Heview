@@ -18,6 +18,14 @@
    (dispatch-global-event "os-runtime-error" {:reason reason
                                               :source source})))
 
+(defn match
+  [description var]
+  (runtime (str "Match error: " description " " var) :match))
+
+(defn not-implemented
+  [description]
+  (runtime (str "NotImplementedError: " description) :not-implemented))
+
 (defn truss-error
   [{reason :msg_ file :ns-str}]
   (println "Assertion error: " reason)
@@ -28,7 +36,9 @@
 (defn base-game-error-messages
   [s]
   (cond
-    (= s 400) (str "Bad request. There may be some paramter invalid."
+    (= s -1) "Request timed out."
+    (= s 0) "Request timed out."
+    (= s 400) (str "Bad request. There may be some paramter invalid. "
                    "This is usually our fault, sorry!")
     (= s 403) (str "You are not authorized to perform this action now")
     (<= 500 s 599) (str "Internal server error. This is our fault, sorry!")

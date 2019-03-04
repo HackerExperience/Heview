@@ -18,7 +18,7 @@
      :padding 0
      :position :fixed
      :top 0
-     :font-family "'Roboto', sans-serif"
+     :font-family ui/font-family
      :background-repeat :no-repeat
      :background-position "50% 50%"
      :background-size :cover

@@ -15,9 +15,6 @@
 (defn set-context
   [global-db server-cid updated-local-db]
   (assoc-in global-db [:game :server server-cid :log] updated-local-db))
-(defn set-context-game
-  [game-db server-cid updated-local-db]
-  (assoc-in game-db [:server server-cid :log] updated-local-db))
 
 ;; Model
 

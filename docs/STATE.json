@@ -16,6 +16,45 @@
               }
             }
           }
+        },
+        "process": {
+          "entries": {
+            "$process-id": {
+              "type": "Process.type",
+              "progress": {
+                "completion-date": "DateTime.t | nil",
+                "creation-date": "DateTime.t",
+                "percentage": "Float | nil",
+                "percentage-rate": "Float | nil" // per millisecond
+              },
+              "origin-ip": "$ip | 'localhost'",
+              "target-ip": "$ip | 'localhost'"
+            }
+          }
+        },
+        "software": {
+          "main-storage-id": "$storage-id",
+          "$storage-id": {
+            "file": {
+              "$file-id": {
+                "path": "/file/path",
+                "name": "String",
+                "extension": "String"
+                "size" "Integer",
+                "modules": {
+                  "$module-name": {
+                    "version": "Integer"
+                  }
+                }
+              }
+            },
+            "filesystem": {
+              "$path": ["$file-id"]
+            },
+            "storage": {
+              "name": "String"
+            }
+          }
         }
       }
       "meta": {
@@ -113,7 +152,12 @@
       }
     }
   },
-  // OS popups
+  "task-manager": {
+    "state": {
+      "selected": "Process.id | nil"
+    }
+  }
 
+  // OS popups
   ""
 }

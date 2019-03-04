@@ -5,9 +5,11 @@
             [web.apps.remote-access.validators :as v]))
 
 (def open-opts
-  {:len-x 250
-   :len-y 150
-   :config {:contextable false
+  {:len-x 175
+   :len-y 75
+   :config {:title "Browse"
+            :contextable false
+            :show-context false
             :icon-class "fas fa-network-wired"}})
 
 (defn initial

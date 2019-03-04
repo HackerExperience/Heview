@@ -2,6 +2,7 @@
   (:require [he.core :as he]
             [game.server.log.handlers]
             [game.server.process.handlers]
+            [game.server.software.handlers]
             [game.server.requests :as server.requests]))
 
 (he/reg-event-fx

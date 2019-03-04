@@ -26,7 +26,11 @@
    {:icon-class "fas fa-tasks"
     :name "Task Manager"
     :can-display-fn nil
-    :on-click-event [:web|wm|app|open :task-manager]}])
+    :on-click-event [:web|wm|app|open :task-manager]}
+   {:icon-class "far fa-folder"
+    :name "File Explorer"
+    :can-display-fn nil
+    :on-click-event [:web|wm|app|open :file-explorer]}])
 
 (defn fetch
   [db app-id]

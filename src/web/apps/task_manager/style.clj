@@ -6,7 +6,6 @@
    {:flex "1 1"
     :background-color (ui/color-primary-darkest-rgba "0.05")
     :padding "8px 8px 0 8px"
-    ;; :padding "8px"
     :overflow-y :auto}
    [:.tm-server-entry {}
     [:.tm-server-header
@@ -64,12 +63,13 @@
       :background-color (ui/color-primary-darkest-rgba "0.65")}]
     [:.tm-process-icon
      {:flex "0 0"
-      :text-align :center}
+      :text-align :center
+      :min-width "25px"}
      [:i
       {:font-size "20px"}]]
     [:.tm-process-desc
      {:flex "0 0"
-      :padding-left "8px"
+      :padding-left "4px"
       :min-width "150px"
       :display :flex
       :flex-direction :column
@@ -102,8 +102,7 @@
         ;:max-width "100px"
         :min-height "12px"
         :border (str "1px solid " ui/color-primary-light)
-        :background-color (ui/color-primary-darker-rgba "0.7")
-        }
+        :background-color (ui/color-primary-darker-rgba "0.7")}
        [:.tm-process-info-eta-bar-progress
         {:min-height "12px"
          :background-color (ui/color-primary-rgba "0.5")
@@ -132,8 +131,7 @@
        [:i
         {:font-size "12px"
          :margin-right "2px"
-         :min-width "20px"
-         }]
+         :min-width "20px"}]
        [:span
         {:font-size "12px"
          :font-family :monospace}]]]]]])
@@ -174,8 +172,7 @@
      :display :flex
      :flex-direction :row
      :align-items :center
-     :padding-right "8px"
-     }
+     :padding-right "8px"}
     [:.tm-search-filter
      {:flex "0 0"
       :margin-right "5px"
@@ -212,10 +209,8 @@
     :flex-direction :column
     :align-items :center
     :background-color (ui/color-primary-darkest-rgba "0.275")
-    ;:border-right (str "1px solid " (ui/color-primary-darkest-rgba "0.95"))
     :border-right (str "1px solid " (ui/color-primary-darker-rgba "0.95"))
-    :padding "0 8px"
-    }
+    :padding "0 8px"}
    [:.tm-sidebar-entry
     {:min-height "40px"
      :width "100%"

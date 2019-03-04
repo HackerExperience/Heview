@@ -125,8 +125,6 @@
   [db context]
   (let [session-id (get-active-session db)
         session (get-session db session-id)]
-    (println session-id)
-    (println "Le session is" session)
     (if (= context :remote)
       (:gateway session)
       (:endpoint session))))
@@ -251,6 +249,16 @@
       (assoc-in [:windows app-id :z-index] (get-next-z-index db))
       (set-focused-window app-id)
       (increment-next-z-index)))
+
+;; WM > Window resize ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn resize-window
+  [db app-id new-size]
+  (assoc-in db [:windows app-id :length] new-size))
+
+(defn retitle-window
+  [db app-id new-title]
+  (assoc-in db [:windows app-id :config :title] new-title))
 
 ;; App ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -65,6 +65,22 @@
      (wm.db/recalculate-viewport ldb)
      (wm.db/set-context gdb ldb))))
 
+;; WM > Windows ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(he/reg-event-db
+ :web|wm|window|resize
+ (fn [gdb [_ app-id new-size]]
+   (as-> (wm.db/get-context gdb) ldb
+     (wm.db/resize-window ldb app-id new-size)
+     (wm.db/set-context gdb ldb))))
+
+(he/reg-event-db
+ :web|wm|window|retitle
+ (fn [gdb [_ app-id new-title]]
+   (as-> (wm.db/get-context gdb) ldb
+     (wm.db/retitle-window ldb app-id new-title)
+     (wm.db/set-context gdb ldb))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; WM API ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

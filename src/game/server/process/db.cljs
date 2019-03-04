@@ -22,12 +22,19 @@
    :percentage (:percentage progress)
    :percentage-rate (:percentage_rate progress)})
 
+(defn build-process-data
+  [process]
+  {:file {:source (:source_file process)
+          :target (:target_file process)}})
+
 (defn build-process
   [process]
+  (cljs.pprint/pprint process)
   {:type (:type process)
    :progress (build-process-progress (:progress process))
    :target-ip (:target_ip process)
-   :origin-ip (:origin_ip process)})
+   :origin-ip (:origin_ip process)
+   :data (build-process-data process)})
 
 (defn format-process
   [raw-process]

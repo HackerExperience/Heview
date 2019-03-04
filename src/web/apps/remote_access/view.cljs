@@ -17,18 +17,19 @@
   [app-id server-cid]
   (let [loading? (he/subscribe [:web|apps|remote-access|browse|loading? app-id])
         input-ip (he/subscribe [:web|apps|remote-access|ip app-id])]
-    [:div
-     [:div
-      [:input
+    [:div.ra-browse
+     [:div.ra-browse-input
+      [:input.ui-input
        {:type :text
         :value input-ip
-        :on-change #(on-browse-ip-change app-id %)}]
-      [:button
-       {:on-click #(on-browse-ip-submit app-id %)}
-       "Go"]]
-     [:span (if loading?
-              "LOADLINGLAODIANSDFIASD"
-              "Idle")]]))
+        :on-change #(on-browse-ip-change app-id %)}]]
+     [:div.ra-browse-button
+      (if-not loading?
+        [:button.ui-btn
+         {:on-click #(on-browse-ip-submit app-id %)}
+         "Go"]
+        [:div.ra-browse-button-spinner.ui-spinner-area
+         [:i.fa.fa-spinner.fa-spin]])]]))
 
 ;; Auth ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -45,21 +46,29 @@
   [app-id server-cid]
   (let [loading? (he/subscribe [:web|apps|remote-access|auth|loading? app-id])
         auth-pass (he/subscribe [:web|apps|remote-access|auth|pass app-id])]
-    [:div
-     [:input
-      {:type :text
-       :value "root"
-       :readOnly true}]
-     [:input
-      {:type :text
-       :value auth-pass
-       :on-change #(on-auth-pass-change app-id %)}]
-     [:button
-      {:on-click #(on-auth-submit app-id %)}
-      "Login"]
-     [:span (if loading?
-              "LAODINGAEOFKDSFODFK"
-              "Idle")]]))
+    [:div.ra-auth
+     [:div.ra-auth-login-area
+      [:div.ra-auth-login-username
+       [:input.ui-input
+        {:type :text :value "root" :readOnly true}]]
+      [:div.ra-auth-login-password
+       [:input.ui-input
+        {:type :text
+         :value auth-pass
+         :placeholder "Password"
+         :on-change #(on-auth-pass-change app-id %)}]]]
+     [:div.ra-auth-action-area
+      [:div.ra-auth-action-bruteforce-area
+       [:button.ui-btn.btn-dual
+        {:tip "Start a bruteforce attack to retrieve the server password."}
+        [:i.fas.fa-unlock]
+        [:span "Bruteforce"]]]
+      [:div.ra-auth-action-login-area
+       [:button.ui-btn.btn-dual.btn-primary
+        {:on-click #(on-auth-submit app-id %)
+         :tip "Login to the remote server using the above credentials."}
+        [:i.fas.fa-sign-in-alt]
+        [:span "Login"]]]]]))
 
 ;; Remote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -69,7 +78,7 @@
 
 (defn view-remote
   [app-id server-cid]
-  [:div
+  [:div.ra-remote
    [:button
     {:on-click #(on-remote-app app-id :log-viewer %)}
     "Open Log viewer"]])
@@ -78,9 +87,10 @@
 
 (defn ^:export view
   [app-id server-cid]
-  (let [screen (he/subscribe [:web|apps|remote-access|screen app-id])]
-    (match screen
-           :browse (view-browse-ip app-id server-cid)
-           :auth (view-authentication app-id server-cid)
-           :remote (view-remote app-id server-cid)
-           other (he.error/runtime (str "Invalid screen" other)))))
+  [:div.ra-container
+   (let [screen (he/subscribe [:web|apps|remote-access|screen app-id])]
+     (match screen
+            :browse (view-browse-ip app-id server-cid)
+            :auth (view-authentication app-id server-cid)
+            :remote (view-remote app-id server-cid)
+            other (he.error/runtime (str "Invalid screen" other))))])

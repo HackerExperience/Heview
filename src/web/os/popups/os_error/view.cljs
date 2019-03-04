@@ -51,10 +51,12 @@
   [app-id reason]
   (let [source (he/subscribe [:web|os|popups|os-error|source app-id])
         source-nice-name (match source
-                                :js "Javascript"
+                                :js "Javascript Runtime"
                                 :truss "Assertion"
+                                :match "Match"
+                                :not-implemented "Lazy Developer"
                                 _else "Internal")
-        title (str "he.exe - " source-nice-name " Runtime error")]
+        title (str "he.exe - " source-nice-name " Error")]
     [:div.os-err-header
      (add-header-events app-id)
      [:div.os-err-title title]

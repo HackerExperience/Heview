@@ -33,14 +33,16 @@
      {:db new-gdb
       :dispatch [:game|network|browse-ip server-cid ip callback]})))
 
-(he/reg-event-db
+(he/reg-event-fx
  :web|apps|remote-access|browse|submit|ok
- (fn [gdb [_ _ _ _ [app-id _]]]
-   (as-> (apps.db/get-context gdb) ldb
-     (apps.db/update-db ldb app-id
-                         #(remote-access.db/browse-submit-ok %)
-                         validator)
-     (apps.db/set-context gdb ldb))))
+ (fn [{gdb :db} [_ _ _ _ [app-id _]]]
+   {:db (as-> (apps.db/get-context gdb) ldb
+          (apps.db/update-db ldb app-id
+                             #(remote-access.db/browse-submit-ok %)
+                             validator)
+          (apps.db/set-context gdb ldb))
+    :dispatch-n (list [:web|wm|window|resize app-id {:x 200 :y 160}]
+                      [:web|wm|window|retitle app-id "Login"])}))
 
 (he/reg-event-fx
  :web|apps|remote-access|browse|submit|fail

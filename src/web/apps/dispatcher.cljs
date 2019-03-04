@@ -1,5 +1,6 @@
 (ns web.apps.dispatcher
   (:require [he.dispatch]
+            [web.apps.file-explorer.view]
             [web.apps.log-viewer.view]
             [web.apps.remote-access.view]
             [web.apps.task-manager.view]))

@@ -54,13 +54,15 @@
             el-clock-day (.querySelector root ".hud-st-clock-day")
             el-clock-time (.querySelector root ".hud-st-clock-time")
             now (new js/Date)
-            ms-till-next-minute (* 1000 (- 60 (.getSeconds now)))]
-        (js/setTimeout
-         #(create-clock-interval el-clock-day el-clock-time)
-         ms-till-next-minute)
+            wait (-> now
+                     (.getSeconds)
+                     (* 1000)
+                     (->> (- 60000))
+                     (- (.getMilliseconds now))
+                     (+ 15))]
+        (js/setTimeout #(create-clock-interval el-clock-day el-clock-time) wait)
         (clock-set-day el-clock-day)
-        (clock-set-time el-clock-time)
-        ))}))
+        (clock-set-time el-clock-time)))}))
 
 (defn view []
   [:div#hud-system-tray

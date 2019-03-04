@@ -24,6 +24,15 @@
       {:background-color (ui/color-primary-rgba "0.35")
        :border (str "1px solid" ui/color-primary-lightest)
        :color ui/color-primary-lightest}]]]
+   [:.ui-btn-disabled
+    {:color ui/color-primary
+     :border (str "1px solid " ui/color-primary)
+     :background-color (ui/color-primary-darker-rgba "0.35")
+     :cursor :initial}
+    [:&:hover
+     {:color ui/color-primary
+      :border (str "1px solid " ui/color-primary)
+      :background-color (ui/color-primary-darker-rgba "0.35")}]]
    [:.btn-icon
     {:height "26px"
      :width "40px"
@@ -56,6 +65,7 @@
    [:.btn-primary
     {:background-color (ui/color-primary-light-rgba "0.45")
      :border (str "1px solid" ui/color-primary-lightest)
+     :text-shadow (str "0 0 " ui/color-primary)
      :color ui/color-background}
     [:&:hover
      {:background-color ui/color-primary-light
@@ -64,6 +74,10 @@
    [:.ui-tbl-row
     {:line-height "24px"
      :border "1px solid #eee"}]
+
+   ;; Spinner
+   [:.ui-spinner-area
+    {:cursor :wait}]
 
    ;; Input
    [:.ui-input
@@ -131,6 +145,11 @@
      :z-index 99999
      :opacity 0
      :font-size "12px"
+     :font-family ui/font-family
+     :font-weight :normal
+
+     ;; Fix "blurriness" on chrome
+     "-webkit-backface-visibility" "hidden"
 
      :box-shadow (str
                   "0 0 7px 3px rgba(0,0,0,0.8)"

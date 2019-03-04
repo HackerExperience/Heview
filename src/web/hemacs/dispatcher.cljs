@@ -2,6 +2,7 @@
   (:require [cljs.core.match :refer-macros [match]]
             [web.os.hemacs :as desktop-mode]
             [web.os.popups.confirm.hemacs :as os-confirm-mode]
+            [web.os.popups.os-error.hemacs :as bsod-mode]
             [web.apps.log-viewer.hemacs :as log-viewer-mode]
             [web.apps.log-viewer.popups.log-edit.hemacs :as log-edit-mode]
             [web.apps.task-manager.hemacs :as task-manager-mode]
@@ -14,6 +15,7 @@
    ;; os
    :desktop desktop-mode/process-input
    :os-confirm os-confirm-mode/process-input
+   :os-os-error bsod-mode/process-input
 
    ;; apps
    :log-viewer log-viewer-mode/process-input

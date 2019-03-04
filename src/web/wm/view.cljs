@@ -97,9 +97,8 @@
 
 (defn header-on-mouse-up
   [app-id event]
-  (if (= 0 (.-button event))
-    (he/dispatch [:web|wm|app|on-header-unclick
-                  app-id])))
+  (when (= 0 (.-button event))
+    (he/dispatch [:web|wm|app|on-header-unclick app-id])))
 
 (defn add-header-events
   [app-id]

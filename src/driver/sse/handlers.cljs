@@ -3,8 +3,7 @@
             [com.yetanalytics.sse-fx.event-source :as event-source]
             [he.core :as he]
             [driver.rest.request :as request]
-            [game.db]
-            ))
+            [game.db]))
 
 (event-source/register!)
 
@@ -37,10 +36,10 @@
     (into {}
           (for [[k v] entry]
             [(keyword k)
-             (cond
-               (map? v) (keywordize-keys v)
-               (vector? v) (keywordize-keys v)
-               :else v)]))
+             (if (or (map? v)
+                     (vector? v))
+               (keywordize-keys v)
+               v)]))
     (into []
           (for [v entry]
             (keywordize-keys v)))))
@@ -63,11 +62,6 @@
  :driver|sse|on-error
  (fn [{gdb :db} [_ _ error]]
    (println (str "SSE Error: " error))
-
-   ;; Why request on ping?
-   ;; {:dispatch
-   ;;  [:driver|rest|request "GET" "ping" :simple {} {:on-ok [] :on-error []}]}
-
    {:db gdb}))
 
 (he/reg-event-db

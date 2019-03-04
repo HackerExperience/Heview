@@ -8,7 +8,6 @@
  (fn [[_ server-cid]]
    [(he/subscribed [:game|server|process|entries server-cid])])
  (fn [[entries]]
-   ;(game.server.process.js/reregister-process-timers entries)
    (reduce task-manager.db/group-by-ip-reducer {} entries)))
 
 (rf/reg-sub

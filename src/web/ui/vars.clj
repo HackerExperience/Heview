@@ -87,3 +87,6 @@
 
 (def background-dotie-url
   "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAPSURBVAiZY2CAgEUMMAAABmYAo/1Y364AAAAASUVORK5CYII=')")
+
+(def font-family
+  "'Roboto', sans-serif")

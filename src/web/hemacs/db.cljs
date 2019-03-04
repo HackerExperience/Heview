@@ -214,7 +214,9 @@
   (if (empty? (get-buffer db))
     (-> db
         (set-desktop-mode) ;; TODO: Wrong. Dispatch current mode and ask
-        (assoc :which-key nil))
+        (assoc :which-key nil)
+        (assoc :last-buffer [])
+        (assoc :output nil))
     (-> db
         (empty-buffer)
         (empty-which-key)

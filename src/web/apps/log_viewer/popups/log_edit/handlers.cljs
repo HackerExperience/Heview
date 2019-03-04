@@ -41,6 +41,4 @@
                    "723b,a5c,dc7a,3c13,b040,a511,cabb,4256"
                    "/upload"))
      {:db gdb
-     :dispatch [:game|server|log|edit server-cid [log-id new-log] callback]
-      }
-     )))
+      :dispatch [:game|server|log|edit server-cid [log-id new-log] callback]})))

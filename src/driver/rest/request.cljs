@@ -73,6 +73,8 @@
    {}
    custom))
 
+;; Game > Log
+
 (defn log-forge-edit
   [server-cid [log-id log] custom]
   (build-params
@@ -81,6 +83,28 @@
    {:log_type (:type log)
     :log_data (:data log)}
    custom))
+
+;; Game > Software
+
+(defn software-file-download
+  [target-nip file-id custom]
+  (build-params
+   :post
+   (str "endpoint/" (format-cid target-nip)
+        "/file/" (format-cid file-id) "/download")
+   {}
+   custom))
+
+(defn software-file-upload
+  [target-nip file-id custom]
+  (build-params
+   :post
+   (str "endpoint/" (format-cid target-nip)
+        "/file/" (format-cid file-id) "/upload")
+   {}
+   custom))
+
+;;
 
 (defn server-login
   [server-cid ip password custom]
