@@ -10,6 +10,7 @@
 
 (defn call
   [function-name args]
+  (println function-name)
   (let [fun (js/eval (->js function-name))]
     (apply fun args)))
 

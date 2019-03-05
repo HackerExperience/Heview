@@ -106,21 +106,21 @@
    [render-selected-file-side file]])
 
 (defn on-selected-file-action-click
-  [app-id file-id action-id event]
-  (he/dispatch [:web|apps|file-explorer|file-action app-id file-id action-id])
+  [app-id file-info action-id event]
+  (he/dispatch [:web|apps|file-explorer|file-action app-id file-info action-id])
   (.stopPropagation event))
 
 (defn render-selected-file-action
-  [app-id file-id action-id]
+  [app-id file-info action-id]
   (let [action-info (get file-action-data action-id)]
     [:button.ui-btn.btn-icon
      {:class (:class action-info)
       :tip (:tip action-info)
-      :on-click #(on-selected-file-action-click app-id file-id action-id %)}
+      :on-click #(on-selected-file-action-click app-id file-info action-id %)}
      [:i {:class (:icon action-info)}]]))
 
 (defn render-selected-file-actions
-  [app-id file-id]
+  [app-id file-info]
   (let [context (he/subscribe [:web|apps|context app-id])
         session-id (he/subscribe [:web|wm|active-session])
         session (he/subscribe [:web|wm|current-session])
@@ -129,13 +129,14 @@
                           (not (nil? (:endpoint session))) :upload
                           :else nil)]
     [:div.fe-file-selected-action-area.ui-btn-area-large
-     [render-selected-file-action app-id file-id :execute]
+     [render-selected-file-action app-id file-info :execute]
      (when transfer-action
-       [render-selected-file-action app-id file-id transfer-action])
-     [render-selected-file-action app-id file-id :delete]]))
+       [render-selected-file-action app-id file-info transfer-action])
+     [render-selected-file-action app-id file-info :delete]]))
 
 (defn render-selected-file
   [app-id file-id file]
+  (println file)
   [:div.fe-file-selected
    {:on-click #(on-file-click app-id file-id %)}
    [:div.fe-file-selected-top
@@ -147,7 +148,7 @@
      [:span (:software-name file)]]]
    [render-selected-file-modules file]
    [:div.fe-file-selected-separator]
-   [render-selected-file-actions app-id file-id]])
+   [render-selected-file-actions app-id [(:type file) file-id]]])
 
 (defn render-file-entries
   [app-id server-cid]

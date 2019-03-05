@@ -30,7 +30,13 @@
    {:icon-class "far fa-folder"
     :name "File Explorer"
     :can-display-fn nil
-    :on-click-event [:web|wm|app|open :file-explorer]}])
+    :on-click-event [:web|wm|app|open :file-explorer]}
+
+   {:icon-class "far fa-folder"
+    :name "Cracker (tmp)i"
+    :can-display-fn nil
+    :on-click-event [:web|wm|app|open :software-cracker]}
+   ])
 
 (defn fetch
   [db app-id]
@@ -78,7 +84,7 @@
   ([app]
    (get-in app [:state :other]))
   ([db app-id]
-   (get-state (fetch db app-id))))
+   (get-other-state (fetch db app-id))))
 
 (defn derive-popup-entry
   [app-type popup-info]
@@ -170,7 +176,6 @@
 
 (defn switch-context
   [db app-id new-context-cid]
-  (println "Other cid is" new-context-cid)
   (let [app (fetch db app-id)
         current-state (get-state app)
         other-state (get-other-state app)] ;; TODO: Initialize `other` properly
@@ -178,6 +183,31 @@
       (update-state db other-state app-id)
       (update-other-state db current-state app-id)
       (update-meta-context db app-id app new-context-cid))))
+
+;; Filters
+
+(defn- filter-by-type-reducer
+  [app-type acc [current-app-id current-app]]
+  (let [current-app-type (get-in current-app [:meta :type])]
+    (if (= app-type current-app-type)
+      (conj acc [current-app-id current-app])
+      acc)))
+
+(defn filter-by-type
+  [db app-type]
+  (let [reducer (partial filter-by-type-reducer app-type)]
+    (reduce reducer [] db)))
+
+(defn- filter-by-state-reducer
+  [filter-fn acc [app-id app]]
+  (if (filter-fn (get-in app [:state :current]))
+    (conj acc [app-id app])
+    acc))
+
+(defn filter-by-state
+  [db filter-fn]
+  (let [reducer (partial filter-by-state-reducer filter-fn)]
+    (reduce reducer [] db)))
 
 ;; Query
 

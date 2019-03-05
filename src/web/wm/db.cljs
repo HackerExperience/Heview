@@ -306,7 +306,8 @@
      :length {:x len-x :y len-y}
      :z-index next-z-index
      :config (extract-window-config (:config opts))
-     :seq-id (get-next-seq-id db)}))
+     :seq-id (get-next-seq-id db)
+     :file-id (:file-id opts)}))
 
 (defn add-window-data
   [db app-id opts]

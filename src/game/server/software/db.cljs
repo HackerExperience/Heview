@@ -65,7 +65,68 @@
   [db]
   (:main-storage-id db))
 
+(defn get-best-file-id
+  [db type module-id]
+  (let [type (name type)
+        module-number (if (nil? module-id)
+                        :one
+                        (software.db.type/get-module-number type module-id))
+        storage-id (get-main-storage-id db)]
+    (nth (get-in db [storage-id :cache type module-number]) 0 nil)))
+
+(defn get-best-file
+  [db type module-id]
+  (let [file-id (get-best-file-id db type module-id)
+        storage-id (get-main-storage-id db)]
+    [file-id (get-in db [storage-id :files file-id])]))
+
+(defn search-file
+  "You know the file id and the server ID, but not the storage ID."
+  [db file-id]
+  (get-in db [(get-main-storage-id db) :files file-id]))
+
 ;; Bootstrap
+
+(defn sort-files-index-reducer
+  [files module-number file-id index list-file-id]
+  (let [file (get files file-id)
+        list-file (get files list-file-id)
+        module-id (get-in file [:client-meta :module-meta module-number :id])
+        version (get-in file [:modules module-id :version])
+        list-version (get-in list-file [:modules module-id :version])]
+    (if (<= version list-version)
+      (inc index)
+      (reduced index))))
+
+(defn sort-files
+  [files module-id acc file-id]
+  (let [reducer-fn (partial sort-files-index-reducer files module-id file-id)
+        index (reduce reducer-fn 0 acc)]
+    (he.utils/conj-at-pos index acc file-id)))
+
+(defn bootstrap-cache-reducer
+  [files acc [file-id file]]
+  (let [file-type (:type file)
+        has-two? (get-in file [:client-meta :module-meta :two])
+        {one-entries :one
+         two-entries :two} (get acc file-type {:one [] :two []})
+        new-one-entries (sort-files files :one one-entries file-id)
+        new-two-entries (if-not (nil? has-two?)
+                          (sort-files files :two two-entries file-id)
+                          [])]
+    (assoc acc file-type {:one new-one-entries
+                          :two new-two-entries})))
+
+(defn bootstrap-cache-files
+  "This method creates a cache of all files in the storage. It outputs a map
+  with file type (cracker, log-recover, log-forger etc) as key, and as value a
+  submap with `:one` and `:two` keys, each with a list sorted by primary and
+  secondary modules versions (respectively).
+  In other words: it sorts all files based on the primary and secondary modules
+  versions. This result will be used e.g. by the FileExplorer to display the
+  files in a sorted fashion, without having to re-sort the list every time."
+  [files]
+  (reduce (partial bootstrap-cache-reducer files) {} files))
 
 (defn file-reducer
   [acc file]
@@ -86,7 +147,8 @@
         storage (build-storage (:name storage-data))
         instance-db {:files files
                      :filesystem filesystem
-                     :storage storage}]
+                     :storage storage
+                     :cache (bootstrap-cache-files files)}]
     (merge acc
            (hash-map (he.utils/get-canonical-id storage-id) instance-db))))
 

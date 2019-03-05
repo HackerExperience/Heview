@@ -1,6 +1,7 @@
 (ns game.server.software.subs
   (:require [re-frame.core :as rf]
-            [he.core :as he]))
+            [he.core :as he]
+            [game.server.software.db :as software.db]))
 
 (defn with-software-db-callback
   [[_ server-cid]]
@@ -40,6 +41,12 @@
    (:main-storage-id db)))
 
 (rf/reg-sub
+ :game|server|software|file
+ with-software-db
+ (fn [[db] [_ _ file-id]]
+   (software.db/search-file db file-id)))
+
+(rf/reg-sub
  :game|server|software|storage|info
  with-storage
  (fn [[storage]]
@@ -50,3 +57,9 @@
  with-storage
  (fn [[db]]
    (:files db)))
+
+(rf/reg-sub
+ :game|server|software|storage|cache
+ with-storage
+ (fn [[db]]
+   (:cache db)))

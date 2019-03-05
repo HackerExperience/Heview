@@ -12,14 +12,21 @@
 
 ;; Game
 
-;; Game > Log
+;; Game > Account
+
+(defn ^:export server-password-acquired
+  [[_ account-id] data _]
+  (cljs.pprint/pprint data)
+  [:game|server|password-acquired data])
+
+;; Game > Server > Log
 
 (defn ^:export log-created
   [[_ server-cid] data _meta]
   {:post [(v-event %)]}
   [:game|server|log|on-log-created server-cid data])
 
-;; Game > Process
+;; Game > Server > Process
 
 (defn ^:export top-recalcado
   [[_ server-cid] data _meta]

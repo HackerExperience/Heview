@@ -82,7 +82,7 @@
    ;; Input
    [:.ui-input
     {:border (str "1px solid" ui/color-primary-light)
-     :background ui/color-primary-darkest
+     :background (ui/color-primary-darkest-rgba "0.5")
      :color ui/color-primary-light
      :height "24px"
      :font-size "12px"
@@ -93,7 +93,8 @@
      {:background (ui/color-primary-darker-rgba "0.4")
       :border (str "1px solid" ui/color-primary-lighter)}]
     [:&:focus
-     {:background (ui/color-primary-darker-rgba "0.75")
+     {;:background (ui/color-primary-darker-rgba "0.75")
+      :background ui/color-primary-darkest
       :border (str "1px solid" ui/color-primary-lightest)}]]
 
    ;; Scroll
@@ -118,11 +119,11 @@
    [:.ui-help
     {:display :block
      :margin "0 5px"
-     :padding "3px 2px"
      :font-size "12px"}
     [:i
      {:color ui/color-primary-dark
-      :margin-top "2px"}
+      :margin-top "2px"
+      :padding "3px 2px"}
      [:&:hover
       {:color ui/color-primary}]]]
 
@@ -163,6 +164,52 @@
    ["[tip]:hover::after"
     {:opacity 1
      :transition "opacity 0.5s ease-out"}]
+
+   ;; Tab
+   [:.ui-tab-area
+    {:display :flex
+     :flex-direction :row
+     :min-height "40px"
+     :margin "7px 0"}
+    [:.ui-tab-entry
+     {:display :flex
+      :flex-direction :row
+      :align-items :center
+      :min-width "100px"
+      :padding "0 4px"
+      :justify-content :center
+      :border-bottom (str "1px solid " ui/color-primary-dark)
+      :color ui/color-primary}
+     [:&:hover
+      {:cursor :pointer
+       :color ui/color-primary-light
+       :border-bottom (str "1px solid " ui/color-primary-light)}]
+     [:.ui-tab-entry-icon
+      {:min-width "15px"
+       :text-align :center
+       :font-size "12px"}]
+     [:.ui-tab-entry-text
+      {:margin-left "3px"
+       :font-size "15px"}]]
+    [:.ui-tab-selected
+     {:border-bottom "1px solid transparent"
+      :border-top (str "2px solid " ui/color-primary-light)
+      :border-left (str "1px solid " ui/color-primary-dark)
+      :border-right (str "1px solid " ui/color-primary-dark)
+      :color ui/color-primary-light}
+     [:.ui-tab-entry-icon
+      {:color (ui/color-primary-light-rgba "0.8")}]
+     [:&:hover
+      {:cursor :initial
+       :border-bottom "1px solid transparent"}
+      [:.ui-tab-entry-icon
+       {:color (ui/color-primary-light-rgba "0.8")}]]]
+    [:.ui-tab-pre
+     {:border-bottom (str "1px solid " ui/color-primary-dark)
+      :min-width "10px"}]
+    [:.ui-tab-rest
+     {:flex "1 1"
+      :border-bottom (str "1px solid " ui/color-primary-dark)}]]
 
    ;; Re-com customization
 

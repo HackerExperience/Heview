@@ -29,7 +29,6 @@
 
 (defn build-process
   [process]
-  (cljs.pprint/pprint process)
   {:type (:type process)
    :progress (build-process-progress (:progress process))
    :target-ip (:target_ip process)

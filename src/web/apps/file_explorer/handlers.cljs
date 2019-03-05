@@ -22,17 +22,21 @@
      (apps.db/set-context gdb ldb))))
 
 (defn handle-action-execute
-  [gdb app-id file-id]
-  {:db gdb})
+  [gdb app-id [file-type file-id]]
+  (println file-type)
+  (println (name file-type))
+  (let [software-type (keyword (str "software-" (name file-type)))]
+    (println software-type)
+    {:dispatch [:web|wm|app|open software-type {:file-id file-id}]}))
 
 (defn handle-action-download
-  [gdb app-id file-id]
+  [gdb app-id [_ file-id]]
   (let [wm-db (wm.db/get-context gdb)
         server-cid (wm.db/get-server-cid wm-db :remote)]
     {:dispatch [:game|server|software|download server-cid file-id {}]}))
 
 (defn handle-action-upload
-  [gdb app-id file-id]
+  [gdb app-id [_ file-id]]
   (let [wm-db (wm.db/get-context gdb)
         server-cid (wm.db/get-server-cid wm-db :remote)]
     (when (nil? server-cid)
@@ -40,15 +44,15 @@
     {:dispatch [:game|server|software|upload server-cid file-id {}]}))
 
 (defn handle-action-delete
-  [gdb app-id file-id]
+  [gdb app-id [_ file-id]]
   {:db gdb})
 
 (he/reg-event-fx
  :web|apps|file-explorer|file-action
- (fn [{gdb :db} [_ app-id file-id action-id]]
+ (fn [{gdb :db} [_ app-id file-info action-id]]
    (match action-id
-          :execute (handle-action-execute gdb app-id file-id)
-          :download (handle-action-download gdb app-id file-id)
-          :upload (handle-action-upload gdb app-id file-id)
-          :delete (handle-action-delete gdb app-id file-id)
+          :execute (handle-action-execute gdb app-id file-info)
+          :download (handle-action-download gdb app-id file-info)
+          :upload (handle-action-upload gdb app-id file-info)
+          :delete (handle-action-delete gdb app-id file-info)
           else (he.error/match "File action" else))))

@@ -6,6 +6,34 @@
 
 (def validator (partial v/v v/state))
 
+;; Helix Event Handlers
+
+(defn- password-acquired-reducer
+  [pass apps-db app-id]
+  (apps.db/update-db apps-db app-id
+                     #(remote-access.db/auth-update-pass % pass) nil))
+
+(he/reg-event-fx
+ :web|apps|remote-access|on-password-acquired
+ (fn [{gdb :db} [_ {ip :server_ip pass :password}]]
+   (let [apps-db (apps.db/get-context gdb)
+         open-apps (apps.db/filter-by-type apps-db :remote-access)
+         state-filter #(= (:ip %) ip)
+         relevant-apps (apps.db/filter-by-state open-apps state-filter)
+         relevant-ids (reduce (fn [acc [app-id _]]
+                                (conj acc app-id)) [] relevant-apps)
+         apps-db-reducer (partial password-acquired-reducer pass)
+         new-apps-db (reduce apps-db-reducer apps-db relevant-ids)
+         dispatch-event (if (empty? relevant-ids)
+                          [:web|wm|app|open :remote-access {:screen :auth
+                                                            :ip ip
+                                                            :auth-pass pass}]
+                          [:web|wm|window|focus (first relevant-ids)])]
+     {:db (apps.db/set-context gdb new-apps-db)
+      :dispatch-n (list dispatch-event)})))
+
+;; Requests
+
 ;; Browse ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (he/reg-event-db

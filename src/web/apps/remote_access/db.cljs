@@ -4,28 +4,36 @@
             [web.apps.db :as apps.db]
             [web.apps.remote-access.validators :as v]))
 
-(def open-opts
-  {:len-x 175
-   :len-y 75
-   :config {:title "Browse"
-            :contextable false
-            :show-context false
-            :icon-class "fas fa-network-wired"}})
+(defn open-opts
+  [args]
+  (let [screen (get args :screen :browse)
+        [len-x len-y title] (cond
+                              (= :browse screen) [175 75 "Browse"]
+                              (= :auth screen) [200 160 "Login"])]
+    {:len-x len-x
+     :len-y len-y
+     :config {:title title
+              :contextable false
+              :show-context false
+              :icon-class "fas fa-network-wired"}}))
 
 (defn initial
-  [server-cid]
-  {:server-cid server-cid
-   :screen :browse
-   :ip ""
-   :data-browse {:valid? false
+  [server-cid args]
+  (let [screen (get args :screen :browse)
+        ip (get args :ip "")
+        auth-pass (get args :auth-pass "")]
+    {:server-cid server-cid
+     :screen screen
+     :ip ip
+     :data-browse {:valid? false
+                   :show-validation? false
+                   :loading? false}
+     :data-auth {:valid? false
                  :show-validation? false
+                 :user "root"
+                 :pass auth-pass
                  :loading? false}
-   :data-auth {:valid? false
-               :show-validation? false
-               :user "root"
-               :pass ""
-               :loading? false}
-   :data-remote {}})
+     :data-remote {}}))
 
 ;; Model
 
@@ -40,6 +48,7 @@
 
 (defn update-ip
   [state new-ip]
+  (println "Updating ip")
   (assoc state :ip new-ip))
 
 ;; Transitions
@@ -148,12 +157,13 @@
 ;; WM API
 
 (defn ^:export will-open
-  [_ctx args]
-  [:open-app :remote-access args])
+  [_ctx app-context args]
+  [:open-app :remote-access app-context args])
 (defn ^:export did-open
-  [{wm-db :wm}]
+  [{wm-db :wm} _ args]
+  (println ":args are " args)
   (let [server-cid (wm.db/get-active-session wm-db)]
-    [:ok (initial server-cid) open-opts]))
+    [:ok (initial server-cid args) (open-opts args)]))
 
 (defn ^:export will-close
   [_ctx app-id _state _args]

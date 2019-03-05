@@ -51,8 +51,7 @@
      [:.app-header-icon
       {:color ui/color-primary-light
        :margin-left "10px"
-       :align-self :center
-       }]
+       :align-self :center}]
      [:.app-header-icon-separator
       {:margin-left "6px"
        :margin-right "6px"
@@ -93,6 +92,51 @@
        {:cursor :initial
         :color (ui/color-primary-light-rgba "0.725")
         :border (str "1px solid " ui/color-primary)}]]
+     [:.app-header-file
+      {:display :flex
+       :flex-direction :row
+       :align-items :center
+       :border (str "1px solid " ui/color-secondary)
+       :background (ui/color-secondary-darkest-rgba "0.40")
+       :color ui/color-secondary-light
+       :margin "0 3px"}
+      [:&:hover
+       {:border (str "1px solid " ui/color-secondary-light)
+        :cursor :pointer}
+       [:.app-header-file-name
+        {:color ui/color-secondary-lightest}]
+       [:.app-header-file-selector
+        {:color ui/color-secondary-lightest}]
+       [:.app-header-file-modules
+        [:.app-header-file-module
+         {:color ui/color-secondary-light}]]]
+      [:.app-header-file-name
+       {:font-size "11px"
+        :padding "0 3px"}]
+      [:.app-header-file-modules
+       {:display :flex
+        :flex-direction :column
+        :padding "1px 2px"
+        :min-height "22px"
+        :align-items :center
+        :justify-content :center}
+       [:.app-header-file-module
+        {:display :flex
+         :flex-direction :row-reverse
+         :min-width "39px"
+         :color ui/color-secondary}
+        [:i
+         {:font-size "9px"
+          :width "11px"}]
+        [:span
+         {:font-size "9px"
+          :font-family :monospace
+          }]]]
+      [:.app-header-file-selector
+       {:font-size "12px"
+        :padding "0 1px 0 3px"}
+       [:i
+        {}]]]
      [:.app-header-actions
       {:display :flex
        :z-index 2

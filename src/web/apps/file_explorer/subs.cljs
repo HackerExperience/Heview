@@ -42,10 +42,11 @@
 (rf/reg-sub
  :web|apps|file-explorer|entries
  (fn [[_ app-id server-cid storage-id]]
-   [(he/subscribed [:game|server|software|storage|files server-cid storage-id])
+   [(he/subscribed [:game|server|software|storage|cache server-cid storage-id])
+    (he/subscribed [:game|server|software|storage|files server-cid storage-id])
     (he/subscribed [:web|apps|file-explorer|sort-config app-id])
     (he/subscribed [:web|apps|file-explorer|filter-config app-id])])
- (fn [[source-files sort-config filter-config]]
+ (fn [[files-cache source-files sort-config filter-config]]
    ;; The check below is a performance hack. When closing the File Explorer app,
    ;; the underlying state is set to nil, which triggers this subscription to
    ;; rerun, even though the component that uses this subscription (the app)
@@ -54,4 +55,5 @@
    ;; the subscription would not be triggered at all, but we do not live in such
    ;; ideal world.
    (when-not (nil? sort-config)
-     (file-explorer.db/filter-files filter-config sort-config source-files))))
+     (file-explorer.db/filter-files
+      filter-config sort-config files-cache source-files))))

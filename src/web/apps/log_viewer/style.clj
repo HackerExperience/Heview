@@ -132,7 +132,6 @@
 
 (defn local-style []
   [:.app-type-log-viewer
-   {}
    [:.lv-container
     {:height "100%"
      :display :flex

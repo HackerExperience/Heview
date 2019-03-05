@@ -44,16 +44,36 @@
 
 ;; App ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn- init-other-state
+  "The first time a context is switched, the `other-state` is empty (because by
+  default only the `current-state` is created when the app is opened). This
+  method (`init-other-state`) is called when such scenario exists - the user
+  just switched contexts for the first time. We proceed to actually create the
+  `other-context` as if the app was just openning (hence the `did-open` method
+  from the Windowable API).
+  Subsequent context switches do not trigger this method, as `other-state` is
+  now set to something valid."
+  [gdb app-db app-id {app-type :type} app-context]
+  (let [[_ state _] (wm.windowable/did-open app-type (ctx gdb) app-context [])]
+    (apps.db/update-state app-db state app-id)))
+
 (he/reg-event-db
  :web|wm|app|switch-context
  (fn [gdb [_ app-id]]
    (let [wm-db (wm.db/get-context gdb)
          app-db (apps.db/get-context gdb)
+         app-meta (apps.db/get-meta app-db app-id)
          app-context (apps.db/get-app-context app-db app-id)
+         other-context (apps.db/get-other-context app-db app-id)
+         other-state (apps.db/get-other-state app-db app-id)
          other-context-cid (wm.db/get-other-server-cid wm-db app-context)
          _ (when (nil? other-context-cid)
              (he.error/runtime "Shouldn't be able to switch context"))
-         new-app-db (apps.db/switch-context app-db app-id other-context-cid)]
+         new-app-db (apps.db/switch-context app-db app-id other-context-cid)
+         new-app-db (if (nil? other-state)
+                      (init-other-state
+                       gdb new-app-db app-id app-meta other-context)
+                      new-app-db)]
      (apps.db/set-context gdb new-app-db))))
 
 ;; WM ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -89,13 +109,13 @@
 
 (he/reg-event-fx
  :web|wm|app|open
- (fn [{gdb :db} [_ app-type app-context]]
+ (fn [{gdb :db} [_ app-type args app-context]]
    (let [app-context (if (nil? app-context)
                        (as-> (wm.db/get-context gdb) ldb
                          (wm.db/get-active-session-context ldb))
                        app-context)]
      (dispatch-perform
-      (wm.windowable/will-open app-type (ctx gdb) app-context)))))
+      (wm.windowable/will-open app-type (ctx gdb) app-context args)))))
 
 (defn- proceed-open-popup
   [ctx [app-type popup-type parent-id args xargs]]
@@ -209,6 +229,7 @@
 
 (defn- on-open-ok
   [gdb app-type state opts popup-info app-context]
+  (println "Open opts are " opts)
   (let [ldb-app (apps.db/get-context gdb)
         ldb-wm (wm.db/get-context gdb)
 
@@ -227,8 +248,8 @@
     {:db new-gdb}))
 
 (defn- perform-open-app
-  [gdb [app-type app-context]]
-  (match (wm.windowable/did-open app-type (ctx gdb) app-context)
+  [gdb [app-type app-context args]]
+  (match (wm.windowable/did-open app-type (ctx gdb) app-context args)
          [:ok state opts] (on-open-ok gdb app-type state opts nil app-context)
          [:error reason] {:db gdb
                           :dispatch [:web|wm|app|open-failed reason]}))

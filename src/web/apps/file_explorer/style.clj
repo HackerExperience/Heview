@@ -9,8 +9,7 @@
     :display :flex
     :flex-direction :row
     :align-items :center
-    :padding "0 5px"
-    }
+    :padding "0 5px"}
    [:.fe-flag-area
     {:flex "1 1"
      :display :flex
@@ -58,8 +57,11 @@
    [:.fe-flat-view
     {:display :flex
      :flex-direction :column
-     :padding "5px"
+     :padding "5px 0 5px 5px"
      :height "100%"}]
+   [:.fe-file-entries
+    {:overflow :auto
+     :padding "0 5px 0 0"}]
    [:.fe-file
     {:display :flex
      :flex-direction :row

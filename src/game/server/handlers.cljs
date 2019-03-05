@@ -5,6 +5,15 @@
             [game.server.software.handlers]
             [game.server.requests :as server.requests]))
 
+;; Helix Event handlers
+
+(he/reg-event-fx
+ :game|server|password-acquired
+ (fn [_ [_ data]]
+   {:dispatch [:web|apps|remote-access|on-password-acquired data]}))
+
+;; Requests
+
 (he/reg-event-fx
  :game|server|login
  (fn [{gdb :db} [_ server-cid ip pass callback]]

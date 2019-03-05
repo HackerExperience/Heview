@@ -71,6 +71,12 @@
  (fn [[window]]
    (:seq-id window)))
 
+(rf/reg-sub
+ :web|wm|window|file-id
+ with-window-data
+ (fn [[window]]
+   (:file-id window)))
+
 ;; Session ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn with-session-data-callback

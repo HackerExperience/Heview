@@ -42,10 +42,15 @@
   [app-id _]
   (he/dispatch [:web|apps|remote-access|auth|submit app-id]))
 
+(defn on-auth-bruteforce
+  [app-id ip _]
+  (he/dispatch [:web|wm|app|open :software-cracker {:ip ip}]))
+
 (defn view-authentication
   [app-id server-cid]
   (let [loading? (he/subscribe [:web|apps|remote-access|auth|loading? app-id])
-        auth-pass (he/subscribe [:web|apps|remote-access|auth|pass app-id])]
+        auth-pass (he/subscribe [:web|apps|remote-access|auth|pass app-id])
+        ip (he/subscribe [:web|apps|remote-access|ip app-id])]
     [:div.ra-auth
      [:div.ra-auth-login-area
       [:div.ra-auth-login-username
@@ -60,7 +65,8 @@
      [:div.ra-auth-action-area
       [:div.ra-auth-action-bruteforce-area
        [:button.ui-btn.btn-dual
-        {:tip "Start a bruteforce attack to retrieve the server password."}
+        {:tip "Start a bruteforce attack to retrieve the server password."
+         :on-click #(on-auth-bruteforce app-id ip %)}
         [:i.fas.fa-unlock]
         [:span "Bruteforce"]]]
       [:div.ra-auth-action-login-area
@@ -74,7 +80,7 @@
 
 (defn on-remote-app
   [app-id app-type event]
-  (he/dispatch [:web|wm|app|open app-type :remote]))
+  (he/dispatch [:web|wm|app|open app-type [] :remote]))
 
 (defn view-remote
   [app-id server-cid]

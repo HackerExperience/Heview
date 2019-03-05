@@ -23,9 +23,17 @@
    :task-manager task-manager-mode/process-input
    })
 
+(defn- get-software-name
+  [app-type]
+  (let [[_ & type-suffix] (.split app-type "-")]
+    (clojure.string/join "-" type-suffix)))
+
 (defn- get-path-app
   [app-type]
-  (str "web.apps." (name app-type) ".hemacs"))
+  (let [app-type-str (name app-type)]
+    (if (.test #"software-" app-type-str)
+      (str "web.apps.software." (get-software-name app-type-str) ".hemacs")
+      (str "web.apps." app-type-str ".hemacs"))))
 
 (defn- get-path-popup
   [popup-app popup-type]

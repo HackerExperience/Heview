@@ -9,6 +9,8 @@
 
 (defn walk-ok-btn
   [app-id]
+  (println "Walking OK btn")
+  (println app-id)
   (let [el-app (hemacs/walk-app app-id)
         el-footer (.querySelector el-app ".os-err-footer")]
     (.querySelector el-footer "button")))
@@ -20,6 +22,7 @@
 ;; process-input
 
 (defn process-input
-  [_ _ {app-id :app-id} _]
+  [_ b {app-id :app-id} _]
+  (println b)
   (hemacs/dom-click (walk-ok-btn app-id))
   (hemacs/exact-match))

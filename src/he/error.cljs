@@ -3,7 +3,8 @@
 ;; Internal errors
 
 (defn log-stacktrace []
-  (.trace js/console))
+  ;; (.trace js/console)
+  )
 
 (defn dispatch-global-event
   [event detail-data]

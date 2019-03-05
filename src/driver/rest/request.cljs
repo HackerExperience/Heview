@@ -104,6 +104,15 @@
    {}
    custom))
 
+(defn software-bruteforce
+  [gateway-id target-ip custom]
+  (build-params
+   :post
+   (str "gateway/" (format-cid gateway-id)
+        "/bruteforce/" (format-nip "::" target-ip))
+   {}
+   custom))
+
 ;;
 
 (defn server-login

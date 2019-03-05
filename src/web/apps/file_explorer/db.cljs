@@ -40,16 +40,10 @@
   [file]
   (merge
    (:client-meta file)
-   {:modules (:modules file)
+   {:type (:type file)
+    :modules (:modules file)
     :size (:display-size file)
     :license (:license file)}))
-
-(defn- reducer-filter
-  [filter-fn sort-fn acc [file-id file]]
-  (let [file-type (:type file)
-        type-entries (get acc file-type [])
-        new-type-entries (sort-fn type-entries [file-id (format-display file)])]
-    (assoc acc file-type new-type-entries)))
 
 (defn- filter-fn
   [filter-config file]
@@ -58,20 +52,6 @@
     (do
       (println "Todo")
       false)))
-
-(defn- index-module-reducer
-  [module-number current-file index [_ list-file]]
-  (let [module-id (get-in current-file [:module-meta module-number :id])
-        current-version (get-in current-file [:modules module-id :version])
-        file-version (get-in list-file [:modules module-id :version])]
-    (if (<= current-version file-version)
-      (inc index)
-      (reduced index))))
-
-(defn- sort-by-module
-  [module-id acc [file-id file]]
-  (let [index (reduce (partial index-module-reducer module-id file) 0 acc)]
-    (he.utils/conj-at-pos index acc [file-id file])))
 
 (defn- index-alphabet-reducer
   [compare-fn current-file index [_ list-file]]
@@ -85,12 +65,17 @@
     (he.utils/conj-at-pos index acc [file-id file])))
 
 (defn- sort-fn
-  [sort-config acc [file-id file]]
+  "Modules are already sorted, since the file input is the one from the software
+  cache. On the other hand, if the user wants to sort files alphabetically, we
+  have to sort here, hence the reducer."
+  [files sort-config {entries-one :one entries-two :two}]
   (match (:sort-order sort-config)
-         :module-one (sort-by-module :one acc [file-id file])
-         :module-two (sort-by-module :two acc [file-id file])
-         :az-asc (sort-alphabetically > acc [file-id file])
-         :az-desc (sort-alphabetically < acc [file-id file])
+         :module-one entries-one
+         :module-two (if (empty? entries-two)
+                       entries-one
+                       entries-two)
+         :az-asc (reduce (partial sort-alphabetically >) [] entries-one)
+         :az-desc (reduce (partial sort-alphabetically <) [] entries-one)
          else (he.error/match "Sort fn" else)))
 
 (defn- post-sort-fn-reducer
@@ -103,6 +88,28 @@
         files (reduce reducer-fn [] software.db.type/software-types)]
     ;; Flatten outtermost level only
     (apply concat files)))
+
+(defn reducer-filter
+  [files filter-fn sort-fn files-map [type entries]]
+  (let [new-entries (sort-fn entries)]
+    (assoc files-map type new-entries)))
+
+(defn map-entries
+  [files entries]
+  (map (fn [file-id] [file-id (format-display (get files file-id))]) entries))
+
+(defn map-cache-reducer
+  [files new-cache [type {entries-one :one entries-two :two}]]
+  (merge new-cache
+         (hash-map type {:one (map-entries files entries-one)
+                         :two (map-entries files entries-two)})))
+
+(defn map-cache
+  "By default, the cache only contains file IDs. Here, we replace these IDs with
+  [File.ID File.t]. That's all we do, while keeping the same cache structure (a
+  map with `$software-type` as key and the `:one`/`:two` submap.)"
+  [files cache]
+  (reduce (partial map-cache-reducer files) {} cache))
 
 (defn filter-files
   "Filters and sorts the files that will be shown at the File Explorer app.
@@ -119,12 +126,15 @@
   which is: all files of the same type are grouped together. And any custom sort
   configurations must obey to this implicit rule. In other words: even if the
   user wants to sort files alphabetically, they will be sorted alphabetically
-  *grouped by their file types*. It is not a 'global' sort."
-  [filter-config sort-config source-files]
-  (let [partial-filter-fn (partial filter-fn filter-config)
-        partial-sort-fn (partial sort-fn sort-config)]
-    (-> (partial reducer-filter partial-filter-fn partial-sort-fn)
-        (reduce {} source-files)
+  *grouped by their file types*. It is not a 'global' sort.
+  By default, the `files-cache` map already contains sorted lists of modules.
+  That's why there's no sorting of modules here; they are already sorted at the
+  cache level."
+  [filter-config sort-config files-cache source-files]
+  (let [files-cache (map-cache source-files files-cache)
+        partial-sort-fn (partial sort-fn source-files sort-config)]
+    (-> (partial reducer-filter source-files nil partial-sort-fn)
+        (reduce {} files-cache)
         (post-sort-fn))))
 
 ;; Events API

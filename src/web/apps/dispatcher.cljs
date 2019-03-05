@@ -1,15 +1,26 @@
 (ns web.apps.dispatcher
   (:require [he.dispatch]
+            [web.apps.software.view]
             [web.apps.file-explorer.view]
             [web.apps.log-viewer.view]
             [web.apps.remote-access.view]
             [web.apps.task-manager.view]))
 
+(defn- get-software-name
+  [app-type]
+  (let [[_ & type-suffix] (.split (name app-type) "-")]
+    (clojure.string/join "-" type-suffix)))
+
+(defn- get-app-software-prefix
+  [app-type]
+  (str "web.apps.software." (get-software-name app-type)))
+
 (defn- get-app-prefix
   [app-type]
-  (if (= app-type :os)
-    "web.os.popups"
-    (str "web.apps." (name app-type))))
+  (cond
+    (= app-type :os) "web.os.popups"
+    (.test #"software-" (str app-type)) (get-app-software-prefix app-type)
+    :else (str "web.apps." (name app-type))))
 
 (defn dispatch-db
   [app-type fun & args]
@@ -18,7 +29,7 @@
 
 (defn dispatch-view
   [app-type & args]
-  (he.dispatch/call (str "web.apps." (name app-type) ".view/view") args))
+  (he.dispatch/call (str (get-app-prefix app-type) ".view/view") args))
 
 (defn dispatch-full-view
   [app-type & args]

@@ -105,6 +105,35 @@
   {:on-mouse-down (partial header-on-mouse-down app-id)
    :on-mouse-up (partial header-on-mouse-up app-id)})
 
+(defn header-file-module
+  [module-number file]
+  (let [module-info (get-in file [:client-meta :module-meta module-number])
+        version (get-in file [:modules (:id module-info) :display-version])]
+    (when-not (nil? module-info)
+      [:div.app-header-file-module
+       [:span version]
+       [:i {:class (:icon module-info)}]])))
+
+(defn header-file
+  [app-id config file-id]
+  (let [server-cid (he/subscribe [:web|wm|active-session])
+        file (he/subscribe [:game|server|software|file server-cid file-id])]
+    [:div.app-header-file
+     [:div.app-header-file-selector
+      [:i.fas.fa-caret-down]]
+     [:div.app-header-file-name
+      [:span (:name file)]]
+     [:div.app-header-file-modules
+      [header-file-module :one file]
+      [header-file-module :two file]]]))
+
+(defn header-app-context
+  [app-id config]
+  (let [file-id (he/subscribe [:web|wm|window|file-id app-id])]
+    (if (nil? file-id)
+      [header-context-switch app-id config]
+      [header-file app-id config file-id])))
+
 (defn render-app-header
   [app-id]
   (let [config (he/subscribe [:web|wm|window|config app-id])
@@ -116,7 +145,7 @@
      [header-icon config]
      [:div.app-header-icon-separator]
      [header-title config]
-     [header-context-switch app-id config]
+     [header-app-context app-id config]
      [header-actions app-id config]]))
 
 (defn render-app-body
@@ -183,8 +212,3 @@
      [window-tracker]
      (for [app-id apps]
        ^{:key app-id} [render-app app-id])]))
-
-;; (defn view
-;;   []
-;;   (let [session-id (he/subscribe [:web|wm|active-session])]
-;;     [render-session session-id]))
