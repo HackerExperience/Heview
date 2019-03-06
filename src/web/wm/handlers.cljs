@@ -19,11 +19,19 @@
 
 (defn- wrap-perform
   [result]
-  [:web|wm|perform result])
+  (if (vector? result)
+    [:web|wm|perform result]
+    (reduce (fn [acc x] (conj acc (wrap-perform x))) () result)))
 
 (defn- dispatch-perform
   [result]
-  {:dispatch (wrap-perform result)})
+  (println "Dispatching perform")
+  (cond
+    (vector? result) {:dispatch (wrap-perform result)}
+    (seq? result) {:dispatch-n (wrap-perform result)}
+    :else (do
+           (he.error/match "Invalid WM Handler result" result)
+           {:dispatch [:dev|null]})))
 
 (defn- ignore-with-warning
   [gdb warning-atom]

@@ -31,6 +31,10 @@
     :name "File Explorer"
     :can-display-fn nil
     :on-click-event [:web|wm|app|open :file-explorer]}
+   {:icon-class "fab fa-firefox"
+    :name "Web Browser"
+    :can-display-fn nil
+    :on-click-event [:web|wm|app|open :browser]}
 
    {:icon-class "far fa-folder"
     :name "Cracker (tmp)i"
@@ -178,7 +182,7 @@
   [db app-id new-context-cid]
   (let [app (fetch db app-id)
         current-state (get-state app)
-        other-state (get-other-state app)] ;; TODO: Initialize `other` properly
+        other-state (get-other-state app)]
     (as-> db db
       (update-state db other-state app-id)
       (update-other-state db current-state app-id)
@@ -252,3 +256,38 @@
   (-> db
       (remove-child app-id)
       (he.utils/dissoc-in [app-id])))
+
+;; Windowable API (Default) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn ^:export default-will-open
+  [app-type [_ctx app-context args]]
+  [:open-app app-type app-context args])
+(defn ^:export default-did-open
+  [_ [_ctx _app-context _args]]
+  [:ok {} {}])
+
+(defn ^:export default-will-close
+  [_app-type [_ctx app-id _state _args]]
+  [:close-app app-id])
+(defn ^:export default-did-close
+  [_app-type [_ctx _app-id _state _args]]
+  [:ok])
+
+(defn ^:export default-will-focus
+  [_app-type [_ctx app-id _state _args]]
+  [:focus app-id])
+(defn ^:export default-did-focus
+  [_]
+  [:ok])
+
+;; Windowable API (Default) > Popup handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn ^:export popup-may-open
+  [app-type [_ popup-type parent-id args]]
+  [:open-popup app-type popup-type parent-id args])
+(defn ^:export default-popup-may-close
+  [app-type [_ctx popup-type family-ids _state args]]
+  [:close-popup app-type popup-type family-ids args])
+(defn ^:export default-popup-may-focus
+  [app-type [_ctx popup-type family-ids _state args]]
+  [:focus-popup app-type popup-type family-ids args])

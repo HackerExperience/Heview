@@ -34,4 +34,26 @@
      :-moz-user-select :none
      :-ms-user-select :none
      :user-select :none}
-    [(popups.style/local-style)]]])
+    [(popups.style/local-style)]]
+   [:#os-bsod
+    {:position :fixed
+     :min-height "100%"
+     :width "100%"
+     :background "#0000aa"
+     :color "#fff"
+     :font-family "'courier', 'Roboto'"
+     :font-size "12pt"
+     :text-align :center}
+    [:.os-bsod-container
+     {:margin "150px 20%"
+      :font-weight :bold}]
+    [:.os-bsod-title
+     {:padding "2px 8px"
+      :background "#fff"
+      :color "#0000aa"
+      :font-weight :bold}]
+    [:p
+     {:text-align :left
+      :margin "0 0"}]
+    [:p.top
+     {:margin-top "30px"}]]])

@@ -39,7 +39,8 @@
 
 (defn ^:export popup-will-close
   [_ctx [parent-id _app-id] _state args xargs]
-  [:close-popup :os :confirm [parent-id _app-id] args])
+  (list [:close-popup :os :confirm [parent-id _app-id] args]
+        [:focus parent-id]))
 (defn ^:export popup-did-close
   [_ctx _family-ids _state _args _xargs]
   [:ok])

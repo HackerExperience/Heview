@@ -2,6 +2,7 @@
   (:require [garden.core :refer [css]]
             [web.ui.vars :as ui]
             [web.apps.software.style :as software.style]
+            [web.apps.browser.style :as br.style]
             [web.apps.file-explorer.style :as fe.style]
             [web.apps.log-viewer.style :as lv.style]
             [web.apps.log-viewer.popups.style :as lv.popups.style]
@@ -10,6 +11,7 @@
 
 (defn local-style []
   [(software.style/local-style)
+   (br.style/local-style)
    (fe.style/local-style)
    (lv.style/local-style)
    (lv.popups.style/local-style)

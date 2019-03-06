@@ -19,7 +19,9 @@
 
 (defn on-os-runtime-error
   [event]
-  (he/dispatch [:web|os|error|runtime (.-detail event)]))
+  ;; TODO: Show `web.wm.validators` error once (and only once)
+  (when-not (.test #"web.wm.validators:" (.-detail event))
+    (he/dispatch [:web|os|error|runtime (.-detail event)])))
 (defonce named-on-os-runtime-error
   #(on-os-runtime-error %))
 

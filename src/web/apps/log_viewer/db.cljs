@@ -48,26 +48,9 @@
 
 ;; WM API
 
-(defn ^:export will-open
-  [_ctx app-context]
-  [:open-app :log-viewer app-context])
 (defn ^:export did-open
   [_ctx app-context]
   [:ok (initial) open-opts])
-
-(defn ^:export will-close
-  [_ctx app-id _state _args]
-  [:close-app app-id])
-(defn ^:export did-close
-  [_ctx _app-id _state _args]
-  [:ok])
-
-(defn ^:export will-focus
-  [_ctx app-id _state _args]
-  [:focus app-id])
-(defn ^:export did-focus
-  [_]
-  [:ok])
 
 ;; Popup handlers
 
@@ -80,9 +63,3 @@
   (match [popup-type]
          [:log-edit] (log-edit-may-open ctx parent-id args)
          [_] [:open-popup :log-viewer popup-type parent-id args]))
-(defn ^:export popup-may-close
-  [_ctx popup-type family-ids _state args]
-  [:close-popup :log-viewer popup-type family-ids args])
-(defn ^:export popup-may-focus
-  [_ctx popup-type family-ids _state args]
-  [:focus-popup :log-viewer popup-type family-ids args])

@@ -1,6 +1,7 @@
 (ns web.apps.dispatcher
   (:require [he.dispatch]
             [web.apps.software.view]
+            [web.apps.browser.view]
             [web.apps.file-explorer.view]
             [web.apps.log-viewer.view]
             [web.apps.remote-access.view]
@@ -22,10 +23,17 @@
     (.test #"software-" (str app-type)) (get-app-software-prefix app-type)
     :else (str "web.apps." (name app-type))))
 
+(defn- dispatch-db-default
+  [app-type fun args]
+  (he.dispatch/call (str "web.apps.db/default-" (name fun)) [app-type args]))
+
 (defn dispatch-db
   [app-type fun & args]
-  (he.dispatch/call (str (get-app-prefix app-type) ".db/" (name fun))
-                    (apply conj args)))
+  (let [fun-path (str (get-app-prefix app-type) ".db/" (name fun))
+        fun-args (apply conj args)]
+    (if (he.dispatch/function-exists? fun-path)
+      (he.dispatch/call fun-path fun-args)
+      (dispatch-db-default app-type fun fun-args))))
 
 (defn dispatch-view
   [app-type & args]

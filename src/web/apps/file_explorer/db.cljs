@@ -151,38 +151,9 @@
 
 ;; WM API
 
-(defn ^:export will-open
-  [_ctx app-context]
-  [:open-app :file-explorer app-context])
 (defn ^:export did-open
   [{game-db :game wm-db :wm} app-context]
   (let [server-cid (wm.db/get-server-cid wm-db app-context)
         software-db (software.db/get-context-game game-db server-cid)
         main-storage-id (software.db/get-main-storage-id software-db)]
     [:ok (initial main-storage-id) open-opts]))
-
-(defn ^:export will-close
-  [_ctx app-id _state _args]
-  [:close-app app-id])
-(defn ^:export did-close
-  [_ctx _app-id _state _args]
-  [:ok])
-
-(defn ^:export will-focus
-  [_ctx app-id _state _args]
-  [:focus app-id])
-(defn ^:export did-focus
-  [_]
-  [:ok])
-
-;; Popup handlers
-
-(defn ^:export popup-may-open
-  [_ popup-type parent-id args]
-  [:open-popup :file-explorer popup-type parent-id args])
-(defn ^:export popup-may-close
-  [_ctx popup-type family-ids _state args]
-  [:close-popup :file-explorer popup-type family-ids args])
-(defn ^:export popup-may-focus
-  [_ctx popup-type family-ids _state args]
-  [:focus-popup :file-explorer popup-type family-ids args])

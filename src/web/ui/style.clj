@@ -175,9 +175,11 @@
      {:display :flex
       :flex-direction :row
       :align-items :center
-      :min-width "100px"
-      :padding "0 4px"
+      :padding "0 10px"
       :justify-content :center
+      :border-top "2px solid transparent"
+      :border-left "1px solid transparent"
+      :border-right "1px solid transparent"
       :border-bottom (str "1px solid " ui/color-primary-dark)
       :color ui/color-primary}
      [:&:hover

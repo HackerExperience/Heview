@@ -50,3 +50,15 @@
         after (into [] after)]
     (let [nested-vector (vector before [element] after)]
       (apply concat nested-vector))))
+
+;; Taken from https://stackoverflow.com/a/41029103
+(defn dumpjs
+  [obj]
+  (if (goog.isObject obj)
+    (-> (fn [result key]
+          (let [v (goog.object/get obj key)]
+            (if (= "function" (goog/typeOf v))
+              result
+              (assoc result key (dumpjs v)))))
+        (reduce {} (.getKeys goog/object obj)))
+    obj))

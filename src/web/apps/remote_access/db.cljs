@@ -48,7 +48,6 @@
 
 (defn update-ip
   [state new-ip]
-  (println "Updating ip")
   (assoc state :ip new-ip))
 
 ;; Transitions
@@ -156,21 +155,11 @@
 
 ;; WM API
 
-(defn ^:export will-open
-  [_ctx app-context args]
-  [:open-app :remote-access app-context args])
 (defn ^:export did-open
   [{wm-db :wm} _ args]
   (println ":args are " args)
   (let [server-cid (wm.db/get-active-session wm-db)]
     [:ok (initial server-cid args) (open-opts args)]))
-
-(defn ^:export will-close
-  [_ctx app-id _state _args]
-  [:close-app app-id])
-(defn ^:export did-close
-  [_ctx _app-id _state _args]
-  [:ok])
 
 (defn ^:export will-focus
   [{app-db :app} app-id _state _args]
@@ -179,6 +168,3 @@
     (if-not blocking-popup-id
       [:focus app-id]
       [:vibrate-focus blocking-popup-id {:subfocus app-id}])))
-(defn ^:export did-focus
-  [_ctx _app-id _state _args]
-  [:ok])

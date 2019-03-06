@@ -48,20 +48,6 @@
              arg-ip)]
     [:ok (initial ip) (open-opts file-id)]))
 
-(defn ^:export will-close
-  [_ctx app-id _state _args]
-  [:close-app app-id])
-(defn ^:export did-close
-  [_ctx _app-id _state _args]
-  [:ok])
-
-(defn ^:export will-focus
-  [_ctx app-id _state _args]
-  [:focus app-id])
-(defn ^:export did-focus
-  [_]
-  [:ok])
-
 ;; Popup handlers
 
 (defn ^:export popup-may-open

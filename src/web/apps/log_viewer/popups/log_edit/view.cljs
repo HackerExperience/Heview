@@ -16,6 +16,7 @@
   [app-id]
   (let [dropdown-map (he/subscribe [:game|server|log|dropdown-map])
         log-type (he/subscribe [:web|apps|log-viewer|log-edit|log|type app-id])]
+    (cljs.pprint/pprint dropdown-map)
     [single-dropdown
      :choices dropdown-map
      :width "250px"

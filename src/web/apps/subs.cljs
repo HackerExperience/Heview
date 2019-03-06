@@ -2,6 +2,7 @@
   (:require [re-frame.core :as rf]
             [he.core :as he]
             [web.apps.software.subs]
+            [web.apps.browser.subs]
             [web.apps.file-explorer.subs]
             [web.apps.log-viewer.subs]
             [web.apps.remote-access.subs]

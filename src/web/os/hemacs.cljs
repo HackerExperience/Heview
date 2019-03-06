@@ -10,10 +10,14 @@
 (defn input-a [_]
   (hemacs/multiple-match
    {"fe" "file explorer"
+    "b" "browser"
     "l" "log viewer"
     "t" "task manager"
     "r" "remote access"}
    {"fw" "firewall"}))
+
+(defn input-ab [_]
+  (hemacs/exact-match [:web|wm|app|open :browser]))
 
 (defn input-af [_]
   (hemacs/multiple-match
@@ -66,6 +70,7 @@
     (match buffer
            ["Space"] (input-spc args)
            ["Space" "a"] (input-a args)
+           ["Space" "a" "b"] (input-ab args)
            ["Space" "a" "f"] (input-af args)
            ["Space" "a" "f" "e"] (input-afe args)
            ["Space" "a" "l"] (input-al args)

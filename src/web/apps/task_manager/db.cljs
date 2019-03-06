@@ -47,39 +47,6 @@
 
 ;; WM API
 
-(defn ^:export will-open
-  [_ctx app-context]
-  [:open-app :task-manager app-context])
 (defn ^:export did-open
   [_ctx app-context]
   [:ok (initial) open-opts])
-
-(defn ^:export will-close
-  [_ctx app-id _state _args]
-  [:close-app app-id])
-(defn ^:export did-close
-  [_ctx _app-id _state _args]
-  [:ok])
-
-(defn ^:export will-focus
-  [_ctx app-id _state _args]
-  [:focus app-id])
-(defn ^:export did-focus
-  [_]
-  [:ok])
-
-;; Popup handlers
-
-(defn log-edit-may-open
-  [ctx parent-id args]
-  [:open-popup :task-manager :log-edit parent-id args])
-
-(defn ^:export popup-may-open
-  [ctx popup-type parent-id args]
-  [:open-popup :task-manager popup-type parent-id args])
-(defn ^:export popup-may-close
-  [_ctx popup-type family-ids _state args]
-  [:close-popup :task-manager popup-type family-ids args])
-(defn ^:export popup-may-focus
-  [_ctx popup-type family-ids _state args]
-  [:focus-popup :task-manager popup-type family-ids args])

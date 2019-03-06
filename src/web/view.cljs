@@ -3,6 +3,7 @@
             [he.core :as he]
             [boot.view]
             [web.os.view :as os.view]
+            [web.os.view.bsod :as os.bsod.view]
             [web.home.view :as home.view]
             [web.lock.view :as lock.view]))
 
@@ -19,7 +20,7 @@
   (os.view/view))
 
 (defn error-view []
-  [:div "Error"])
+  (os.bsod.view/view))
 
 (defn view []
   (let [state (he/subscribe [:core|state])]

@@ -43,12 +43,13 @@
                    "This is usually our fault, sorry!")
     (= s 403) (str "You are not authorized to perform this action now")
     (<= 500 s 599) (str "Internal server error. This is our fault, sorry!")
-    (>= s 600) (str "Request was denied, but the reason wasn't specified. #" s)
+    (<= 600 s 699) (str "Request was denied, but no reason was specified. #" s)
     :else (str "Unknown error #" s)))
 
 (defn generic-response-config
   [status text-fn parent-id]
-  (let [text-caller (text-fn status)
+  (let [text-caller (when-not (nil? text-fn)
+                      text-fn status)
         text (if (nil? text-caller)
                (base-game-error-messages status)
                text-caller)]

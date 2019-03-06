@@ -69,7 +69,7 @@
     [render-overflow app-id]
     [render-bruteforce app-id]))
 
-(defn ^:export on-tab-click
+(defn on-tab-click
   [app-id tab-id _event]
   (he/dispatch [:web|apps|software|cracker|set-tab app-id tab-id]))
 
@@ -80,8 +80,6 @@
 
 (defn ^:export view
   [app-id server-cid file-id]
-  (println app-id server-cid)
-  (println file-id)
   (let [active-tab (he/subscribe [:web|apps|software|cracker|tab app-id])]
     [:div.crc-container
      [render-header app-id active-tab]
