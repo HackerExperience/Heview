@@ -46,7 +46,7 @@
 
 (defn bootstrap-server
   [gdb full-bootstrap]
-  (cljs.pprint/pprint full-bootstrap)
+  ;; (cljs.pprint/pprint full-bootstrap)
   (as-> (server.db/get-context gdb) server-db
     (reduce bootstrap-server-reducer server-db (:servers full-bootstrap))
     (server.db/set-context gdb server-db)))

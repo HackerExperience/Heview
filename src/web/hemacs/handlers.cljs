@@ -51,6 +51,21 @@
      (hemacs.db/set-context gdb ldb))))
 
 (he/reg-event-db
+ :web|hemacs|dropdown-mounted
+ (fn [gdb [_ dropdown-id]]
+   (as-> (hemacs.db/get-context gdb) ldb
+     (hemacs.db/dropdown-mounted ldb dropdown-id)
+     (hemacs.db/set-context gdb ldb))))
+
+(he/reg-event-db
+ :web|hemacs|dropdown-unmounted
+ (fn [gdb _]
+   (as-> (hemacs.db/get-context gdb) ldb
+     (hemacs.db/dropdown-unmounted ldb)
+     (hemacs.db/set-context gdb ldb))))
+
+
+(he/reg-event-db
  :web|hemacs|bootstrap
  (fn [gdb _]
    (hemacs.db/set-context gdb (hemacs.db/bootstrap))))

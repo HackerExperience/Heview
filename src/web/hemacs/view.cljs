@@ -45,6 +45,7 @@
 
 (defn render-minibuffer []
   (let [mode-name (he/subscribe [:web|hemacs|mode|name])]
+    (println "Mode name is " mode-name)
     [:div#hemacs-minibuffer
      [:div.hemacs-minibuffer-mode mode-name]
      [:div.hemacs-minibuffer-separator]

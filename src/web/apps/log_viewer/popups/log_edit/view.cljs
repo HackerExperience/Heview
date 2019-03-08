@@ -1,6 +1,6 @@
 (ns web.apps.log-viewer.popups.log-edit.view
   (:require [he.core :as he]
-            [re-com.core :refer [single-dropdown]]))
+            [web.ui.components :as ui.components]))
 
 (defn on-type-selection
   [app-id selected-type]
@@ -16,14 +16,12 @@
   [app-id]
   (let [dropdown-map (he/subscribe [:game|server|log|dropdown-map])
         log-type (he/subscribe [:web|apps|log-viewer|log-edit|log|type app-id])]
-    (cljs.pprint/pprint dropdown-map)
-    [single-dropdown
-     :choices dropdown-map
-     :width "250px"
-     :max-height "400px"
-     :model log-type
-     :on-change #(on-type-selection app-id %)
-     :filter-box? true]))
+    [ui.components/dropdown
+     {:entries dropdown-map
+      :entry-id log-type
+      :on-change #(on-type-selection app-id %)
+      :class-prefix :lv-led-edit-type
+      :grouped? true}]))
 
 (defn render-preview-area
   [app-id]

@@ -6,11 +6,13 @@
             [web.apps.log-viewer.hemacs :as log-viewer-mode]
             [web.apps.log-viewer.popups.log-edit.hemacs :as log-edit-mode]
             [web.apps.task-manager.hemacs :as task-manager-mode]
+            [web.hemacs.mode.dropdown :as dropdown-mode]
             [web.hemacs.mode.insert :as insert-mode]))
 
 (def mode-map
   {;; specials
    :insert insert-mode/process-input
+   :dropdown dropdown-mode/process-input
 
    ;; os
    :desktop desktop-mode/process-input

@@ -40,7 +40,7 @@
   [element]
   (if (> (.-scrollHeight element) (.-clientHeight element))
     element
-    (.-parentElement element)))
+    (upwalk-scroller (.-parentElement element))))
 
 (defn walk-marker
   [elements marker-id]
@@ -61,6 +61,12 @@
                            (inc i)
                            "</span></div>")]
       (.insertAdjacentHTML element "beforeBegin" html-marker))))
+
+(defn dom-focus
+  [element]
+  (when-not (nil? element)
+    (.focus element)
+    element))
 
 (defn dom-click
   [element]

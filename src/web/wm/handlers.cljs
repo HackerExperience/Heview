@@ -25,7 +25,6 @@
 
 (defn- dispatch-perform
   [result]
-  (println "Dispatching perform")
   (cond
     (vector? result) {:dispatch (wrap-perform result)}
     (seq? result) {:dispatch-n (wrap-perform result)}
@@ -35,7 +34,6 @@
 
 (defn- ignore-with-warning
   [gdb warning-atom]
-  (println warning-atom)
   {:gdb gdb})
 
 ;; Bootstrap ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -237,7 +235,6 @@
 
 (defn- on-open-ok
   [gdb app-type state opts popup-info app-context]
-  (println "Open opts are " opts)
   (let [ldb-app (apps.db/get-context gdb)
         ldb-wm (wm.db/get-context gdb)
 

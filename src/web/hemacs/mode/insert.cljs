@@ -4,7 +4,7 @@
 
 (defn input-Escape []
   (.blur (.-activeElement js/document))
-  (hemacs/no-match))
+  (hemacs/exact-match))
 
 (defn process-input
   [gdb buffer ctx xargs]

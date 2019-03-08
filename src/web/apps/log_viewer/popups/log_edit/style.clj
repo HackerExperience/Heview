@@ -2,7 +2,6 @@
   (:require [garden.core :refer [css]]
             [web.ui.vars :as ui]))
 
-;;;;
 (defn body []
   [:.lv-led-body
    {:flex "1 1"
@@ -117,10 +116,19 @@
           [:&:hover
            {:cursor :initial
             :color ui/color-secondary-lightest}]]
-
          ]]]]
      [".lv-led-edit-field-row + .lv-led-edit-field-row"
-      {:margin-top "10px"}]]]])
+      {:margin-top "10px"}]]]
+
+   ;; Refactor ready
+
+   ;; Dropdown
+   [:.lv-led-edit-type-dd-container
+    {:min-width "250px"
+     }]
+   [:.lv-led-edit-type-dd-selected
+    {}]
+   ])
 
 (defn footer []
   [:.lv-led-footer

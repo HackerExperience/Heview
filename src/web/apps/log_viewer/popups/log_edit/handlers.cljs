@@ -36,9 +36,5 @@
          log-id (log-edit.db/get-log-id state)
          new-log (log-edit.db/get-log state)
          callback (log-edit.db/log-edit-callback app-id)]
-     (println (str "https://localhost:4000/api/v1/"
-                   "endpoint/1.2.3.4$,,/file/"
-                   "723b,a5c,dc7a,3c13,b040,a511,cabb,4256"
-                   "/upload"))
      {:db gdb
       :dispatch [:game|server|log|edit server-cid [log-id new-log] callback]})))

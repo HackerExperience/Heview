@@ -16,7 +16,7 @@
 
 (defn ^:export server-password-acquired
   [[_ account-id] data _]
-  (cljs.pprint/pprint data)
+  ;; (cljs.pprint/pprint data)
   [:game|server|password-acquired data])
 
 ;; Game > Server > Log

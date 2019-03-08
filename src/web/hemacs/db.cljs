@@ -40,9 +40,13 @@
   {:id :insert
    :name "Insert Mode"})
 
+(def dropdown-mode
+  {:id :dropdown
+   :name "Dropdown Mode"})
+
 (def initial-db
   {:enabled? true
-   :prev-mode nil
+   :prev-mode []
    :mode desktop-mode
 
    ;; TODO: I think most of these are not needed \/ and maybe some /\
@@ -84,6 +88,7 @@
       (assoc :ctx nil)
       (assoc :which-key nil)
       (assoc :with-markers? false)
+      (assoc :prev-mode [])
       ))
 
 (defn disable-hemacs
@@ -123,21 +128,31 @@
       (assoc :mode mode)
       (assoc :buffer [])))
 
+(defn get-mode-xargs
+  [db]
+  (get-in db [:mode :xargs]))
+
+(defn set-mode-xargs
+  [db xargs]
+  (assoc-in db [:mode :xargs] xargs))
+
 (defn get-mode-id
   [db]
   (:id (get-mode db)))
 
 (defn persist-mode
   [db]
-  (assoc db :prev-mode (get-mode db)))
+  (update db :prev-mode #(conj % (get-mode db))))
 
 (defn get-prev-mode
   [db]
-  (:prev-mode db))
+  (last (:prev-mode db)))
 
 (defn set-prev-mode
   [db]
-  (set-mode db (get-prev-mode db)))
+  (-> db
+      (set-mode (get-prev-mode db))
+      (assoc :prev-mode (into [] (butlast (:prev-mode db))))))
 
 (defn is-desktop-mode?
   [db]
@@ -156,6 +171,17 @@
 (defn is-insert-mode?
   [db]
   (= (get-mode-id db) :insert))
+
+(defn set-dropdown-mode
+  [db dropdown-id]
+  (-> db
+      (persist-mode)
+      (set-mode dropdown-mode)
+      (set-mode-xargs {:dropdown-id dropdown-id})))
+
+(defn is-dropdown-mode?
+  [db]
+  (= (get-mode-id db) :dropdown))
 
 ;; process-input magic ;;
 
@@ -241,7 +267,7 @@
                   (get-mode-id db))
         buffer (get-buffer db key)
         ctx (get-ctx db)
-        xargs nil]
+        xargs (get-mode-xargs db)]
     (-> mode-id
         (hemacs.dispatcher/dispatch-input gdb buffer ctx xargs)
         (handle-result db key))))
@@ -257,16 +283,21 @@
 (defn- process-input-enabled-insert-mode
   [gdb db key]
   (if (= key "Escape")
-    (do
-      (process-input-enabled-dispatch gdb db key)
-      (set-prev-mode db))
+    (process-input-enabled-dispatch gdb db key)
     db))
+
+(defn- process-input-enabled-dropdown-mode
+  [gdb db key]
+  (process-input-enabled-dispatch gdb db key))
+  ;; (if (= key "Escape")
+  ;;   db))
 
 (defn- process-input-enabled
   "Processes the input when hemacs is enabled"
   [gdb db key]
   (cond
     (is-insert-mode? db) (process-input-enabled-insert-mode gdb db key)
+    (is-dropdown-mode? db) (process-input-enabled-dropdown-mode gdb db key)
     (= key "Control") (process-input-enabled-control db key)
     (= key "Escape") (process-input-enabled-escape db key)
     (or (is-desktop-mode? db)
@@ -332,6 +363,18 @@
       (empty-which-key)))
 
 (defn input-focused-out
+  [db]
+  (-> db
+      (set-prev-mode)))
+
+(defn dropdown-mounted
+  [db dropdown-id]
+  (-> db
+      (set-dropdown-mode dropdown-id)
+      (empty-buffer)
+      (empty-which-key)))
+
+(defn dropdown-unmounted
   [db]
   (-> db
       (set-prev-mode)))

@@ -43,13 +43,15 @@
 
 (defn on-focus-in-fn
   [event]
-  (he/dispatch [:web|hemacs|input-focused-in]))
+  (when (= (.-tagName (.-target event)) "INPUT")
+    (he/dispatch [:web|hemacs|input-focused-in])))
 (defonce named-on-focus-in-fn
   #(on-focus-in-fn %))
 
 (defn on-focus-out-fn
   [event]
-  (he/dispatch [:web|hemacs|input-focused-out]))
+  (when (= (.-tagName (.-target event)) "INPUT")
+    (he/dispatch [:web|hemacs|input-focused-out])))
 (defonce named-on-focus-out-fn
   #(on-focus-out-fn %))
 

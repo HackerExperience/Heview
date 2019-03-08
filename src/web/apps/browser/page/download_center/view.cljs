@@ -3,10 +3,6 @@
             [he.core :as he]
             [web.apps.browser.page.components :as page.components]))
 
-(defn on-p-click
-  [id]
-  (println "Cliclkok " id))
-
 (defn view-index
   [app-id tab-id]
   [:div

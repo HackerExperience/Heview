@@ -3,17 +3,16 @@
 
 (defn ^:export mode-info []
   {:id :os-os-error
-   :name "BSOD Mode"})
+   :name "Windows Mode"})
 
 ;; walk
 
 (defn walk-ok-btn
   [app-id]
-  (println "Walking OK btn")
-  (println app-id)
-  (let [el-app (hemacs/walk-app app-id)
-        el-footer (.querySelector el-app ".os-err-footer")]
-    (.querySelector el-footer "button")))
+  (when-not (nil? app-id)
+    (let [el-app (hemacs/walk-app app-id)
+          el-footer (.querySelector el-app ".os-err-footer")]
+      (.querySelector el-footer "button"))))
 
 ;; ctx
 
@@ -22,7 +21,6 @@
 ;; process-input
 
 (defn process-input
-  [_ b {app-id :app-id} _]
-  (println b)
+  [_ _ {app-id :app-id} _]
   (hemacs/dom-click (walk-ok-btn app-id))
   (hemacs/exact-match))
