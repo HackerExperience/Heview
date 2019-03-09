@@ -1,6 +1,6 @@
 {:source-paths ["src"]
  :dependencies [[org.clojure/core.match "0.3.0-alpha5"]
-                [reagent "0.7.0"]
+                [reagent "0.8.1"]
                 [re-frame "0.10.6"]
                 [cljs-ajax "0.7.4"]
                 [day8.re-frame/http-fx "0.1.6"]

@@ -260,6 +260,12 @@
   [db app-id new-title]
   (assoc-in db [:windows app-id :config :title] new-title))
 
+;; WM > Window file ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn update-window-file
+  [db app-id new-file-id]
+  (assoc-in db [:windows app-id :file-id] new-file-id))
+
 ;; App ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; App > Open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

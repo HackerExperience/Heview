@@ -47,6 +47,36 @@
    (software.db/search-file db file-id)))
 
 (rf/reg-sub
+ :game|server|software|files
+ with-software-db
+ (fn [[db]]
+   (get-in db [(:main-storage-id db) :files])))
+
+(rf/reg-sub
+ :game|server|software|files|type
+ (fn [[_ server-cid]]
+   [(he/subscribed [:game|server|software|files server-cid])])
+ (fn [[files] [_ _ file-type]]
+   (reduce (fn [acc [file-id file]]
+             (if (= (:type file) (name file-type))
+               (assoc acc file-id file)
+               acc)) {} files)))
+
+;; TODO: Rename `cache` to `sorted`
+(rf/reg-sub
+ :game|server|software|files|cache
+ with-software-db
+ (fn [[db]]
+   (get-in db [(:main-storage-id db) :cache])))
+
+(rf/reg-sub
+ :game|server|software|files|cache|type
+ (fn [[_ server-cid]]
+   [(he/subscribed [:game|server|software|files|cache server-cid])])
+ (fn [[files] [_ _ file-type]]
+   (get-in files [(name file-type) :one])))
+
+(rf/reg-sub
  :game|server|software|storage|info
  with-storage
  (fn [[storage]]

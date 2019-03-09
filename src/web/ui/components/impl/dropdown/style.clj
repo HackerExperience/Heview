@@ -76,6 +76,7 @@
     {:min-height "30px"
      :padding-left "5px"
      :display :flex
+     :flex-direction :row
      :align-items :center
      :border "1px solid transparent"}
     [:&:hover
@@ -91,7 +92,6 @@
     {:background (ui/color-primary-dark-rgba "0.9")
      }]
    [:.ui-c-dd-drop-group
-    {}
     [:>.ui-c-dd-drop-entry
      {:padding-left "15px"}]]
    [:.ui-c-dd-drop-group-name

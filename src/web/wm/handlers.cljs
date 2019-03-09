@@ -169,6 +169,13 @@
 ;; WM API > Header Control ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (he/reg-event-db
+ :web|wm|app|on-header-file-changed
+ (fn [gdb [_ app-id new-file-id]]
+   (as-> (wm.db/get-context gdb) ldb
+     (wm.db/update-window-file ldb app-id new-file-id)
+     (wm.db/set-context gdb ldb))))
+
+(he/reg-event-db
  :web|wm|app|on-header-click
  (fn [gdb [_ app-id click-position]]
    (as-> (wm.db/get-context gdb) ldb

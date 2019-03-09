@@ -3,7 +3,7 @@
             [clojure.string :as str]
             [cljs.core.match :refer-macros [match]]
             [he.core :as he]
-            [web.hemacs.mode.dropdown :as hemacs-mode]))
+            [web.hemacs.mode.dropdown :as dropdown-mode]))
 
 ;; Drop tracker ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -39,18 +39,18 @@
 (defn track-drop-keydown
   [meta state drop-id event]
   (let [fake-args [nil nil nil {:dropdown-id drop-id}]
-        fn-esc #(hemacs-mode/input-Escape fake-args)]
+        fn-esc #(dropdown-mode/input-Escape fake-args)]
     (match (.-key event)
-           "ArrowDown" (hemacs-mode/input-j fake-args)
+           "ArrowDown" (dropdown-mode/input-j fake-args)
            "ArrowUp" (do
-                       (hemacs-mode/input-k fake-args)
+                       (dropdown-mode/input-k fake-args)
                        (.preventDefault event))
-           "Enter" (hemacs-mode/input-Enter fake-args)
-           "Escape" (hemacs-mode/input-Escape fake-args)
-           "PageDown" (hemacs-mode/input-PageDown fake-args)
-           "PageUp" (hemacs-mode/input-PageUp fake-args)
+           "Enter" (dropdown-mode/input-Enter fake-args)
+           "Escape" (dropdown-mode/input-Escape fake-args)
+           "PageDown" (dropdown-mode/input-PageDown fake-args)
+           "PageUp" (dropdown-mode/input-PageUp fake-args)
            "Tab" (do
-                   (hemacs-mode/input-j fake-args)
+                   (dropdown-mode/input-j fake-args)
                    (.preventDefault event))
            _ :noop))
 
@@ -62,13 +62,13 @@
 
 (defn add-tracker-event-listeners
   [drop-el {click-fn :click keydown-fn :keydown} hemacs-enabled?]
-  (.addEventListener js/document "mousedown" click-fn)
+  (.addEventListener js/document "click" click-fn)
   (when-not hemacs-enabled?
     (.addEventListener drop-el "keydown" keydown-fn)))
 
 (defn del-tracker-event-listeners
   [drop-el {click-fn :click keydown-fn :keydown} _]
-  (.removeEventListener js/document "mousedown" click-fn)
+  (.removeEventListener js/document "click" click-fn)
   (.removeEventListener drop-el "keydown" keydown-fn))
 
 ;; Default callbacks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -79,13 +79,15 @@
 
 (defn- default-drop-entry-click
   [external-callback state new-entry-id event]
-  (swap! state assoc
-         :search-query ""
-         :current-entries (:original-entries @state)
-         :current-groups (:original-groups @state)
-         :drop-showing? false
-         :entry-id new-entry-id)
-  (external-callback new-entry-id))
+  (let [old-entry-id (:entry-id @state)]
+    (swap! state assoc
+           :search-query ""
+           :current-entries (:original-entries @state)
+           :current-groups (:original-groups @state)
+           :drop-showing? false
+           :entry-id new-entry-id)
+    (when-not (= new-entry-id old-entry-id)
+      (external-callback new-entry-id))))
 
 (defn default-search-fn
   [query entries]
@@ -118,12 +120,17 @@
   [:i.fa.fa-caret-up])
 
 (defn- default-selected-renderer
-  [entry]
+  [_ entry]
   [:span (:label entry)])
 
-(defn- default-drop-renderer
+(defn- default-drop-simple-renderer
+  [meta entry]
+  [:span (:label entry)])
+
+(defn- default-drop-full-renderer
   [meta state entry]
-  (let [base-class (dd-class meta :drop-entry)
+  (let [renderer (dd-renderer meta :drop-simple)
+        base-class (dd-class meta :drop-entry)
         callback-drop-click (dd-callback meta :drop-entry-click)
         on-change-fn (dd-callback meta :on-change)
         class (if (= (:entry-id @state) (:id entry))
@@ -132,19 +139,21 @@
     [:div
      {:class class
       :on-click #(callback-drop-click on-change-fn state (:id entry) %)}
-     (:label entry)]))
+     [renderer meta entry]]))
 
 ;; "Model" ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn get-renderers
   [{custom-selected-renderer :selected
-    custom-drop-renderer :drop
+    custom-drop-full-renderer :drop-full
+    custom-drop-simple-renderer :drop-simple
     custom-caret-down-renderer :caret-down
     custom-caret-up-renderer :caret-up}]
   {:caret-down (or custom-caret-down-renderer default-caret-down-renderer)
    :caret-up (or custom-caret-up-renderer default-caret-up-renderer)
    :selected (or custom-selected-renderer default-selected-renderer)
-   :drop (or custom-drop-renderer default-drop-renderer)})
+   :drop-simple (or custom-drop-simple-renderer default-drop-simple-renderer)
+   :drop-full (or custom-drop-full-renderer default-drop-full-renderer)})
 
 (defn get-callbacks
   [{{custom-selected-click :selected-click
@@ -157,10 +166,15 @@
    :on-change on-change})
 
 (defn get-classes
-  [raw-prefix]
+  [{raw-prefix :class-prefix
+    full-view? :full-view?}]
   (let [prefix (if (keyword? raw-prefix) (name raw-prefix) raw-prefix)
-        custom-prefix (if-not (nil? prefix) prefix [])]
-    (conj ["ui-c"] custom-prefix)))
+        custom-prefix (if-not (nil? prefix) prefix [])
+        std-prefix (if full-view?
+                     []
+                     ["ui-c"])]
+    (into []
+          (flatten (conj std-prefix custom-prefix)))))
 
 (defn get-dropdown-id
   [opts]
@@ -327,7 +341,7 @@
 
 (defn render-drop
   [meta state]
-  (let [renderer (dd-renderer meta :drop)]
+  (let [renderer (dd-renderer meta :drop-full)]
     [:div {:class (dd-class meta :drop)}
      [render-drop-tracker meta state]
      (when (:search? @state)
@@ -357,7 +371,7 @@
       :on-click #((dd-callback meta :selected-click) state %)}
      [:div
       {:class (dd-class meta :selected-entry)}
-      [renderer entry]]
+      [renderer meta entry]]
      [render-selected-caret meta state]]))
 
 (defn dropdown
@@ -365,7 +379,7 @@
   (let [cache (create-entry-cache (:entries opts))
         state (r/atom (create-initial-state opts))
         renderers (get-renderers (:renderers opts))
-        class-prefix (get-classes (:class-prefix opts))
+        class-prefix (get-classes opts)
         callbacks (get-callbacks opts)
         dropdown-id (get-dropdown-id opts)
         meta [class-prefix renderers callbacks dropdown-id]]

@@ -30,6 +30,8 @@
   (let [[_ & type-suffix] (.split app-type "-")]
     (clojure.string/join "-" type-suffix)))
 
+;; This fails when os-confirm closes the underlying window, due to a race-ish
+;; condition. Reproduce: log edit > change something > close > confirm close
 (defn- get-path-app
   [app-type]
   (let [app-type-str (name app-type)]

@@ -45,14 +45,12 @@
 
 (defn render-minibuffer []
   (let [mode-name (he/subscribe [:web|hemacs|mode|name])]
-    (println "Mode name is " mode-name)
     [:div#hemacs-minibuffer
      [:div.hemacs-minibuffer-mode mode-name]
      [:div.hemacs-minibuffer-separator]
      [render-minibuffer-keybuffer]
      [:div.hemacs-minibuffer-separator]
-     [render-minibuffer-output]
-     ]))
+     [render-minibuffer-output]]))
 
 (defn render-which-key-entry
   [key description disabled?]

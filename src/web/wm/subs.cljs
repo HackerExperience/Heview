@@ -77,6 +77,18 @@
  (fn [[window]]
    (:file-id window)))
 
+;; Windows > Header ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(rf/reg-sub
+ :web|wm|window|header|files
+ (fn [[_ server-cid file-type]]
+   [(he/subd [:game|server|software|files|type server-cid file-type])
+    (he/subd [:game|server|software|files|cache|type server-cid file-type])])
+ (fn [[files sorted]]
+   (reduce (fn [acc file-id]
+             (conj acc (merge (get files file-id)
+                              {:id file-id}))) [] sorted)))
+
 ;; Session ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn with-session-data-callback

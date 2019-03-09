@@ -26,9 +26,19 @@
   [id]
   @(rf/subscribe id))
 
+(defn sub
+  "Short for `subscribe`"
+  [id]
+  (subscribe id))
+
 (defn subscribed
   [id]
   (rf/subscribe id))
+
+(defn subd
+  "Short for `subscribed`"
+  [id]
+  (subscribed id))
 
 
 ;; TODO: Can't make this to work right now

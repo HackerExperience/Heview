@@ -82,6 +82,7 @@
       },
       "windows": {
         "$app-id": {
+          "file-id" "$file-id | nil",
           "moving?": "bool",
           "focused?": "bool",
           "position": {

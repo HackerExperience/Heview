@@ -6,8 +6,103 @@
 (defn local-style []
   [])
 
+(defn app-header-file []
+  [[:.wm-a-h-file-dd-container
+    {:border (str "1px solid " ui/color-secondary)
+     :color ui/color-secondary-light
+     :background (ui/color-secondary-darkest-rgba "0.4")
+     :min-height :unset
+     :min-width :unset}
+    [:&:hover
+     {:background (ui/color-secondary-darkest-rgba "0.5")
+      :border (str "1px solid " ui/color-secondary-light)}]]
+   [".wm-a-h-file-dd-container[data-drop=\"true\"]"
+    {:border-color ui/color-secondary-light
+     :background (ui/color-secondary-darkest-rgba "0.8")
+     :min-width "200px"}]
+   [:.wm-a-h-file-dd-selected-container
+    {:padding "0"}]
+   [:.wm-a-h-file-dd-selected-entry
+    {:display :flex
+     :flex-direction :row
+     :align-items :center
+     :margin "0 3px"}]
+   [:.wm-a-h-file-dd-selected-entry-name
+    {:font-size "11px"
+     :flex "1 1"
+     :padding "0 3px 0 12px"}]
+   [:.wm-a-h-file-dd-selected-entry-modules
+    {:display :flex
+     :flex-direction :column
+     :padding "1px 2px"
+     :min-height "22px"
+     :align-items :center
+     :justify-content :center
+     :font-size "9px"
+     :font-family :monospace}]
+   [:.wm-a-h-file-dd-selected-entry-module
+    {:display :flex
+     :flex-direction :row-reverse
+     :min-width "39px"
+     :color ui/color-secondary}
+    [:>i
+     {:width "11px"}]
+    [:>span
+     {:padding-left "1px"}]]
+   [:.wm-a-h-file-dd-selected-caret-area
+    {:position :absolute
+     :left "0"
+     :top "4px"
+     :min-width "15px"
+     :font-size "12px"}]
+   [:.wm-a-h-file-dd-drop
+    {:top "23px"
+     :background (ui/color-primary-darkest-rgba "0.95")
+     :border-left (str "1px solid " ui/color-secondary-light)
+     :border-right (str "1px solid " ui/color-secondary-light)
+     :border-bottom (str "1px solid " ui/color-secondary-light)}]
+   [:.wm-a-h-file-dd-drop-entries
+    [:>.ui-c-dd-drop-entry-highlighted
+     {:background (ui/color-secondary-dark-rgba "0.25")}]]
+   [:.wm-a-h-file-dd-drop-entry
+    {:padding-left "2px"}
+    [:&:hover
+     {:background (ui/color-secondary-dark-rgba "0.15")
+      :border (str "1px solid " ui/color-secondary)}]]
+   [:.wm-a-h-file-dd-drop-entry-selected
+    {:background (ui/color-secondary-dark-rgba "0.4")
+     :border (str "1px solid " (ui/color-secondary-rgba "0.5"))}
+    [:&:hover
+     {:background (ui/color-secondary-dark-rgba "0.55")
+      :border (str "1px solid " ui/color-secondary)}]]
+   [:.wm-a-h-file-dd-drop-entry-name
+    {:flex "1 1"
+     :overflow :hidden
+     :text-overflow :ellipsis
+     :white-space :no-break
+     }]
+   [:.wm-a-h-file-dd-drop-entry-modules
+    {:display :flex
+     :flex-direction :row
+     :font-size "10px"
+     :font-family :monospace
+     :min-width "82px"}]
+   [:.wm-a-h-file-dd-drop-entry-module
+    {:display :flex
+     :flex-direction :row-reverse}
+    [:>i
+     {:padding "0 2px"}]]
+   [".wm-a-h-file-dd-drop-entry-module:last-child"
+    {:padding-right "2px"}]
+
+   ])
+
+(defn app-header []
+  [[(app-header-file)]])
+
 (defn global-style []
-  [[:#wm
+  [[(app-header)]
+   [:#wm
     {:height "100%"}
     [:.app
      {:border (str "1px solid " ui/color-primary-lightest)
@@ -92,51 +187,6 @@
        {:cursor :initial
         :color (ui/color-primary-light-rgba "0.725")
         :border (str "1px solid " ui/color-primary)}]]
-     [:.app-header-file
-      {:display :flex
-       :flex-direction :row
-       :align-items :center
-       :border (str "1px solid " ui/color-secondary)
-       :background (ui/color-secondary-darkest-rgba "0.40")
-       :color ui/color-secondary-light
-       :margin "0 3px"}
-      [:&:hover
-       {:border (str "1px solid " ui/color-secondary-light)
-        :cursor :pointer}
-       [:.app-header-file-name
-        {:color ui/color-secondary-lightest}]
-       [:.app-header-file-selector
-        {:color ui/color-secondary-lightest}]
-       [:.app-header-file-modules
-        [:.app-header-file-module
-         {:color ui/color-secondary-light}]]]
-      [:.app-header-file-name
-       {:font-size "11px"
-        :padding "0 3px"}]
-      [:.app-header-file-modules
-       {:display :flex
-        :flex-direction :column
-        :padding "1px 2px"
-        :min-height "22px"
-        :align-items :center
-        :justify-content :center}
-       [:.app-header-file-module
-        {:display :flex
-         :flex-direction :row-reverse
-         :min-width "39px"
-         :color ui/color-secondary}
-        [:i
-         {:font-size "9px"
-          :width "11px"}]
-        [:span
-         {:font-size "9px"
-          :font-family :monospace
-          }]]]
-      [:.app-header-file-selector
-       {:font-size "12px"
-        :padding "0 1px 0 3px"}
-       [:i
-        {}]]]
      [:.app-header-actions
       {:display :flex
        :z-index 2

@@ -3,7 +3,8 @@
             [reagent.core :as reagent]
             [re-frame.core :as rf]
             [he.core :as he]
-            [web.apps.view :as apps.view]))
+            [web.apps.view :as apps.view]
+            [web.ui.components :as ui.components]))
 
 (defn inline-style
   [window-data]
@@ -106,26 +107,46 @@
    :on-mouse-up (partial header-on-mouse-up app-id)})
 
 (defn header-file-module
-  [module-number file]
+  [module-number file class]
   (let [module-info (get-in file [:client-meta :module-meta module-number])
         version (get-in file [:modules (:id module-info) :display-version])]
     (when-not (nil? module-info)
-      [:div.app-header-file-module
+      [:div {:class class}
        [:span version]
        [:i {:class (:icon module-info)}]])))
+
+(defn header-file-dd-selected-renderer
+  [meta entry]
+  [:<>
+   [:div.wm-a-h-file-dd-selected-entry-name
+    [:span (:name entry)]]
+   [:div.wm-a-h-file-dd-selected-entry-modules
+    [header-file-module :one entry :wm-a-h-file-dd-selected-entry-module]
+    [header-file-module :two entry :wm-a-h-file-dd-selected-entry-module]]])
+
+(defn header-file-dd-drop-renderer
+  [meta entry]
+  [:<>
+   [:div.wm-a-h-file-dd-drop-entry-name
+    (:name entry)]
+   [:div.wm-a-h-file-dd-drop-entry-modules
+    [header-file-module :one entry :wm-a-h-file-dd-drop-entry-module]
+    [header-file-module :two entry :wm-a-h-file-dd-drop-entry-module]]])
 
 (defn header-file
   [app-id config file-id]
   (let [server-cid (he/subscribe [:web|wm|active-session])
-        file (he/subscribe [:game|server|software|file server-cid file-id])]
+        files (he/sub [:web|wm|window|header|files server-cid :cracker])]
     [:div.app-header-file
-     [:div.app-header-file-selector
-      [:i.fas.fa-caret-down]]
-     [:div.app-header-file-name
-      [:span (:name file)]]
-     [:div.app-header-file-modules
-      [header-file-module :one file]
-      [header-file-module :two file]]]))
+     [ui.components/dropdown
+      {:entries files
+       :entry-id file-id
+       :on-change #(he/dispatch [:web|wm|app|on-header-file-changed app-id %])
+       :grouped? false
+       :search? false
+       :class-prefix "wm-a-h-file"
+       :renderers {:selected header-file-dd-selected-renderer
+                   :drop-simple header-file-dd-drop-renderer}}]]))
 
 (defn header-app-context
   [app-id config]
