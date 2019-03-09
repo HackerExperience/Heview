@@ -34,7 +34,7 @@
 (defn walk-app-header
   [app-id]
   (let [el-app (walk-app app-id)]
-    (.querySelector el-app ".app-header")))
+    (.querySelector el-app ".wm-app-header")))
 
 (defn upwalk-scroller
   [element]

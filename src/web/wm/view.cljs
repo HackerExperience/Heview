@@ -33,8 +33,8 @@
   (let [moving? (he/subscribe [:web|wm|window|moving? app-id])
         focused? (he/subscribe [:web|wm|window|focused? app-id])
         app-type (get-app-type app-id)
-        moving-class (when moving? "app-moving")
-        focused-class (when focused? "app-focused")
+        moving-class (when moving? "wm-app-moving")
+        focused-class (when focused? "wm-app-focused")
         app-type-class (str "app-type-" (name app-type))]
     {:id app-id
      :class (str/join " " [moving-class focused-class app-type-class])}))
@@ -51,40 +51,40 @@
                      (not (nil? (:endpoint session)))
                      (get config :contextable true))]
     (when (:show-context config)
-      [:div.app-header-context
+      [:div.wm-app-h-context
        (if can-switch?
          {:on-click #(he/dispatch [:web|wm|app|switch-context app-id])
           :tip "Switch context"}
-         {:class :app-header-context-disabled})
+         {:class :wm-app-h-context-disabled})
        [:span context-name]
        [:i.fas.fa-sync-alt]])))
 
 (defn header-seq-id
   [app-id]
   (let [seq-id (he/subscribe [:web|wm|window|seq-id app-id])]
-    [:div.app-header-seq-id
+    [:div.wm-app-h-seq-id
      [:span seq-id]]))
 
 (defn header-icon
   [config]
-  [:div.app-header-icon
+  [:div.wm-app-h-icon
    [:i
     {:class (:icon-class config)}]])
 
 (defn header-title
   [config]
-  [:div.app-header-title (:title config)])
+  [:div.wm-app-h-title (:title config)])
 
 (defn header-actions
   [app-id config]
-  [:div.app-header-actions
+  [:div.wm-app-h-actions
    {:on-click #(.stopPropagation %)}
    (when (:show-minimize config)
-     [:div.app-header-action
+     [:div.wm-app-h-action
       {:on-click #(he/dispatch [:web|wm|app|minimize app-id])}
       [:i.far.fa-window-minimize]])
    (when (:show-close config)
-     [:div.app-header-action
+     [:div.wm-app-h-action
       {:on-click #(he/dispatch [:web|wm|app|close app-id])}
       [:i.far.fa-window-close]])])
 
@@ -137,7 +137,7 @@
   [app-id config file-id]
   (let [server-cid (he/subscribe [:web|wm|active-session])
         files (he/sub [:web|wm|window|header|files server-cid :cracker])]
-    [:div.app-header-file
+    [:div.wm-app-h-file
      [ui.components/dropdown
       {:entries files
        :entry-id file-id
@@ -159,19 +159,19 @@
   [app-id]
   (let [config (he/subscribe [:web|wm|window|config app-id])
         hemacs-enabled? (he/subscribe [:web|hemacs|enabled?])]
-    [:div.app-header
+    [:div.wm-app-header
      (add-header-events app-id)
      (when hemacs-enabled?
        [header-seq-id app-id])
      [header-icon config]
-     [:div.app-header-icon-separator]
+     [:div.wm-app-h-icon-separator]
      [header-title config]
      [header-app-context app-id config]
      [header-actions app-id config]]))
 
 (defn render-app-body
   [app-id]
-  [:div.app-body
+  [:div.wm-app-body
    [apps.view/view app-id]])
 
 (defn render-app
@@ -183,14 +183,14 @@
                     (app-classes app-id)
                     (app-events app-id))]
     (if full-view
-      [:div.full-app-entrypoint
-       [:div.full-app
+      [:div.wm-app-full-entrypoint
+       [:div.wm-app-full
         attributes
-        [:div.full-app-container
+        [:div.wm-app-full-container
          [apps.view/full-view app-id]]]]
-      [:div.app
+      [:div.wm-app
        attributes
-       [:div.app-container
+       [:div.wm-app-container
         [render-app-header app-id]
         [render-app-body app-id]]])))
 

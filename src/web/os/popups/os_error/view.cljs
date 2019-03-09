@@ -9,7 +9,7 @@
         parent-z-index (.-zIndex (.-style cloned-node))]
     (.appendChild (.getElementById js/document "wm") wrapper-div)
     (.appendChild wrapper-div cloned-node)
-    (.add (.-classList wrapper-div) "full-app-entrypoint")
+    (.add (.-classList wrapper-div) "wm-app-full-entrypoint")
     (set! (.-zIndex (.-style cloned-node)) (- parent-z-index 1))))
 
 (defn header-on-mouse-down
@@ -57,21 +57,21 @@
                                 :not-implemented "Lazy Developer"
                                 _else "Internal")
         title (str "he.exe - " source-nice-name " Error")]
-    [:div.os-err-header
+    [:div.a-os-err-header
      (add-header-events app-id)
-     [:div.os-err-title title]
-     [:div.os-err-close
+     [:div.a-os-err-h-title title]
+     [:div.a-os-err-h-close
       {:on-click #(close-app app-id reason)}]]))
 
 (defn render-body
   [app-id reason]
-  [:div.os-err-body
-   [:div.os-err-icon]
-   [:div.os-err-message reason]])
+  [:div.a-os-err-body
+   [:div.a-os-err-b-icon]
+   [:div.a-os-err-b-message reason]])
 
 (defn render-footer
   [app-id reason]
-  [:div.os-err-footer
+  [:div.a-os-err-footer
    [:button
     {:on-click #(close-app app-id reason)}
     "OK"]])
@@ -79,7 +79,7 @@
 (defn ^:export full-view
   [app-id server-cid]
   (let [reason (he/subscribe [:web|os|popups|os-error|reason app-id])]
-    [:div.os-err-container
+    [:div.a-os-err-container
      [render-header app-id reason]
      [render-body app-id reason]
      [render-footer app-id reason]]))

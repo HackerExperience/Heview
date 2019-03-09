@@ -27,8 +27,8 @@
 
 (defn view
   [app-id tab-id [links path]]
-  [:div.br-page-download-center
-   [:div.br-page-dc-header
+  [:div.a-br-page-download-center
+   [:div.a-br-p-dc-header
     [page.components/tab app-id tab-id links path]]
-   [:div.br-page-dc-body
+   [:div.a-br-p-dc-body
     [render-body app-id tab-id path]]])

@@ -17,18 +17,18 @@
   [app-id server-cid]
   (let [loading? (he/subscribe [:web|apps|remote-access|browse|loading? app-id])
         input-ip (he/subscribe [:web|apps|remote-access|ip app-id])]
-    [:div.ra-browse
-     [:div.ra-browse-input
+    [:div.a-ra-browse
+     [:div.a-ra-br-input
       [:input.ui-input
        {:type :text
         :value input-ip
         :on-change #(on-browse-ip-change app-id %)}]]
-     [:div.ra-browse-button
+     [:div.a-ra-br-button
       (if-not loading?
         [:button.ui-btn
          {:on-click #(on-browse-ip-submit app-id %)}
          "Go"]
-        [:div.ra-browse-button-spinner.ui-spinner-area
+        [:div.a-ra-br-button-spinner.ui-spinner-area
          [:i.fa.fa-spinner.fa-spin]])]]))
 
 ;; Auth ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -51,26 +51,26 @@
   (let [loading? (he/subscribe [:web|apps|remote-access|auth|loading? app-id])
         auth-pass (he/subscribe [:web|apps|remote-access|auth|pass app-id])
         ip (he/subscribe [:web|apps|remote-access|ip app-id])]
-    [:div.ra-auth
-     [:div.ra-auth-login-area
-      [:div.ra-auth-login-username
+    [:div.a-ra-auth
+     [:div.a-ra-au-login-area
+      [:div.a-ra-au-login-username
        [:input.ui-input
         {:type :text :value "root" :readOnly true}]]
-      [:div.ra-auth-login-password
+      [:div.a-ra-au-login-password
        [:input.ui-input
         {:type :text
          :value auth-pass
          :placeholder "Password"
          :on-change #(on-auth-pass-change app-id %)}]]]
-     [:div.ra-auth-action-area
-      [:div.ra-auth-action-bruteforce-area
-       [:button.ui-btn.btn-dual
+     [:div.a-ra-au-action-area
+      [:div.a-ra-au-action-bruteforce-area
+       [:button.ui-btn.ui-btn-dual
         {:tip "Start a bruteforce attack to retrieve the server password."
          :on-click #(on-auth-bruteforce app-id ip %)}
         [:i.fas.fa-unlock]
         [:span "Bruteforce"]]]
-      [:div.ra-auth-action-login-area
-       [:button.ui-btn.btn-dual.btn-primary
+      [:div.a-ra-au-action-login-area
+       [:button.ui-btn.ui-btn-dual.ui-btn-primary
         {:on-click #(on-auth-submit app-id %)
          :tip "Login to the remote server using the above credentials."}
         [:i.fas.fa-sign-in-alt]
@@ -84,7 +84,7 @@
 
 (defn view-remote
   [app-id server-cid]
-  [:div.ra-remote
+  [:div.a-ra-remote
    [:button
     {:on-click #(on-remote-app app-id :log-viewer %)}
     "Open Log viewer"]])
@@ -93,7 +93,7 @@
 
 (defn ^:export view
   [app-id server-cid]
-  [:div.ra-container
+  [:div.a-ra-container
    (let [screen (he/subscribe [:web|apps|remote-access|screen app-id])]
      (match screen
             :browse (view-browse-ip app-id server-cid)

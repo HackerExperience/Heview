@@ -1,7 +1,6 @@
-(ns web.home.login.style
-  (:require [garden.core :refer [css]]))
+(ns web.home.login.style)
 
-(defn local-style []
+(defn style []
   [[:.home-login-container
     {:color "rgba(155, 243, 255, 0.781)"
      :font-size "11pt"
@@ -12,6 +11,3 @@
      :align-items "center"}]
    [:p {:padding "0.5rem"
         :margin "0.5rem"}]])
-
-(defn global-style []
-  [])

@@ -19,25 +19,25 @@
   [{:id :tree
     :icon "fas fa-tree"
     :tip "Switch to Tree View mode"
-    :class "fe-sidebar-view-tree"}
+    :class "a-fe-sb-view-tree"}
    {:id :flat
     :icon "far fa-list-alt"
     :tip "Switch to Flat View mode"
-    :class "fe-sidebar-view-flat"}])
+    :class "a-fe-sb-view-flat"}])
 
 (def file-action-data
   {:execute {:icon "fas fa-terminal"
              :tip "Execute this file"
-             :class "fe-file-action-execute"}
+             :class "a-fe-b-file-action-execute"}
    :upload {:icon "fas fa-upload"
             :tip "Upload this file"
-            :class "fe-file-action-upload"}
+            :class "a-fe-b-file-action-upload"}
    :download {:icon "fas fa-download"
               :tip "Download this file"
-              :class "fe-file-action-download"}
+              :class "a-fe-b-file-action-download"}
    :delete {:icon "fa fa-trash-alt"
             :tip "Delete this file"
-            :class "fe-file-action-delete"}})
+            :class "a-fe-b-file-action-delete"}})
 
 (defn on-file-click
   [app-id file-id _event]
@@ -52,55 +52,55 @@
 
 (defn render-file-module-entry
   [version icon]
-  [:div.fe-file-module
-   [:div.fe-file-module-icon
+  [:div.a-fe-b-file-module
+   [:div.a-fe-b-file-module-icon
     [:i {:class icon}]]
-   [:div.fe-file-module-version
+   [:div.a-fe-b-file-module-version
     [:span version]]])
 
 (defn render-file-module
   [file]
-  [:div.fe-file-module-area
+  [:div.a-fe-b-file-module-area
    [generic-module-renderer "one" file render-file-module-entry]
    [generic-module-renderer "two" file render-file-module-entry]])
 
 (defn render-file
   [app-id file-id file]
-  [:div.fe-file
+  [:div.a-fe-b-file
    {:on-click #(on-file-click app-id file-id %)}
-   [:div.fe-file-icon
+   [:div.a-fe-b-file-icon
     [:i {:class (:icon file)}]]
-   [:div.fe-file-name
+   [:div.a-fe-b-file-name
     [:span (:display-name file)]]
    [render-file-module file]])
 
 (defn render-selected-file-module
   [version icon name]
-  [:div.fe-file-selected-module
-   [:div.fe-file-selected-module-name
+  [:div.a-fe-b-file-selected-module
+   [:div.a-fe-b-file-selected-module-name
     [:span name]]
-   [:div.fe-file-selected-module-version
+   [:div.a-fe-b-file-selected-module-version
     [:span version]]
-   [:div.fe-file-selected-module-icon
+   [:div.a-fe-b-file-selected-module-icon
     [:i {:class icon}]]])
 
 (defn render-selected-file-side-entry
   [text icon-class]
-  [:div.fe-file-selected-side-entry
-   [:div.fe-file-selected-side-entry-icon
+  [:div.a-fe-b-file-selected-side-entry
+   [:div.a-fe-b-file-selected-side-entry-icon
     [:i {:class icon-class}]]
-   [:div.fe-file-selected-side-entry-text
+   [:div.a-fe-b-file-selected-side-entry-text
     [:span text]]])
 
 (defn render-selected-file-side
   [file]
-  [:div.fe-file-selected-side
+  [:div.a-fe-b-file-selected-side
    [render-selected-file-side-entry (:size file) "fas fa-weight-hanging"]
    [render-selected-file-side-entry (:license file) "fas fa-balance-scale"]])
 
 (defn render-selected-file-modules
   [file]
-  [:div.fe-file-selected-module-area
+  [:div.a-fe-b-file-selected-module-area
    [generic-module-renderer "one" file render-selected-file-module]
    [generic-module-renderer "two" file render-selected-file-module]
    [render-selected-file-side file]])
@@ -113,7 +113,7 @@
 (defn render-selected-file-action
   [app-id file-info action-id]
   (let [action-info (get file-action-data action-id)]
-    [:button.ui-btn.btn-icon
+    [:button.ui-btn.ui-btn-icon
      {:class (:class action-info)
       :tip (:tip action-info)
       :on-click #(on-selected-file-action-click app-id file-info action-id %)}
@@ -128,7 +128,7 @@
                           (= context :remote) :download
                           (not (nil? (:endpoint session))) :upload
                           :else nil)]
-    [:div.fe-file-selected-action-area.ui-btn-area-large
+    [:div.a-fe-b-file-selected-action-area.ui-btn-area-large
      [render-selected-file-action app-id file-info :execute]
      (when transfer-action
        [render-selected-file-action app-id file-info transfer-action])
@@ -136,18 +136,17 @@
 
 (defn render-selected-file
   [app-id file-id file]
-  (println file)
-  [:div.fe-file-selected
+  [:div.a-fe-b-file-selected
    {:on-click #(on-file-click app-id file-id %)}
-   [:div.fe-file-selected-top
-    [:div.fe-file-selected-icon
+   [:div.a-fe-b-file-selected-top
+    [:div.a-fe-b-file-selected-icon
      [:i {:class (:icon file)}]]
-    [:div.fe-file-selected-name
+    [:div.a-fe-b-file-selected-name
      [:span (:display-name file)]]
-    [:div.fe-file-selected-type
+    [:div.a-fe-b-file-selected-type
      [:span (:software-name file)]]]
    [render-selected-file-modules file]
-   [:div.fe-file-selected-separator]
+   [:div.a-fe-b-file-selected-separator]
    [render-selected-file-actions app-id [(:type file) file-id]]])
 
 (defn render-file-entries
@@ -157,7 +156,7 @@
                      [:web|apps|file-explorer|selected-file app-id])
         files (he/subscribe
                [:web|apps|file-explorer|entries app-id server-cid storage-id])]
-    [:div.fe-file-entries
+    [:div.a-fe-b-file-entries
      (for [[file-id file] files]
        (let [key (str app-id "-" file-id)]
          (if (= file-id selected-id)
@@ -166,13 +165,13 @@
 
 (defn render-flat-view
   [app-id server-cid]
-  [:div.fe-flat-view
+  [:div.a-fe-b-flat-view
    [render-file-entries app-id server-cid]])
 
 (defn render-body
   [app-id server-cid]
   (let [view-mode (he/subscribe [:web|apps|file-explorer|view-mode app-id])]
-    [:div.fe-body
+    [:div.a-fe-body
      (if (= view-mode :flat)
        [render-flat-view app-id server-cid]
        [:div "Todo"])]))
@@ -183,28 +182,28 @@
 
 (defn render-flag-sort
   [app-id sort-info enabled?]
-  [:div.fe-flag
+  [:div.a-fe-h-flag
    {:tip (:tip sort-info)
     :on-click #(on-flag-sort-click app-id (:id sort-info) %)
     :class (when-not enabled?
-             "fe-flag-disabled")}
+             "a-fe-h-flag-disabled")}
    [:i {:class (:icon sort-info)}]])
 
 (defn render-flag-area
   [app-id]
   (let [sort-order (he/subscribe [:web|apps|file-explorer|sort-order app-id])]
-    [:div.fe-flag-area
+    [:div.a-fe-h-flag-area
      (for [sort-info sort-flags]
        (let [key (str app-id "-" (:id sort-info))
              enabled? (= (:id sort-info) sort-order)]
          ^{:key key} [render-flag-sort app-id sort-info enabled?]))]))
 
 (defn render-search-area []
-  [:div.fe-search-area
-   [:div.fe-search-filter
+  [:div.a-fe-h-search-area
+   [:div.a-fe-h-search-filter
     {:tip "Advanced filter"}
     [:i.fa.fa-filter]]
-   [:div.fe-search-input
+   [:div.a-fe-h-search-input
     [:input.ui-input
      {:placeholder "Search"}]
     [:i.fa.fa-search
@@ -212,7 +211,7 @@
 
 (defn render-header
   [app-id]
-  [:div.fe-header
+  [:div.a-fe-header
    [render-flag-area app-id]
    [render-search-area]])
 
@@ -220,22 +219,22 @@
   [app-id server-cid storage-id selected?]
   (let [storage (he/subscribe
                  [:game|server|software|storage|info server-cid storage-id])]
-    [:div.fe-storage-entry
+    [:div.a-fe-sb-storage-entry
      {:class (when selected?
                :fe-storage-entry-selected)}
-     [:div.fe-storage-entry-icon
+     [:div.a-fe-sb-storage-entry-icon
       [:i.far.fa-hdd]]
-     [:div.fe-storage-entry-desc
-      [:div.fe-storage-entry-desc-name
+     [:div.a-fe-sb-storage-entry-desc
+      [:div.a-fe-sb-storage-entry-desc-name
        [:span (:name storage)]]
-      [:div.fe-storage-entry-desc-info
+      [:div.a-fe-sb-storage-entry-desc-info
        [:span "0.1/10GB (1%)"]]]]))
 
 (defn render-sidebar-storages
   [app-id server-cid]
   (let [storages (he/subscribe [:game|server|software|storage-ids server-cid])
         selected-id (he/subscribe [:web|apps|file-explorer|storage-id app-id])]
-    [:div.fe-sidebar-storage-area
+    [:div.a-fe-sb-storage-area
      (for [storage-id storages]
        (let [key (str app-id "-" storage-id)
              selected? (= storage-id selected-id)]
@@ -244,8 +243,8 @@
 
 (defn render-sidebar-actions
   [app-id]
-  [:div.fe-sidebar-action-area
-   [:div.fe-sidebar-action-button
+  [:div.a-fe-sb-action-area
+   [:div.a-fe-sb-action-button
     [:button.ui-btn "Actions"]]])
 
 (defn on-selector-click
@@ -257,7 +256,7 @@
   [app-id info active?]
   [:div
    {:class (if active?
-             (str (:class info) " fe-sidebar-view-selected")
+             (str (:class info) " a-fe-sb-view-selected")
              (:class info))
     :tip (:tip info)
     :on-click #(on-selector-click app-id (:id info))}
@@ -266,7 +265,7 @@
 (defn render-sidebar-view
   [app-id]
   (let [active-view (he/subscribe [:web|apps|file-explorer|view-mode app-id])]
-    [:div.fe-sidebar-view-area
+    [:div.a-fe-sb-view-area
      (for [data view-mode-data]
        (let [key (str app-id "-" (:id data))
              active? (= (:id data) active-view)]
@@ -274,15 +273,15 @@
 
 (defn render-sidebar
   [app-id server-cid]
-  [:div.fe-sidebar
+  [:div.a-fe-sidebar
    [render-sidebar-storages app-id server-cid]
    [render-sidebar-actions app-id]
    [render-sidebar-view app-id]])
 
 (defn ^:export view
   [app-id server-cid]
-  [:div.fe-container
+  [:div.a-fe-container
    [render-sidebar app-id server-cid]
-   [:div.fe-main
+   [:div.a-fe-main
     [render-header app-id]
     [render-body app-id server-cid]]])

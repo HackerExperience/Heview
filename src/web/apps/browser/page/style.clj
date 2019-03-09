@@ -5,17 +5,17 @@
             [web.apps.browser.page.vpc.style :as vpc]))
 
 (defn components []
-  [[:.br-pc-a
+  [[:.a-br-pc-a
     {:color ui/color-secondary}
     [:&:hover
      {:cursor :pointer
       :color ui/color-secondary-light}]]
-   [:.br-pc-nf
+   [:.a-br-pc-nf
    {:display :flex
     :flex-direction :column
     :align-items :center
     :padding "0 10px"}
-   [:.br-pc-nf-top
+   [:.a-br-pc-nf-top
     {:border-bottom (str "1px solid " ui/color-primary)
      :width "100%"
      :display :flex
@@ -23,11 +23,11 @@
      :font-weight :bold}
     [:h1
      {:font-size "20px"}]]
-   [:.br-pc-nf-bottom
+   [:.a-br-pc-nf-bottom
     {:padding-top "8px"}]]])
 
-(defn local-style []
-  [[(components)
-    (dc/local-style)
-    (nf/local-style)
-    (vpc/local-style)]])
+(defn style []
+  [[(components)]
+   [(dc/style)]
+   [(nf/style)]
+   [(vpc/style)]])

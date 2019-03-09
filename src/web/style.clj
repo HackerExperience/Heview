@@ -20,21 +20,14 @@
    ["input::placeholder"
     {:color ui/color-primary}]])
 
-(defn style
-  []
+(defn style []
   [(global-style)
-   [(web.hemacs.style/local-style)]
-   [(web.hemacs.style/global-style)]
-   [(web.hud.style/local-style)]
-   [(web.hud.style/global-style)]
-   [(web.ui.style/local-style)]
-   [(web.ui.style/global-style)]
-   [(web.home.style/local-style)]
-   [(web.home.style/global-style)]
-   [(web.os.style/local-style)]
-   [(web.os.style/global-style)]
-   [(web.wm.style/local-style)]
-   [(web.wm.style/global-style)]])
+   [(web.hemacs.style/style)]
+   [(web.hud.style/style)]
+   [(web.ui.style/style)]
+   [(web.home.style/style)]
+   [(web.os.style/style)]
+   [(web.wm.style/style)]])
 
 (def target-path "target/he.css")
 

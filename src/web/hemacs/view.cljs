@@ -21,18 +21,18 @@
         display-buffer (if (empty? buffer)
                          last-buffer
                          buffer)]
-    [:div.hemacs-minibuffer-keybuffer
+    [:div.hemacs-mb-keybuffer
      (for [key display-buffer]
        ^{:key (int (* 10000 (.random js/Math)))} [:span key])]))
 
 (defn render-minibuffer-output-nomatch
   [reason]
-  [:div.hemacs-minibuffer-output
-   [:span.output-error reason]])
+  [:div.hemacs-mb-output
+   [:span.hemacs-mb-output-error reason]])
 
 (defn render-minibuffer-output-exact-match
   []
-  [:div.hemacs-minibuffer-output
+  [:div.hemacs-mb-output
    [:span "OK"]])
 
 (defn render-minibuffer-output []
@@ -46,38 +46,38 @@
 (defn render-minibuffer []
   (let [mode-name (he/subscribe [:web|hemacs|mode|name])]
     [:div#hemacs-minibuffer
-     [:div.hemacs-minibuffer-mode mode-name]
-     [:div.hemacs-minibuffer-separator]
+     [:div.hemacs-mb-mode mode-name]
+     [:div.hemacs-mb-separator]
      [render-minibuffer-keybuffer]
-     [:div.hemacs-minibuffer-separator]
+     [:div.hemacs-mb-separator]
      [render-minibuffer-output]]))
 
-(defn render-which-key-entry
+(defn render-whichkey-entry
   [key description disabled?]
-  [:div.hemacs-which-key-entry
-   {:class (when disabled? :entry-disabled)}
-   [:span.entry-key key]
-   [:span.entry-separator "-"]
-   [:span.entry-description description]])
+  [:div.hemacs-wk-grid-entry
+   {:class (when disabled? :hemacs-wk-grid-entry-disabled)}
+   [:span.hemacs-wk-grid-entry-key key]
+   [:span.hemacs-wk-grid-entry-separator "-"]
+   [:span.hemacs-wk-grid-entry-description description]])
 
-(defn render-which-key []
+(defn render-whichkey []
   (let [{which-disabled :disabled
          which-enabled :enabled} (he/subscribe [:web|hemacs|which-key])]
     (when-not (and
                (nil? which-enabled)
                (nil? which-disabled))
       [:div#hemacs-which-key
-       [:div.hemacs-which-key-grid
+       [:div.hemacs-wk-grid
         (for [[key desc] which-enabled]
-          ^{:key (str "which-" key)} [render-which-key-entry key desc false])
+          ^{:key (str "which-" key)} [render-whichkey-entry key desc false])
         (for [[key desc] which-disabled]
-          ^{:key (str "which-" key)} [render-which-key-entry key desc true])]])))
+          ^{:key (str "which-" key)} [render-whichkey-entry key desc true])]])))
 
 (defn render-hemacs []
   [:div#hemacs
    [hemacs-mode-tracker]
    [render-minibuffer]
-   [render-which-key]])
+   [render-whichkey]])
 
 (defn view []
   (let [enabled? (he/subscribe [:web|hemacs|enabled?])]

@@ -3,23 +3,23 @@
             [web.apps.log-viewer.popups.log-edit.view]))
 
 (defn render-flag-area []
-  [:div.lv-flag-area
-   [:div.lv-flag
+  [:div.a-lv-h-flag-area
+   [:div.a-lv-h-flag
     {:tip "Show/hide logs that were edited by you"}
     [:i.fa.fa-user]]
-   [:div.lv-flag.lv-flag-disabled
+   [:div.a-lv-h-flag.a-lv-h-flag-disabled
     {:tip "Show/hide logs that contain your IP address"}
     [:i.fa.fa-archive]]
-   [:div.lv-flag
+   [:div.a-lv-h-flag
     {:tip "Show/hide bounce logs"}
     [:i.fa.fa-search]]])
 
 (defn render-search-area []
-  [:div.lv-search-area
-   [:div.lv-search-filter
+  [:div.a-lv-h-search-area
+   [:div.a-lv-h-search-filter
     {:tip "Advanced filter"}
     [:i.fa.fa-filter]]
-   [:div.lv-search-input
+   [:div.a-lv-h-search-input
     [:input.ui-input
      {:placeholder "Search"}]
     [:i.fa.fa-search
@@ -27,12 +27,12 @@
 
 (defn render-entry
   [log-id log]
-  [:div.lv-entry
-   [:div.lv-entry-date
-    [:div.lv-entry-date-dmy "26/01/2019"]
-    [:div.lv-entry-date-hms "19:29:18.123"]]
-   [:div.lv-entry-separator]
-   [:div.lv-entry-body
+  [:div.a-lv-b-entry
+   [:div.a-lv-b-entry-date
+    [:div.a-lv-b-entry-date-dmy "26/01/2019"]
+    [:div.a-lv-b-entry-date-hms "19:29:18.123"]]
+   [:div.a-lv-b-entry-separator]
+   [:div.a-lv-b-entry-body
     (:html log)]])
 
 (defn on-click-edit-log
@@ -46,18 +46,18 @@
 
 (defn render-selected-entry
   [app-id server-cid log-id log]
-  [:div.lv-selected
+  [:div.a-lv-b-selected-container
    [render-entry log-id log]
-   [:div.lv-selected-separator]
-   [:div.lv-selected-action-area.ui-btn-area-large
-    [:button.ui-btn.btn-icon.lv-selected-action-edit
+   [:div.a-lv-b-selected-separator]
+   [:div.a-lv-b-selected-action-area.ui-btn-area-large
+    [:button.ui-btn.ui-btn-icon.a-lv-b-selected-action-edit
      {:tip "Edit the log contents"
       :on-click #(on-click-edit-log app-id server-cid log-id %)}
      [:i.fa.fa-edit]]
-    [:button.ui-btn.btn-icon.lv-selected-action-search
+    [:button.ui-btn.ui-btn-icon.a-lv-b-selected-action-search
      {:tip "Search for previous revisions"}
      [:i.fa.fa-search]]
-    [:button.ui-btn.btn-icon.lv-selected-action-delete
+    [:button.ui-btn.ui-btn-icon.a-lv-b-selected-action-delete
      {:tip "Delete the log entry"}
      [:i.fa.fa-trash-alt]]]])
 
@@ -70,9 +70,9 @@
   [app-id server-cid]
   (let [entries (he/subscribe [:web|apps|log-viewer|entries server-cid])
         selected-id (he/subscribe [:web|apps|log-viewer|selected-entry app-id])]
-    [:div.lv-entries
+    [:div.a-lv-b-entries
      (for [[log-id log] entries]
-       ^{:key log-id} [:div.lv-entry-container
+       ^{:key log-id} [:div.a-lv-b-entry-container
                        (add-entry-events app-id log-id)
                        (if (= log-id selected-id)
                          [render-selected-entry app-id server-cid log-id log]
@@ -80,34 +80,34 @@
 
 (defn render-action-area
   [app-id server-cid]
-  [:div.lv-action-area.ui-btn-area
-   [:button.ui-btn.btn-dual
+  [:div.a-lv-action-area.ui-btn-area
+   [:button.ui-btn.ui-btn-dual
     {:tip "Forge (create) a new log"}
     [:i.fa.fa-magic]
     [:span "Forge"]]
-   [:button.ui-btn.btn-dual
+   [:button.ui-btn.ui-btn-dual
     {:tip "Start a system-wide Log Recover process"}
     [:i.fa.fa-search-plus]
     [:span "Recover"]]])
 
 (defn view-header
   [app-id server-cid]
-  [:div.lv-header.ui-app-header
+  [:div.a-lv-header.ui-app-header
    [render-flag-area]
    [render-search-area]])
 
 (defn view-body
   [app-id server-cid]
-  [:div.lv-body [list-entries app-id server-cid]])
+  [:div.a-lv-body [list-entries app-id server-cid]])
 
 (defn view-footer
   [app-id server-cid]
-  [:div.lv-footer.ui-app-footer
+  [:div.a-lv-footer.ui-app-footer
    [render-action-area app-id server-cid]])
 
 (defn ^:export view
   [app-id server-cid]
-  [:div.lv-container
+  [:div.a-lv-container
    [view-header app-id server-cid]
    [view-body app-id server-cid]
    [view-footer app-id server-cid]])

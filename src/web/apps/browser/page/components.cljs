@@ -30,7 +30,7 @@
 
 (defn statusbar-walk
   [app-id]
-  (.getElementById js/document (str "br-sb-" app-id)))
+  (.getElementById js/document (str "a-br-sb-" app-id)))
 
 (defn statusbar-set
   [app-id value]
@@ -69,7 +69,7 @@
   (let [base-url (he/subscribe [:web|apps|browser|tab|base-url app-id])
         href-id (format-href-id raw-href-id)
         full-url (str base-url href-id)]
-    [:span.br-pc-a
+    [:span.a-br-pc-a
      {:on-mouse-enter #(statusbar-set app-id full-url)
       :on-mouse-leave #(statusbar-unset app-id)
       :on-click #(on-link-click app-id tab-id href-id %)}
@@ -79,8 +79,8 @@
 
 (defn not-found
   [app-id tab-id path]
-  [:div.br-pc-nf
-   [:div.br-pc-nf-top
+  [:div.a-br-pc-nf
+   [:div.a-br-pc-nf-top
     [:h1 "404 Not Found"]]
-   [:div.br-pc-nf-bottom
+   [:div.a-br-pc-nf-bottom
     [:span "nginx/1.15.9"]]])

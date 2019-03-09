@@ -11,7 +11,7 @@
 (defn walk-button-edit
   [app-id]
   (let [el-app (hemacs/walk-app app-id)]
-    (.querySelector el-app ".lv-led-button-edit")))
+    (.querySelector el-app ".a-lv-led-f-button-edit")))
 
 ;; ctx
 

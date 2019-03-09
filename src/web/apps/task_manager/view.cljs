@@ -3,24 +3,24 @@
             [he.core :as he]
             [game.server.process.js :as process.js]))
 
-(def time-left-span-class ".tm-process-info-eta-span")
-(def progress-bar-class ".tm-process-info-eta-bar-progress")
+(def time-left-span-class ".a-tm-b-process-info-eta-span")
+(def progress-bar-class ".a-tm-b-process-info-eta-bar-progress")
 
 (defn render-flag-area []
-  [:div.tm-flag-area
-   [:div.tm-flag
+  [:div.a-tm-h-flag-area
+   [:div.a-tm-h-flag
     {:tip "Show/hide processes that use CPU"}
     [:i.fas.fa-microchip]]
-   [:div.tm-flag
+   [:div.a-tm-h-flag
     {:tip "Show/hide processes that use NET"}
     [:i.fas.fa-exchange-alt]]])
 
 (defn render-search-area []
-  [:div.tm-search-area
-   [:div.tm-search-filter
+  [:div.a-tm-h-search-area
+   [:div.a-tm-h-search-filter
     {:tip "Advanced filter"}
     [:i.fa.fa-filter]]
-   [:div.tm-search-input
+   [:div.a-tm-h-search-input
     [:input.ui-input
      {:placeholder "Search"}]
     [:i.fa.fa-search
@@ -28,21 +28,21 @@
 
 (defn view-header
   [app-id server-cid]
-  [:div.tm-header
+  [:div.a-tm-header
    [render-flag-area]
    [render-search-area]])
 
 (defn render-process-icon
   [{icon-class :icon-class}]
-  [:div.tm-process-icon
+  [:div.a-tm-b-process-icon
    [:i
     {:class icon-class}]])
 
 (defn render-process-desc
   [{action-str :action-str note :tm-note}]
-  [:div.tm-process-desc
-   [:span.tm-process-desc-action action-str]
-   [:span.tm-process-desc-notes note]])
+  [:div.a-tm-b-process-desc
+   [:span.a-tm-b-process-desc-action action-str]
+   [:span.a-tm-b-process-desc-notes note]])
 
 (defn process-info-updater-fn-timer
   [[el-time-left-span _ _] process-id]
@@ -74,11 +74,11 @@
     (reagent/create-class
      {:reagent-render
       (fn []
-        [:div.tm-process-info-eta
-         [:div.tm-process-info-eta-bar
-          [:div.tm-process-info-eta-bar-progress
+        [:div.a-tm-b-process-info-eta
+         [:div.a-tm-b-process-info-eta-bar
+          [:div.a-tm-b-process-info-eta-bar-progress
            [:span]]]
-         [:span.tm-process-info-eta-span]])
+         [:span.a-tm-b-process-info-eta-span]])
       :component-did-mount
       (fn [comp]
         (let [process-id (:process-id @state)
@@ -100,11 +100,11 @@
 
 (defn render-process-info-usage
   [process]
-  [:div.tm-process-info-usage
-   [:div.tm-process-info-usage-entry
+  [:div.a-tm-b-process-info-usage
+   [:div.a-tm-b-process-info-usage-entry
     [:i.fas.fa-microchip]
     [:span "33.3%"]]
-   [:div.tm-process-info-usage-entry
+   [:div.a-tm-b-process-info-usage-entry
     [:i.fas.fa-memory]
     [:span "2.7%"]]])
 
@@ -115,36 +115,36 @@
 (defn render-process
   [app-id process-id process]
   (let [client-meta (:client-meta process)]
-    [:div.tm-process-entry
+    [:div.a-tm-b-process-entry
      {:data-process-id process-id}
      [render-process-icon client-meta]
      [render-process-desc client-meta]
-     [:div.tm-process-info
+     [:div.a-tm-b-process-info
       [render-process-info-eta process-id]
       [render-process-info-usage process]]]))
 
 (defn render-selected-process
   [app-id process-id process]
-  [:div.tm-process-selected
+  [:div.a-tm-b-process-selected
    [render-process app-id process-id process]
-   [:div.tm-process-selected-separator]
-   [:div.tm-process-selected-action-area.ui-btn-area-large
-    [:button.ui-btn.btn-icon.tm-process-selected-action-open
+   [:div.a-tm-b-process-selected-separator]
+   [:div.a-tm-b-process-selected-action-area.ui-btn-area-large
+    [:button.ui-btn.ui-btn-icon.a-tm-b-process-selected-action-open
      {:tip "Open process in a popup window"}
      [:i.fas.fa-external-link-alt]]
-    [:button.ui-btn.btn-icon.tm-process-selected-action-pause
+    [:button.ui-btn.ui-btn-icon.a-tm-b-process-selected-action-pause
      {:tip "Pause the process"}
      [:i.fas.fa-pause]]
-    [:button.ui-btn.btn-icon.tm-process-selected-action-delete
+    [:button.ui-btn.ui-btn-icon.a-tm-b-process-selected-action-delete
      {:tip "Delete the process"}
      [:i.far.fa-trash-alt]]]])
 
 (defn render-processes-entries
   [app-id processes selected-id]
-  [:div.tm-server-processes
+  [:div.a-tm-b-server-processes
    (for [[process-id process] processes]
      (let [key (str app-id "-" process-id)]
-       ^{:key key} [:div.tm-process-entry-container
+       ^{:key key} [:div.a-tm-b-process-entry-container
                     {:on-click #(on-process-click app-id process-id)}
                     (if (= selected-id process-id)
                       [render-selected-process app-id process-id process]
@@ -152,22 +152,22 @@
 
 (defn render-server-processes
   [app-id server-ip server-processes selected-id]
-  [:div.tm-server-entry
-   [:div.tm-server-header
+  [:div.a-tm-b-server-entry
+   [:div.a-tm-b-server-header
     [:span server-ip]]
    [render-processes-entries app-id server-processes selected-id]])
 
 (defn render-localhost-empty []
   (let [empty-msg "There are no running processes at localhost :("]
-    [:div.tm-server-processes
-     [:span.tm-server-processes-empty empty-msg]]))
+    [:div.a-tm-b-server-processes
+     [:span.a-tm-b-server-processes-empty empty-msg]]))
 
 (defn render-localhost-processes
   [app-id processes selected-id]
   (let [context (he/subscribe [:web|apps|context app-id])]
     (when-not (= context :remote)
-      [:div.tm-server-entry
-       [:div.tm-server-header
+      [:div.a-tm-b-server-entry
+       [:div.a-tm-b-server-header
         [:span "localhost"]]
        (if-not (empty? processes)
          [render-processes-entries app-id processes selected-id]
@@ -178,7 +178,7 @@
   (let [all-processes (he/subscribe [:web|apps|task-manager|entries server-cid])
         selected-id (he/subscribe [:web|apps|task-manager|selected app-id])
         localhost-processes (get all-processes "localhost")]
-    [:div.tm-body
+    [:div.a-tm-body
      ^{:key (str app-id "-localhost")}
      [render-localhost-processes app-id localhost-processes selected-id]
      (for [[ip entries] all-processes]
@@ -189,27 +189,27 @@
 
 (defn view-sidebar
   [app-id server-cid]
-  [:div.tm-sidebar
-   [:div.tm-sidebar-entry
-    [:div.tm-sidebar-entry-icon
+  [:div.a-tm-sidebar
+   [:div.a-tm-sb-entry
+    [:div.a-tm-sb-entry-icon
      [:i.fas.fa-tasks]]
-    [:div.tm-sidebar-entry-name
+    [:div.a-tm-sb-entry-name
      [:span "Processes"]]]
-   [:div.tm-sidebar-entry
-    [:div.tm-sidebar-entry-icon
+   [:div.a-tm-sb-entry
+    [:div.a-tm-sb-entry-icon
      [:i.fab.fa-freebsd]]
-    [:div.tm-sidebar-entry-name
+    [:div.a-tm-sb-entry-name
      [:span "Daemons"]]]
-   [:div.tm-sidebar-entry
-    [:div.tm-sidebar-entry-icon
+   [:div.a-tm-sb-entry
+    [:div.a-tm-sb-entry-icon
      [:i.fas.fa-chart-area]]
-    [:div.tm-sidebar-entry-name
+    [:div.a-tm-sb-entry-name
      [:span "Performance"]]]])
 
 (defn ^:export view
   [app-id server-cid]
-  [:div.tm-container
+  [:div.a-tm-container
    [view-sidebar app-id server-cid]
-   [:div.tm-main
+   [:div.a-tm-main
     [view-header app-id server-cid]
     [view-body app-id server-cid]]])

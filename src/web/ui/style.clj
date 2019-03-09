@@ -3,16 +3,12 @@
             [web.ui.vars :as ui]
             [web.ui.components.style :as components.style]))
 
-(defn local-style []
-  {})
-
-(defn global-style []
-  [
-   ;; Buttons
-   [:.ui-btn-area-large {}
+(defn style []
+  [;; Buttons
+   [:.ui-btn-area-large
     ["button + button"
      {:margin-left "15px"}]]
-   [:.ui-btn-area {}
+   [:.ui-btn-area
     ["button + button"
      {:margin-left "10px"}]]
    [:.ui-btn
@@ -21,10 +17,10 @@
      :border (str "1px solid" ui/color-primary-light)
      :color ui/color-primary-light
      :cursor :pointer}
-    [[:&:hover
-      {:background-color (ui/color-primary-rgba "0.35")
-       :border (str "1px solid" ui/color-primary-lightest)
-       :color ui/color-primary-lightest}]]]
+    [:&:hover
+     {:background-color (ui/color-primary-rgba "0.35")
+      :border (str "1px solid" ui/color-primary-lightest)
+      :color ui/color-primary-lightest}]]
    [:.ui-btn-disabled
     {:color ui/color-primary
      :border (str "1px solid " ui/color-primary)
@@ -34,17 +30,25 @@
      {:color ui/color-primary
       :border (str "1px solid " ui/color-primary)
       :background-color (ui/color-primary-darker-rgba "0.35")}]]
-   [:.btn-icon
+   [:.ui-btn-icon
     {:height "26px"
      :width "40px"
-     :padding "0"}
-    [:i
-     {:font-size "16px"}]]
-   [:.btn-dual
+     :padding "0"
+     :font-size "16px"}]
+   [:.ui-btn-dual
     {:width "75px"
      :height "26px"
      :position :relative}
-    [:i
+    [:&:hover {}
+     [:>i
+      {:margin-top "-8px"
+       :font-size "16px"
+       :opacity 1
+       :transition "opacity 0.25s"}]
+     [:>span
+      {:opacity 0
+       :transition "opacity 0.1s"}]]
+    [:>i
      {:opacity 0
       :transition "opacity 0.1s"
       :position :absolute
@@ -52,18 +56,9 @@
       :left "50%"
       :margin-left "-7px"
       :margin-top "-6px"}]
-    [:span
-     {:transition "opacity 0.25s"}]
-    [:&:hover {}
-     [:i
-      {:margin-top "-8px"
-       :font-size "16px"
-       :opacity 1
-       :transition "opacity 0.25s"}]
-     [:span
-      {:opacity 0
-       :transition "opacity 0.1s"}]]]
-   [:.btn-primary
+    [:>span
+     {:transition "opacity 0.25s"}]]
+   [:.ui-btn-primary
     {:background-color (ui/color-primary-light-rgba "0.45")
      :border (str "1px solid" ui/color-primary-lightest)
      :text-shadow (str "0 0 " ui/color-primary)
@@ -72,9 +67,6 @@
      {:background-color ui/color-primary-light
       :border (str "1px solid" ui/color-primary-lightest)
       :color ui/color-primary-darker}]]
-   [:.ui-tbl-row
-    {:line-height "24px"
-     :border "1px solid #eee"}]
 
    ;; Spinner
    [:.ui-spinner-area
@@ -94,8 +86,7 @@
      {:background (ui/color-primary-darker-rgba "0.4")
       :border (str "1px solid" ui/color-primary-lighter)}]
     [:&:focus
-     {;:background (ui/color-primary-darker-rgba "0.75")
-      :background ui/color-primary-darkest
+     {:background ui/color-primary-darkest
       :border (str "1px solid" ui/color-primary-lightest)}]]
 
    ;; Scroll
@@ -121,7 +112,7 @@
     {:display :block
      :margin "0 5px"
      :font-size "12px"}
-    [:i
+    [:>i
      {:color ui/color-primary-dark
       :margin-top "2px"
       :padding "3px 2px"}
@@ -149,19 +140,15 @@
      :font-size "12px"
      :font-family ui/font-family
      :font-weight :normal
-
-     ;; Fix "blurriness" on chrome
-     "-webkit-backface-visibility" "hidden"
-
      :box-shadow (str
                   "0 0 7px 3px rgba(0,0,0,0.8)"
                   ","
                   "0 0 10px 6px rgba(0,0,0,0.4)")
-     ;; Bottom
      :top "100%"
      :margin-top "9px"
      :transform "translateX(-50%) translateY(0%)"
-     }]
+     ;; Fix "blurriness" on chrome
+     "-webkit-backface-visibility" "hidden"}]
    ["[tip]:hover::after"
     {:opacity 1
      :transition "opacity 0.5s ease-out"}]
@@ -171,47 +158,47 @@
     {:display :flex
      :flex-direction :row
      :min-height "40px"
-     :margin "7px 0"}
-    [:.ui-tab-entry
-     {:display :flex
-      :flex-direction :row
-      :align-items :center
-      :padding "0 10px"
-      :justify-content :center
-      :border-top "2px solid transparent"
-      :border-left "1px solid transparent"
-      :border-right "1px solid transparent"
-      :border-bottom (str "1px solid " ui/color-primary-dark)
-      :color ui/color-primary}
-     [:&:hover
-      {:cursor :pointer
-       :color ui/color-primary-light
-       :border-bottom (str "1px solid " ui/color-primary-light)}]
+     :margin "7px 0"}]
+   [:.ui-tab-entry
+    {:display :flex
+     :flex-direction :row
+     :align-items :center
+     :padding "0 10px"
+     :justify-content :center
+     :border-top "2px solid transparent"
+     :border-left "1px solid transparent"
+     :border-right "1px solid transparent"
+     :border-bottom (str "1px solid " ui/color-primary-dark)
+     :color ui/color-primary}
+    [:&:hover
+     {:cursor :pointer
+      :color ui/color-primary-light
+      :border-bottom (str "1px solid " ui/color-primary-light)}]]
+   [:.ui-tab-entry-icon
+    {:min-width "15px"
+     :text-align :center
+     :font-size "12px"}]
+   [:.ui-tab-entry-text
+    {:margin-left "3px"
+     :font-size "15px"}]
+   [:.ui-tab-selected
+    {:border-bottom "1px solid transparent"
+     :border-top (str "2px solid " ui/color-primary-light)
+     :border-left (str "1px solid " ui/color-primary-dark)
+     :border-right (str "1px solid " ui/color-primary-dark)
+     :color ui/color-primary-light}
+    [:&:hover
+     {:cursor :initial
+      :border-bottom "1px solid transparent"}
      [:.ui-tab-entry-icon
-      {:min-width "15px"
-       :text-align :center
-       :font-size "12px"}]
-     [:.ui-tab-entry-text
-      {:margin-left "3px"
-       :font-size "15px"}]]
-    [:.ui-tab-selected
-     {:border-bottom "1px solid transparent"
-      :border-top (str "2px solid " ui/color-primary-light)
-      :border-left (str "1px solid " ui/color-primary-dark)
-      :border-right (str "1px solid " ui/color-primary-dark)
-      :color ui/color-primary-light}
-     [:.ui-tab-entry-icon
-      {:color (ui/color-primary-light-rgba "0.8")}]
-     [:&:hover
-      {:cursor :initial
-       :border-bottom "1px solid transparent"}
-      [:.ui-tab-entry-icon
-       {:color (ui/color-primary-light-rgba "0.8")}]]]
-    [:.ui-tab-pre
-     {:border-bottom (str "1px solid " ui/color-primary-dark)
-      :min-width "10px"}]
-    [:.ui-tab-rest
-     {:flex "1 1"
-      :border-bottom (str "1px solid " ui/color-primary-dark)}]]
+      {:color (ui/color-primary-light-rgba "0.8")}]]]
+   [:.ui-tab-entry-icon
+    {:color (ui/color-primary-light-rgba "0.8")}]
+   [:.ui-tab-pre
+    {:border-bottom (str "1px solid " ui/color-primary-dark)
+     :min-width "10px"}]
+   [:.ui-tab-rest
+    {:flex "1 1"
+     :border-bottom (str "1px solid " ui/color-primary-dark)}]
 
    [(components.style/local-style)]])

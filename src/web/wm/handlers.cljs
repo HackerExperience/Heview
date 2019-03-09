@@ -346,7 +346,7 @@
   [app-id interval]
   (js/setTimeout
    #(let [element (.getElementById js/document app-id)]
-      (.add (.-classList element) "app-vibrate"))
+      (.add (.-classList element) "wm-app-vibrate"))
    interval))
 
 ;; TODO: Move to an "animation bus" at the OS level
@@ -354,7 +354,7 @@
   [app-id interval]
   (js/setTimeout
    #(let [element (.getElementById js/document app-id)]
-      (.remove (.-classList element) "app-vibrate"))
+      (.remove (.-classList element) "wm-app-vibrate"))
    interval))
 
 (defn- perform-vibrate-focus

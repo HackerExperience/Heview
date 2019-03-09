@@ -4,13 +4,8 @@
             [web.hud.system-tray.style :as system-tray.style]
             [web.hud.taskbar.style :as taskbar.style]))
 
-(defn local-style []
-  [])
-
-(defn global-style []
-  [[:#hud
-    {}
-    [(connection-info.style/local-style)]
-    [(launcher.style/local-style)]
-    [(system-tray.style/local-style)]
-    [(taskbar.style/local-style)]]])
+(defn style []
+  [[(connection-info.style/style)]
+   [(launcher.style/style)]
+   [(system-tray.style/style)]
+   [(taskbar.style/style)]])

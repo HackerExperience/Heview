@@ -13,14 +13,14 @@
 (defn render-bruteforce-field-target
   [app-id]
   (let [ip (he/subscribe [:web|apps|software|cracker|bruteforce|ip app-id])]
-    [:div.crc-bf-field
-     [:div.crc-bf-field-help.ui-help
+    [:div.a-crc-bf-b-field
+     [:div.a-crc-bf-b-field-help.ui-help
       {:tip "IP address of the server you want to crack"}
       [:i.far.fa-question-circle]]
-     [:div.crc-bf-field-label
+     [:div.a-crc-bf-b-field-label
       [:span "Target"]]
-     [:div.crc-bf-field-input-area
-      [:input.crc-bf-field-input.ui-input
+     [:div.a-crc-bf-b-field-input-area
+      [:input.a-crc-bf-b-field-input.ui-input
        {:value ip}]]]))
 
 ;; Feature idea: Add a new tab to Database -> "Saved IPs"
@@ -30,28 +30,28 @@
 
 (defn render-bruteforce-body
   [app-id]
-  [:div.crc-bf-body
-   [:div.crc-bf-fields
+  [:div.a-crc-bf-body
+   [:div.a-crc-bf-b-fields
     [render-bruteforce-field-target app-id]
-    [:div.crc-bf-field
+    [:div.a-crc-bf-b-field
      [:div.ui-help
       {:tip "Bounce that will be used to mask your gateway IP"}
       [:i.far.fa-question-circle]]
-     [:div.crc-bf-field-label
+     [:div.a-crc-bf-b-field-label
       [:span "Bounce"]]
-     [:div.crc-bf-field-input-area
-      [:input.crc-bf-field-input.ui-input]]]]])
+     [:div.a-crc-bf-b-field-input-area
+      [:input.a-crc-bf-b-field-input.ui-input]]]]])
 
 (defn render-bruteforce-footer
   [app-id]
-  [:div.crc-bf-footer
-   [:div.crc-bf-action-area
-    [:div.crc-bf-action-left
-     [:button.ui-btn.btn-dual
+  [:div.a-crc-bf-footer
+   [:div.a-crc-bf-f-action-area
+    [:div.a-crc-bf-f-action-left
+     [:button.ui-btn.ui-btn-dual
       [:i.fa.fa-archive]
       [:span "Cancel"]]]
-    [:div.crc-bf-action-right
-     [:button.ui-btn.btn-dual.btn-primary
+    [:div.a-crc-bf-f-action-right
+     [:button.ui-btn.ui-btn-dual.ui-btn-primary
       {:tip "Start the Bruteforce process against the target"
        :on-click #(he/dispatch [:web|apps|software|cracker|bruteforce app-id])}
       [:i.fa.fa-archive]
@@ -59,7 +59,7 @@
 
 (defn render-bruteforce
   [app-id]
-  [:div.crc-bf-container
+  [:div.a-crc-bf-container
    [render-bruteforce-body app-id]
    [render-bruteforce-footer app-id]])
 
@@ -81,6 +81,6 @@
 (defn ^:export view
   [app-id server-cid file-id]
   (let [active-tab (he/subscribe [:web|apps|software|cracker|tab app-id])]
-    [:div.crc-container
+    [:div.a-crc-container
      [render-header app-id active-tab]
      [render-body app-id active-tab]]))

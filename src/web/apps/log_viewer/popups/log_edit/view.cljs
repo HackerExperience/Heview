@@ -6,7 +6,7 @@
   [app-id selected-type]
   ;; Clear existing fields
   (let [app (.getElementById js/document app-id)
-        inputs (array-seq (.querySelectorAll app ".lv-led-edit-field-input"))]
+        inputs (array-seq (.querySelectorAll app ".a-lv-led-b-edit-field-input"))]
     (doseq [el-input inputs]
       (set! (.-value el-input) "")))
   (he/dispatch
@@ -20,26 +20,26 @@
      {:entries dropdown-map
       :entry-id log-type
       :on-change #(on-type-selection app-id %)
-      :class-prefix :lv-led-edit-type
+      :class-prefix :a-lv-led-b-edit-type
       :grouped? true}]))
 
 (defn render-preview-area
   [app-id]
   (let [preview (he/subscribe [:web|apps|log-viewer|log-edit|log|html app-id])
         corrupt? (he/subscribe [:web|apps|log-viewer|log-edit|corrupt? app-id])]
-    [:div.lv-led-preview-area
+    [:div.a-lv-led-b-preview-area
      [:fieldset
       {:class (when corrupt?
-                [:lv-led-preview-area-corrupt])}
+                [:a-lv-led-b-preview-area-corrupt])}
       [:legend "Preview"]
-      [:div.lv-led-preview-wrapper
-       [:div.lv-led-preview-icon
+      [:div.a-lv-led-b-preview-wrapper
+       [:div.a-lv-led-b-preview-icon
         (if corrupt?
-          [:i.fa.fa-exclamation-triangle.lv-led-preview-icon-corrupt
+          [:i.fa.fa-exclamation-triangle.a-lv-led-b-preview-icon-corrupt
            {:tip "This log will be shown as corrupt"}]
-          [:i.far.fa-check-circle.lv-led-preview-icon-success
+          [:i.far.fa-check-circle.a-lv-led-b-preview-icon-success
            {:tip "This log is valid!"}])]
-       [:span.lv-led-preview-text preview]]]]))
+       [:span.a-lv-led-b-preview-text preview]]]]))
 
 (defn on-field-change
   [app-id field-id field-type event]
@@ -57,17 +57,17 @@
                 [:web|apps|log-viewer|log-edit|field-valid? app-id field-id])
         {type :type desc :desc help :help} field
         input-id (str app-id "-" (name field-id))]
-    [:div.lv-led-edit-field-row
+    [:div.a-lv-led-b-edit-field-row
      {:on-click #(on-field-row-click input-id)}
-     [:div.lv-led-edit-field-help.ui-help
+     [:div.a-lv-led-b-edit-field-help.ui-help
       {:tip (:help field)}
       [:i.far.fa-question-circle]]
-     [:label.lv-led-edit-field-text (:desc field)]
-     [:div.lv-led-edit-field-input-area
-      [:input.lv-led-edit-field-input.ui-input
+     [:label.a-lv-led-b-edit-field-text (:desc field)]
+     [:div.a-lv-led-b-edit-field-input-area
+      [:input.a-lv-led-b-edit-field-input.ui-input
        {:id input-id
         :class (when-not valid?
-                 [:field-content-invalid])
+                 [:a-lv-led-b-edit-field-content-invalid])
         :type :text
         :spellCheck false
         :defaultValue field-value
@@ -83,57 +83,57 @@
         fields-info (he/subscribe [:game|server|log|fields-data log-type])
         fields (:fields fields-info)]
     (if-not (empty? fields)
-      [:div.lv-led-edit-field-rows
+      [:div.a-lv-led-b-edit-field-rows
        (for [[field-id field] fields]
          (let [key (str app-id "-" field-id)
                field-value (get log-data field-id)]
            ^{:key key} [render-field-row app-id field-id field field-value]))]
-      [:div.lv-led-edit-field-empty
+      [:div.a-lv-led-b-edit-field-empty
        "This log does not have custom fields"])))
 
 (defn render-edit-fields-container
   [app-id]
-  [:div.lv-led-edit-fields
+  [:div.a-lv-led-b-edit-fields
    [:fieldset
     [:legend "Fields"]
     [render-edit-fields app-id]]])
 
 (defn render-edit-area
   [app-id]
-  [:div.lv-led-edit-area
-   [:div.lv-led-edit-type
-    [:div.lv-led-edit-type-help.ui-help
+  [:div.a-lv-led-b-edit-area
+   [:div.a-lv-led-b-edit-type
+    [:div.a-lv-led-b-edit-type-help.ui-help
      [:i.far.fa-question-circle]]
     [:span "Log type"]
-    [:div.lv-led-edit-type-select
+    [:div.a-lv-led-b-edit-type-select
      [log-type-dropdown app-id]]]
    [render-edit-fields-container app-id]])
 
 (defn view-body
   [app-id]
-  [:div.lv-led-body
+  [:div.a-lv-led-body
    [render-preview-area app-id]
-   [:div.lv-led-section-separator]
+   [:div.a-lv-led-b-section-separator]
    [render-edit-area app-id]])
 
 (defn view-footer
   [app-id]
-  [:div.lv-led-footer.ui-app-footer
-   [:div.lv-led-alternative-buttons
-    [:button.ui-btn.btn-icon
+  [:div.a-lv-led-footer.ui-app-footer
+   [:div.a-lv-led-f-alternative-buttons
+    [:button.ui-btn.ui-btn-icon
      {:tip "Delete the log"}
      [:i.fa.fa-trash-alt]]
-    [:button.ui-btn.btn-icon
+    [:button.ui-btn.ui-btn-icon
      {:tip "Hide"}
      [:i.far.fa-eye-slash]]
-    [:button.ui-btn.btn-icon
+    [:button.ui-btn.ui-btn-icon
      {:tip "Search for previous revisions"}
      [:i.fa.fa-question-circle]]]
-   [:div.lv-led-main-buttons
-    [:button.ui-btn.btn-dual
+   [:div.a-lv-led-f-main-buttons
+    [:button.ui-btn.ui-btn-dual
      [:i.far.fa-times-circle]
      [:span "Cancel"]]
-    [:button.ui-btn.btn-dual.btn-primary.lv-led-button-edit
+    [:button.ui-btn.ui-btn-dual.ui-btn-primary.a-lv-led-f-button-edit
      {:tip "Update the log contents"
       :on-click #(he/dispatch [:web|apps|log-viewer|log-edit|log|edit app-id])}
      [:i.fa.fa-edit]
@@ -141,6 +141,6 @@
 
 (defn ^:export view
   [app-id server-cid]
-  [:div.lv-led-container
+  [:div.a-lv-led-container
    [view-body app-id]
    [view-footer app-id]])

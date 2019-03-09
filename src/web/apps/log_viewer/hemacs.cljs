@@ -26,22 +26,22 @@
 (defn walk-selected-log
   [app-id]
   (let [el-app (js/document.getElementById app-id)]
-    (.querySelector el-app ".lv-selected")))
+    (.querySelector el-app ".a-lv-b-selected-container")))
 
 (defn walk-selected-log-btn-edit
   [app-id]
   (let [el-log (walk-selected-log app-id)]
-    (.querySelector el-log ".lv-selected-action-edit")))
+    (.querySelector el-log ".a-lv-b-selected-action-edit")))
 
 (defn walk-first-log
   [app-id]
   (let [el-app (js/document.getElementById app-id)]
-    (.querySelector el-app ".lv-entry-container")))
+    (.querySelector el-app ".a-lv-b-entry-container")))
 
 (defn walk-last-log
   [app-id]
   (let [el-app (js/document.getElementById app-id)]
-    (last (array-seq (.querySelectorAll el-app ".lv-entry-container")))))
+    (last (array-seq (.querySelectorAll el-app ".a-lv-b-entry-container")))))
 
 (defn walk-next-log
   [app-id]
