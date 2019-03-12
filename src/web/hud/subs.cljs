@@ -3,26 +3,6 @@
             [he.core :as he]))
 
 (rf/reg-sub
- :web|hud|connection-info
- (fn [_]
-   [(he/subscribed [:web|wm|active-session])])
- (fn [[session-id]]
-   (let [{gateway-cid :gateway
-          endpoint-cid :endpoint} (he/subscribe [:web|wm|session session-id])
-         gateway-name (he/subscribe [:game|server|hostname gateway-cid])
-         endpoint-link (when-not (nil? endpoint-cid)
-                         (he/subscribe [:game|server|endpoint|link endpoint-cid]))
-         active-context (if (= session-id gateway-cid)
-                          :gateway
-                          :endpoint)]
-     {:gateway-cid gateway-cid
-      :gateway-name gateway-name
-      :endpoint-cid endpoint-cid
-      :endpoint-ip (:ip endpoint-link)
-      :session-id session-id
-      :active-context active-context})))
-
-(rf/reg-sub
  :web|hud
  :<- [:web]
  (fn [db _]
@@ -82,3 +62,37 @@
                 (sorted-map-by <)
                 entries)
       :display-type display-type})))
+
+;; Connection Info
+
+(rf/reg-sub
+ :web|hud|connection-info
+ :<- [:web|hud]
+ (fn [db]
+   (:connection-info db)))
+
+(rf/reg-sub
+ :web|hud|connection-info|notification-panel
+ :<- [:web|hud|connection-info]
+ (fn [db]
+   (:notification-panel db)))
+
+(rf/reg-sub
+ :web|hud|connection-info|session-info
+ (fn [_]
+   [(he/subscribed [:web|wm|active-session])])
+ (fn [[session-id]]
+   (let [{gateway-cid :gateway
+          endpoint-cid :endpoint} (he/subscribe [:web|wm|session session-id])
+         gateway-name (he/subscribe [:game|server|hostname gateway-cid])
+         endpoint-link (when-not (nil? endpoint-cid)
+                         (he/subscribe [:game|server|endpoint|link endpoint-cid]))
+         active-context (if (= session-id gateway-cid)
+                          :gateway
+                          :endpoint)]
+     {:gateway-cid gateway-cid
+      :gateway-name gateway-name
+      :endpoint-cid endpoint-cid
+      :endpoint-ip (:ip endpoint-link)
+      :session-id session-id
+      :active-context active-context})))

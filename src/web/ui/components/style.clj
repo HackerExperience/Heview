@@ -1,5 +1,7 @@
 (ns web.ui.components.style
-  (:require [web.ui.components.impl.dropdown.style :as dropdown]))
+  (:require [web.ui.components.impl.dropdown.style :as dropdown]
+            [web.ui.components.impl.notification-panel.style :as np]))
 
-(defn local-style []
-  [(dropdown/local-style)])
+(defn style []
+  [[(dropdown/style)]
+   [(np/style)]])

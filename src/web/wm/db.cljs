@@ -93,7 +93,6 @@
     (-> db
         (assoc-in [:windows app-id :seq-id] next-seq-id)
         (increment-next-seq-id))))
-  ;; [db (+ seq-id 1)])
 
 (defn recalculate-window-seq-ids
   [db session-id]
@@ -313,7 +312,8 @@
      :z-index next-z-index
      :config (extract-window-config (:config opts))
      :seq-id (get-next-seq-id db)
-     :file-id (:file-id opts)}))
+     :file-id (:file-id opts)
+     :file-type (:file-type opts)}))
 
 (defn add-window-data
   [db app-id opts]

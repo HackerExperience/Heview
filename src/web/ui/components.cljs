@@ -1,7 +1,8 @@
 (ns web.ui.components
   (:require [reagent.core :as r]
             [clojure.string :as str]
-            [web.ui.components.impl.dropdown.view :as impl.dropdown]))
+            [web.ui.components.impl.dropdown.view :as impl.dropdown]
+            [web.ui.components.impl.notification-panel.view :as impl.np]))
 
 ;; Tab
 
@@ -29,5 +30,11 @@
 
 (defn dropdown
   [opts]
-  (println "Ueh")
   (impl.dropdown/dropdown opts))
+
+;; Notification Panel
+
+(defn notification-panel
+  [opts]
+  (impl.np/notification-panel opts))
+

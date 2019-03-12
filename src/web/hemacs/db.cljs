@@ -44,6 +44,10 @@
   {:id :dropdown
    :name "Dropdown Mode"})
 
+(def notification-mode
+  {:id :notification
+   :name "Notification Mode"})
+
 (def initial-db
   {:enabled? true
    :prev-mode []
@@ -54,8 +58,7 @@
    :ctx nil
    :buffer []
    :last-buffer []
-   :with-markers? false
-   })
+   :with-markers? false})
 
 (defn enabled?
   [db]
@@ -88,8 +91,7 @@
       (assoc :ctx nil)
       (assoc :which-key nil)
       (assoc :with-markers? false)
-      (assoc :prev-mode [])
-      ))
+      (assoc :prev-mode [])))
 
 (defn disable-hemacs
   [db]
@@ -182,6 +184,17 @@
 (defn is-dropdown-mode?
   [db]
   (= (get-mode-id db) :dropdown))
+
+(defn set-notification-mode
+  [db panel-id]
+  (-> db
+      (persist-mode)
+      (set-mode notification-mode)
+      (set-mode-xargs {:panel-id panel-id})))
+
+(defn is-notification-mode?
+  [db]
+  (= (get-mode-id db) :notification))
 
 ;; process-input magic ;;
 
@@ -286,23 +299,22 @@
     (process-input-enabled-dispatch gdb db key)
     db))
 
-(defn- process-input-enabled-dropdown-mode
+(defn- input-enabled-default-handler
   [gdb db key]
   (process-input-enabled-dispatch gdb db key))
-  ;; (if (= key "Escape")
-  ;;   db))
 
 (defn- process-input-enabled
   "Processes the input when hemacs is enabled"
   [gdb db key]
   (cond
     (is-insert-mode? db) (process-input-enabled-insert-mode gdb db key)
-    (is-dropdown-mode? db) (process-input-enabled-dropdown-mode gdb db key)
+    (is-dropdown-mode? db) (input-enabled-default-handler gdb db key)
+    (is-notification-mode? db) (input-enabled-default-handler gdb db key)
     (= key "Control") (process-input-enabled-control db key)
     (= key "Escape") (process-input-enabled-escape db key)
     (or (is-desktop-mode? db)
         (= key "Space")) (process-input-enabled-desktop gdb db key)
-    :else (process-input-enabled-dispatch gdb db key)))
+    :else (input-enabled-default-handler gdb db key)))
 
 (defn- process-input-disabled
   "Processes the input when hemacs is disabled."
@@ -364,8 +376,7 @@
 
 (defn input-focused-out
   [db]
-  (-> db
-      (set-prev-mode)))
+  (set-prev-mode db))
 
 (defn dropdown-mounted
   [db dropdown-id]
@@ -376,8 +387,18 @@
 
 (defn dropdown-unmounted
   [db]
+  (set-prev-mode db))
+
+(defn notification-panel-mounted
+  [db panel-id]
   (-> db
-      (set-prev-mode)))
+      (set-notification-mode panel-id)
+      (empty-buffer)
+      (empty-which-key)))
+
+(defn notification-panel-unmounted
+  [db]
+  (set-prev-mode db))
 
 ;; Bootstrap
 

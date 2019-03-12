@@ -1,5 +1,6 @@
 (ns game.db
   (:require [game.account.db :as account.db]
+            [game.notification.db]
             [game.story.db :as story.db]
             [game.server.db :as server.db]))
 

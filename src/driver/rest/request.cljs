@@ -113,6 +113,16 @@
    {}
    custom))
 
+;; Game > Notification
+
+(defn notification-read-all
+  [body custom]
+  (build-params
+   :post
+   "notification/read/all"
+   body
+   custom))
+
 ;;
 
 (defn server-login

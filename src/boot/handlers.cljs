@@ -29,6 +29,7 @@
 
 (defn sync-flow
   [bootstrap]
+  (cljs.pprint/pprint bootstrap)
   {:first-dispatch [:game|bootstrap|account (:account bootstrap)],
    :rules [{:when :seen?,
             :events [:game|bootstrap|account-ok],

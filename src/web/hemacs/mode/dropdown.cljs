@@ -6,16 +6,18 @@
 (def static-enabled-listing
   {"Enter" "Select highlight entry"
    "Escape" "Exit dropdown mode"
+   "Home" "Go to first entry"
+   "End" "Go to last entry"
+   "Page Up" "Move 5 entries up"
+   "Page Down" "Move 5 entries down"
+   "gg" "Go to first entry"
+   "G" "Go to last entry"
    "j" "Highlight next entry"
    "k" "Highlight previous entry"
    "l" "Alias of `Enter`"
    "h" "Alias of `Escape`"
    "i" "Enter search box"
    "s" "Alias of `i`"})
-
-(defn ^:export mode-info []
-  {:id :dropdown
-   :name "Dropdown Mode"})
 
 ;; walk
 
@@ -205,7 +207,6 @@
   (dom-highlight-entry (walk-drop-pgup-entry dropdown-id) dropdown-id)
   (hemacs/exact-match))
 
-
 (defn input-g
   [_]
   (hemacs/multiple-match {"g" "Go to first option"}))
@@ -289,7 +290,7 @@
   [args]
   (input-i args))
 
-;; dispatch-input
+;; process-input
 
 (defn process-input
   [gdb buffer ctx xargs]

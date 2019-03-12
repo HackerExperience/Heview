@@ -5,6 +5,7 @@
 (defn open-opts
   [file-id]
   {:file-id file-id
+   :file-type :cracker
    :len-x 300
    :len-y 235
    :config {:icon-class "far fa-folder"

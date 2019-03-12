@@ -1,6 +1,7 @@
 (ns game.server.handlers
   (:require [he.core :as he]
             [game.server.log.handlers]
+            [game.server.notification.handlers]
             [game.server.process.handlers]
             [game.server.software.handlers]
             [game.server.requests :as server.requests]))

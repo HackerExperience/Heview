@@ -2,6 +2,7 @@
   (:require [re-frame.core :as rf]
             [he.core :as he]
             [game.server.log.subs :as log.subs]
+            [game.server.notification.subs]
             [game.server.process.subs]
             [game.server.software.subs]))
 

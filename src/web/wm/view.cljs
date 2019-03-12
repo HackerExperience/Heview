@@ -136,7 +136,8 @@
 (defn header-file
   [app-id config file-id]
   (let [server-cid (he/subscribe [:web|wm|active-session])
-        files (he/sub [:web|wm|window|header|files server-cid :cracker])]
+        file-type (he/subscribe [:web|wm|window|file-type app-id])
+        files (he/sub [:web|wm|window|header|files server-cid file-type])]
     [:div.wm-app-h-file
      [ui.components/dropdown
       {:entries files

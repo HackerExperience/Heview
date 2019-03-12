@@ -10,8 +10,7 @@
   [{icon-class :icon-class name :name event :on-click-event}]
   [:div.hud-la-overlay-grid-entry
    {:on-click #(on-overlay-app-click event)}
-   [:i
-    {:class icon-class}]
+   [:i {:class icon-class}]
    [:span name]])
 
 (defn launcher-overlay []
@@ -36,10 +35,10 @@
 
 (defn view []
   (let [show-overlay? (he/subscribe [:web|hud|launcher|show-overlay?])]
-  [:div#hud-launcher
-   {:on-click #(he/dispatch [:web|hud|launcher|close-overlay])}
-   (when show-overlay?
-     [launcher-overlay])
-   [:div.hud-la-button
-    {:on-click #(open-overlay-fn %)}
-    [:i.fas.fa-satellite-dish]]]))
+    [:div#hud-launcher
+     {:on-click #(he/dispatch [:web|hud|launcher|close-overlay])}
+     (when show-overlay?
+       [launcher-overlay])
+     [:div.hud-la-button
+      {:on-click #(open-overlay-fn %)}
+      [:i.fas.fa-satellite-dish]]]))

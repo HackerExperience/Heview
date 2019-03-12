@@ -1,6 +1,14 @@
 (ns web.hud.connection-info.style
   (:require [web.ui.vars :as ui]))
 
+(defn notification-panel []
+  [[:.hud-ci-np-container
+    {:top "75px"}]
+   [:.hud-ci-np-gateway
+    {:left "-125px"}]
+   [:.hud-ci-np-endpoint
+    {:right "-125px"}]])
+
 (defn style []
   [[:#hud-connection-info
     {:position :absolute
@@ -9,7 +17,8 @@
      :justify-content :center
      :height "70px"}]
    [:.hud-ci-area
-    {:display :flex
+    {:position :relative
+     :display :flex
      :background-color (ui/color-primary-darkest-rgba "0.50")
      :margin-top "15px"
      :border (str "1px solid" ui/color-primary-lightest)
@@ -102,4 +111,5 @@
     [:>span
      {:flex "1 1"
       :margin-top "2px"
-      :color ui/color-primary}]]])
+      :color ui/color-primary}]]
+   [(notification-panel)]])

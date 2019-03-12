@@ -1,4 +1,5 @@
-(ns game.account.db)
+(ns game.account.db
+  (:require [game.account.notification.db :as notification.db]))
 
 ;; Context
 
@@ -12,9 +13,15 @@
 
 ;; Bootstrap
 
+(defn initial-instance
+  [data]
+  {:profile data
+   :username "todo"})
+
 (defn account-instance
   [data]
-  (:profile data))
+  (-> (initial-instance data)
+      (notification.db/bootstrap-account (:notifications data))))
 
 (defn bootstrap-account
   [data]

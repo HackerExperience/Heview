@@ -5,6 +5,12 @@
 
 ;; ctx
 
+(defn ctx-session
+  [gdb]
+  (let [wm-db (wm.db/get-context gdb)
+        active-session (wm.db/get-active-session wm-db)]
+    (wm.db/get-session wm-db active-session)))
+
 ;; inputs
 
 (defn input-a [_]
@@ -36,13 +42,42 @@
 (defn input-at [_]
   (hemacs/exact-match [:web|wm|app|open :task-manager]))
 
+(defn input-n
+  [[gdb _ _ _]]
+  (let [session (ctx-session gdb)
+        static-enabled-keys {"g" "Gateway notifications"
+                             "a" "Account notifications"
+                             "c" "Chat notifications"}
+        endpoint-key {"e" "Endpoint notifications"}
+        enabled-keys (if (nil? (:endpoint session))
+                       static-enabled-keys
+                       (merge static-enabled-keys endpoint-key))
+        disabled-keys (if (nil? (:endpoint session))
+                        endpoint-key
+                        {})]
+    (hemacs/multiple-match
+     enabled-keys disabled-keys)))
+
+(defn input-ng [_]
+  (-> [:web|hud|connection-info|toggle-notification-panel :gateway]
+      (hemacs/exact-match)))
+
+(defn input-ne
+  [[gdb _ _ _]]
+  (let [session (ctx-session gdb)
+        event [:web|hud|connection-info|toggle-notification-panel :endpoint]]
+    (if-not (nil? (:endpoint session))
+      (hemacs/exact-match event)
+      (hemacs/no-match "You are not connected to an endpoint"))))
+
 (defn winum
   [num gdb {session-id :session-id}]
   (let [wm-db (wm.db/get-context gdb)
         visible-apps (wm.db/get-visible-apps wm-db session-id)
-        app-id (nth visible-apps (dec num) nil)]
+        app-id (nth visible-apps (dec num) nil)
+        error-msg (str "There are only " (count visible-apps) " open windows")]
     (if (nil? app-id)
-      (hemacs/no-match (str "There are only " (count visible-apps) " open windows"))
+      (hemacs/no-match error-msg)
       (hemacs/exact-match [:web|wm|window|focus app-id]))))
 
 (defn input-1
@@ -56,10 +91,11 @@
 (defn nomatch [_]
   (hemacs/no-match))
 
-(defn input-spc
+(defn input-Space
   [_]
   (hemacs/multiple-match
    {"a" "applications"
+    "n" "notifications"
     "0-9" "windows"}))
 
 ;; process-input
@@ -68,7 +104,7 @@
   [gdb buffer ctx xargs]
   (let [args [gdb buffer ctx xargs]]
     (match buffer
-           ["Space"] (input-spc args)
+           ["Space"] (input-Space args)
            ["Space" "a"] (input-a args)
            ["Space" "a" "b"] (input-ab args)
            ["Space" "a" "f"] (input-af args)
@@ -76,6 +112,9 @@
            ["Space" "a" "l"] (input-al args)
            ["Space" "a" "r"] (input-ar args)
            ["Space" "a" "t"] (input-at args)
+           ["Space" "n"] (input-n args)
+           ["Space" "n" "e"] (input-ne args)
+           ["Space" "n" "g"] (input-ng args)
            ["Space" "1"] (input-1 args)
            ["Space" "2"] (input-2 args)
            ;; ["2"] (input-2 args)

@@ -11,7 +11,9 @@
 
 (defn open-opts
   [next-position]
-  {:len-x (:len-x default-length)
+  {:file-id "todo"
+   :file-type :log_forger
+   :len-x (:len-x default-length)
    :len-y (:len-y default-length)
    :x (:x next-position)
    :y (:y next-position)

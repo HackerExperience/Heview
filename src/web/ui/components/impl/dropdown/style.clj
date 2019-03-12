@@ -1,7 +1,7 @@
 (ns web.ui.components.impl.dropdown.style
   (:require [web.ui.vars :as ui]))
 
-(defn local-style []
+(defn style []
   [[:.ui-c-dd-container
     {:display :flex
      :flex-direction :column
@@ -102,5 +102,4 @@
      :display :flex
      :align-items :center}
     [:&:hover
-     {:cursor :initial}]]
-   ])
+     {:cursor :initial}]]])

@@ -1,5 +1,6 @@
 (ns game.server.db
   (:require [game.server.log.db :as log.db]
+            [game.server.notification.db :as notification.db]
             [game.server.process.db :as process.db]
             [game.server.software.db :as software.db]))
 
@@ -69,6 +70,7 @@
   [data]
   (-> (initial-instance data)
       (log.db/bootstrap-server (:logs data))
+      (notification.db/bootstrap-server (:notifications data))
       (process.db/bootstrap-server (:processes data))
       (software.db/bootstrap-server-storages (:storages data))
       (software.db/bootstrap-server-main-storage (:main_storage data))))

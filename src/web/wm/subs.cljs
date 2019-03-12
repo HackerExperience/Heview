@@ -77,6 +77,12 @@
  (fn [[window]]
    (:file-id window)))
 
+(rf/reg-sub
+ :web|wm|window|file-type
+ with-window-data
+ (fn [[window]]
+   (:file-type window)))
+
 ;; Windows > Header ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (rf/reg-sub

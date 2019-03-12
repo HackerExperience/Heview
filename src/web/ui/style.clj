@@ -201,4 +201,4 @@
     {:flex "1 1"
      :border-bottom (str "1px solid " ui/color-primary-dark)}]
 
-   [(components.style/local-style)]])
+   [(components.style/style)]])

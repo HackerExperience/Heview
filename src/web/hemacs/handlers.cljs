@@ -64,6 +64,19 @@
      (hemacs.db/dropdown-unmounted ldb)
      (hemacs.db/set-context gdb ldb))))
 
+(he/reg-event-db
+ :web|hemacs|notification-panel-mounted
+ (fn [gdb [_ notification-panel-id]]
+   (as-> (hemacs.db/get-context gdb) ldb
+     (hemacs.db/notification-panel-mounted ldb notification-panel-id)
+     (hemacs.db/set-context gdb ldb))))
+
+(he/reg-event-db
+ :web|hemacs|notification-panel-unmounted
+ (fn [gdb _]
+   (as-> (hemacs.db/get-context gdb) ldb
+     (hemacs.db/notification-panel-unmounted ldb)
+     (hemacs.db/set-context gdb ldb))))
 
 (he/reg-event-db
  :web|hemacs|bootstrap

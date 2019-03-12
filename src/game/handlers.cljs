@@ -3,6 +3,7 @@
             [game.db]
             [game.requests]
             [game.account.handlers]
+            [game.notification.handlers]
             [game.server.handlers]
             [game.network.handlers]))
 
