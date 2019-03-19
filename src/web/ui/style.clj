@@ -201,4 +201,8 @@
     {:flex "1 1"
      :border-bottom (str "1px solid " ui/color-primary-dark)}]
 
+   ;; UI Global
+   [:.ui-g-bold
+    {:font-weight :bold}]
+
    [(components.style/style)]])

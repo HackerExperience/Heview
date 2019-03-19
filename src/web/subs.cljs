@@ -5,6 +5,7 @@
             [web.wm.subs :as wm.subs]
             [web.apps.subs :as apps.subs]
             [web.os.subs :as os.subs]
+            [web.install.subs :as install.subs]
             [web.hemacs.subs :as hemacs.subs]
             [web.hud.subs :as hud.subs]))
 
@@ -37,15 +38,20 @@
  lock.subs/lock)
 
 (rf/reg-sub
+ :web|hemacs
+ :<- [:web]
+ hemacs.subs/hemacs)
+
+(rf/reg-sub
+ :web|install
+ (fn [gdb _]
+   (install.subs/install gdb)))
+
+(rf/reg-sub
  :web|meta
  :<- [:web]
  (fn [db _]
   (:meta db)))
-
-(rf/reg-sub
- :web|hemacs
- :<- [:web]
- hemacs.subs/hemacs)
 
 ;; TODO: Check according to expiration date
 (rf/reg-sub
@@ -58,4 +64,5 @@
  :web|meta|username
  :<- [:web|meta]
  (fn [db _]
+   (println "Ok ok " db)
    (:username db)))

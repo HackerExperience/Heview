@@ -3,12 +3,14 @@
             [re-frame.core :refer [inject-cofx]]
             [he.core :as he]
             [web.home.handlers]
+            [web.install.handlers]
             [web.lock.handlers]
             [web.hemacs.handlers]
             [web.hud.handlers]
             [web.os.handlers]
             [web.wm.handlers]
             [web.apps.handlers]
+            [web.db]
             [game.account.db :as account.db]))
 
 ;; Bootstrap
@@ -38,9 +40,25 @@
 (he/reg-event-fx
  :web|post-init
  [(inject-cofx :cookie/get [:account-meta])]
- (fn [{db :db cookie :cookie/get} _]
-   {:db (web.db/set-meta db (:account-meta cookie))}))
+ (fn [{gdb :db cookie :cookie/get} _]
+   {:db (as-> (web.db/get-context gdb) ldb
+          (web.db/set-username ldb (:account-meta cookie))
+          (web.db/set-context gdb ldb))}))
+
 
 ;; TODO: Move to a central, he(core)-based handler
 (he/reg-event-dummy :cookie-set-no-on-success)
 (he/reg-event-dummy :cookie-set-no-on-failure)
+(he/reg-event-dummy :cookie-remove-no-on-success)
+(he/reg-event-dummy :cookie-remove-no-on-failure)
+
+
+;;
+
+(he/reg-event-fx
+ :web|meta|reset-user-cookie
+ (fn [{gdb :db} _]
+   {:db (as-> (web.db/get-context gdb) ldb
+          (web.db/remove-username ldb)
+          (web.db/set-context gdb ldb))
+    :cookie/remove {:name :account-meta}}))

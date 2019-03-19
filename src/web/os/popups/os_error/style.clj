@@ -31,6 +31,13 @@
      :background-color "#f8f6e6"
      :display :flex
      :flex-direction :row}]
+   [:.a-os-err-b-fake-icon
+    {:flex "0 0"
+     :min-width "65px"
+     :color "#ff0000"
+     :font-size "30px"
+     :padding-top "13px"
+     :text-align :center}]
    [:.a-os-err-b-icon
     {:flex "0 0"
      :min-width "65px"
@@ -55,6 +62,7 @@
      :border "1px dotted #aaa"
      :height "60%"
      :align-self :center
+     :margin-left "10px"
      :width "80px"
      :margin-bottom "10px"
      :box-shadow "1px 1px 0 1px rgba(0,0,0,0.40)"}

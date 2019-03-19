@@ -1,7 +1,8 @@
 (ns web.view
   (:require [cljs.core.match :refer-macros [match]]
             [he.core :as he]
-            [boot.view]
+            [web.boot.view :as boot.view]
+            [web.install.view :as install.view]
             [web.os.view :as os.view]
             [web.os.view.bsod :as os.bsod.view]
             [web.home.view :as home.view]
@@ -28,5 +29,6 @@
            :home (home-view)
            :boot (boot-view)
            :play (play-view)
+           :install (install.view/view)
            :else (error-view))))
 

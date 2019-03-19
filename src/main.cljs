@@ -18,7 +18,6 @@
   (reagent/render
    [core.view/view] (js/document.getElementById "app")))
 
-
 (defn truss-error-handler
   [delayed-map]
   (let [error-data @delayed-map

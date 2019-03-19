@@ -16,10 +16,12 @@
 
 (defn requires-csrf-token?
   [method path]
+  (println "path is " path)
   (if (= method :get)
     false
     (cond
       (= path "login") false
+      (= path "account/register") false
       :else true)))
 
 (defn get-params
@@ -39,14 +41,14 @@
            resp-type :response-type
            [ok-ev & ok-params] :on-ok
            [fail-ev & fail-params] :on-fail
+           csrf-token :csrf-token
            :or {body {}
-                ;resp-type :simple
-                ;resp-type :full
+                csrf-token (-> db
+                               (game.db/get-context)
+                               (game.db/get-csrf-token))
                 timeout 5000}} request-config
           format (rest.utils/json-request-format)
-          response-format (rest.utils/json-response-format :full ")]}'\n")
-          game-db (game.db/get-context db)
-          csrf-token (game.db/get-csrf-token game-db)] ;; todo: move to rest.db?
+          response-format (rest.utils/json-response-format :full ")]}'\n")]
       {:http-xhrio
        {:method method,
         :uri (get-uri path),

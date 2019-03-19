@@ -90,3 +90,6 @@
 
 (def font-family
   "'Roboto', sans-serif")
+
+(def font-boot
+  "'Press Start 2P', cursive")

@@ -137,3 +137,50 @@
 (defn logout
   [custom]
   (build-params :post "logout" {} custom))
+
+;; Public / Extraneous
+
+(defn install-setup-register-submit
+  [body custom]
+  (build-params :post "account/register" body custom))
+
+(defn install-setup-register-check-username
+  [username custom]
+  (build-params :post "account/check-username" {:username username} custom))
+
+(defn install-setup-register-check-email
+  [email custom]
+  (build-params :post "account/check-email" {:email email} custom))
+
+(defn install-setup-verify-verify
+  [verification-key with-login? custom]
+  (build-params
+   :post
+   "account/verify"
+   {:verification_key verification-key
+    :with_login with-login?}
+   custom))
+
+(defn install-setup-verify-check
+  [custom]
+  (build-params
+   :get
+   "account/check-verify"
+   {}
+   custom))
+
+(defn install-setup-document-fetch
+  [document-id content-type custom]
+  (build-params
+   :get
+   (str "document/" (name document-id) "?type=" (name content-type))
+   {}
+   custom))
+
+(defn install-setup-document-sign
+  [document-id revision-id custom]
+  (build-params
+   :post
+   (str "document/" (name document-id) "/sign")
+   {:revision_id revision-id}
+   custom))

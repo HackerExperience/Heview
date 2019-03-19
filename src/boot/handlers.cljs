@@ -29,7 +29,7 @@
 
 (defn sync-flow
   [bootstrap]
-  (cljs.pprint/pprint bootstrap)
+  ;; (cljs.pprint/pprint bootstrap)
   {:first-dispatch [:game|bootstrap|account (:account bootstrap)],
    :rules [{:when :seen?,
             :events [:game|bootstrap|account-ok],
@@ -63,11 +63,11 @@
 
 (he/reg-event-fx
   :boot|boot-flow
-  (fn [{gdb :db} [_ csrf-token]]
+  (fn [{gdb :db} [_ from-state csrf-token]]
     (let [game-db (game.db/get-context gdb)
           new-game-db (game.db/set-csrf-token game-db csrf-token)
           new-gdb (game.db/set-context gdb new-game-db)]
-      {:db (core.db/switch-mode new-gdb :home :boot {})
+      {:db (core.db/switch-mode new-gdb from-state :boot {})
        :async-flow (boot-flow)})))
 
 (he/reg-event-fx

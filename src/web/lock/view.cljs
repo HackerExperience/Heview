@@ -50,8 +50,17 @@
       (password-form)
       (passwordless-form))]))
 
+(defn on-not-user-click
+  []
+  (he/dispatch [:web|meta|reset-user-cookie]))
+
 (defn view
   []
   (let [username (he/subscribe [:web|meta|username])]
-    [:div (str "Welcome back, " username)
-     [login-control]]))
+    [:<>
+     [:div (str "Welcome back, " username)
+      [login-control]]
+     [:div
+      {:on-click on-not-user-click}
+      [:span
+       (str "Not " username "?")]]]))

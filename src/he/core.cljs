@@ -53,6 +53,11 @@
   [event]
   (rf/dispatch event))
 
+(defn dis
+  "Short for `dispatch`"
+  [event]
+  (dispatch event))
+
 (defn dispatch-sync
   [event]
   (rf/dispatch-sync event))

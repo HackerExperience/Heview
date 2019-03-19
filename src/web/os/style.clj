@@ -21,12 +21,7 @@
      :background-color "#111"
      :background-image "url(../background.jpg)"
      :display :flex
-     :flex-direction :column
-     :-webkit-user-select :none
-     :-khtml-user-select :none
-     :-moz-user-select :none
-     :-ms-user-select :none
-     :user-select :none}]
+     :flex-direction :column}]
    [:#os-bsod
     {:position :fixed
      :min-height "100%"

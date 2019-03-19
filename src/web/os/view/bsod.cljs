@@ -1,6 +1,8 @@
 (ns web.os.view.bsod)
 
-(defn fun [el attr] (set! (.-visibility (.-style el)) attr))
+(defn fun [el attr]
+  (when-not (nil? el)
+    (set! (.-visibility (.-style el)) attr)))
 (defn interval-fn-show [el-blink] (fun el-blink "visible"))
 (defn interval-fn-hide [el-blink] (fun el-blink "hidden"))
 
@@ -9,6 +11,7 @@
     (js/setTimeout #(interval-fn-show el-blink) 1)
     (js/setTimeout #(interval-fn-hide el-blink) 1000)))
 
+;; TODO: Create/remove interval on component mount/unmount
 (defn view []
   (js/setInterval #(brilha-brilha-estelinha) 2000)
   [:div#os-bsod
