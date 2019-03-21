@@ -5,7 +5,7 @@
 
 (defn on-check-ok
   [_ [_status {csrf-token :csrf_token} _]]
-  {:dispatch [:boot|boot-flow csrf-token]})
+  {:dispatch [:boot|boot-flow :home csrf-token]})
 
 (defn on-check-failed
   [db {:keys [status]}]

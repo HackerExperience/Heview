@@ -27,6 +27,8 @@
      :overflow-y :auto
      :overflow-x :hidden
      :background (ui/color-background-rgba "0.7")}]
+   [:.ui-c-np-entries-empty
+    {:padding "5px"}]
    [:.ui-c-np-entry
     {:flex "0 0 auto"
      :display :flex

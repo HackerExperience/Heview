@@ -37,7 +37,7 @@
     (he/subscribed [:web|apps|context-cid app-id])])
  (fn [[context server-cid]]
    (if (= context :local)
-     (he/subscribe [:game|server|hostname server-cid])
+     (he/subscribe [:game|server|data|meta|hostname server-cid])
      (:ip (he/subscribe [:game|server|endpoint|link server-cid])))))
 
 (rf/reg-sub

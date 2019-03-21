@@ -1,6 +1,7 @@
 (ns web.hud.subs
   (:require [re-frame.core :as rf]
-            [he.core :as he]))
+            [he.core :as he]
+            [web.hud.db :as hud.db]))
 
 (rf/reg-sub
  :web|hud
@@ -84,15 +85,46 @@
  (fn [[session-id]]
    (let [{gateway-cid :gateway
           endpoint-cid :endpoint} (he/subscribe [:web|wm|session session-id])
-         gateway-name (he/subscribe [:game|server|hostname gateway-cid])
-         endpoint-link (when-not (nil? endpoint-cid)
-                         (he/subscribe [:game|server|endpoint|link endpoint-cid]))
+         gtw-name (he/subscribe [:game|server|data|meta|hostname gateway-cid])
+         endp-link (when-not (nil? endpoint-cid)
+                     (he/subscribe [:game|server|endpoint|link endpoint-cid]))
          active-context (if (= session-id gateway-cid)
                           :gateway
                           :endpoint)]
      {:gateway-cid gateway-cid
-      :gateway-name gateway-name
+      :gateway-name gtw-name
       :endpoint-cid endpoint-cid
-      :endpoint-ip (:ip endpoint-link)
+      :endpoint-ip (:ip endp-link)
       :session-id session-id
       :active-context active-context})))
+
+(rf/reg-sub
+ :web|hud|connection-info|server-selector
+ :<- [:web|hud|connection-info]
+ (fn [db]
+   (:server-selector db)))
+
+(rf/reg-sub
+ :web|hud|connection-info|server-selector|entries
+ (fn [[_ server-type]]
+   (if (= server-type :gateway)
+     [(he/subscribed [:game|server|meta|gateways|single-player])
+      (he/subscribed [:game|server|meta|gateways|multi-player])]
+     [(he/subscribed [:game|server|meta|endpoints])]))
+ (fn [servers [_ server-type]]
+   (if (= server-type :gateway)
+     (let [[servers-sp servers-mp] servers]
+       (hud.db/ci-server-selector-format-entries-gateway servers-sp servers-mp))
+     (hud.db/ci-server-selector-format-entries-endpoint (first servers)))))
+
+(rf/reg-sub
+ :web|hud|connection-info|server-selector|entry|gateway
+ (fn [[_ server-id]]
+   [(he/subscribed [:game|server|data|meta|hostname server-id])])
+ (fn [[hostname]]
+   {:name hostname
+    ;; Hardware data is TODO
+    :hardware-cpu "500Mhz"
+    :hardware-ram "128MB"
+    :hardware-disk "10GB"
+    :hardware-net "1Mbit"}))

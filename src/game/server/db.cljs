@@ -38,7 +38,10 @@
 
 (defn bootstrap-account-gateways-reducer
   [acc gateway-info]
-  (assoc acc (:server_id gateway-info) {:endpoints (:endpoints gateway-info)}))
+  (let [server-id (:server_id gateway-info)
+        gateway {:endpoints (:endpoints gateway-info)
+                 :type (:type gateway-info)}]
+    (assoc acc server-id gateway)))
 
 (defn bootstrap-account-endpoints-reducer
   [acc endpoint-info]
@@ -47,6 +50,7 @@
 
 (defn format-meta
   [data]
+  (println data)
   {:gateways (reduce bootstrap-account-gateways-reducer {} (:player data))
    :endpoints (reduce bootstrap-account-endpoints-reducer {} (:remote data))})
 

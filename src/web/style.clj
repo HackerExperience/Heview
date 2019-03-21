@@ -29,11 +29,11 @@
 
 (defn style []
   [(global-style)
+   [(web.ui.style/style)]
    [(web.hemacs.style/style)]
    [(web.boot.style/style)]
    [(web.install.style/style)]
    [(web.hud.style/style)]
-   [(web.ui.style/style)]
    [(web.home.style/style)]
    [(web.os.style/style)]
    [(web.wm.style/style)]])

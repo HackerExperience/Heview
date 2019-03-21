@@ -93,3 +93,6 @@
 
 (def font-boot
   "'Press Start 2P', cursive")
+
+(def font-monospace
+  "monospace")

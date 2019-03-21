@@ -62,14 +62,21 @@
                        [:span text]]))
       [:div {:class (np-class meta :entry-body-footer)} time-ago]]]))
 
+(defn render-notification-empty
+  [meta]
+  [:div {:class (np-class meta :entries-empty)}
+   "There are no notifications :("])
+
 (defn render-notification-entries
   [meta entries]
   (let [now (.now js/Date)
         xargs {:now now}]
     [:div {:class (np-class meta :entries)}
-     (for [[entry-id entry] entries]
-       ^{:key entry-id}
-       [render-notification-entry meta [entry-id entry] xargs])]))
+     (if-not (empty? entries)
+       (for [[entry-id entry] entries]
+         ^{:key entry-id}
+         [render-notification-entry meta [entry-id entry] xargs])
+       [render-notification-empty meta])]))
 
 (defn render-panel-header
   [meta header-str]

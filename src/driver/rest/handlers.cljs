@@ -16,7 +16,6 @@
 
 (defn requires-csrf-token?
   [method path]
-  (println "path is " path)
   (if (= method :get)
     false
     (cond

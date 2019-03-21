@@ -46,14 +46,15 @@
 (he/reg-event-fx
  :game|post-boot-hook
  (fn [{gdb :db} _]
-   {:db (assoc gdb :tick (int (/ (.now js/Date) 1000)))
-    :dispatch-n (list [:game|tick])}))
+   {:db gdb}))
+   ;; {:db (assoc gdb :tick (int (/ (.now js/Date) 1000)))
+   ;;  :dispatch-n (list [:game|tick])}))
 
-(he/reg-event-fx
- :game|tick
- (fn [{gdb :db} _]
-   {:db (update gdb :tick inc)
-    :dispatch-later [{:ms 1000 :dispatch [:game|tick]}]}))
+;; (he/reg-event-fx
+;;  :game|tick
+;;  (fn [{gdb :db} _]
+;;    {:db (update gdb :tick inc)
+;;     :dispatch-later [{:ms 1000 :dispatch [:game|tick]}]}))
 
 (he/reg-event-fx :dev|null
                  (fn [{gdb :db} _]

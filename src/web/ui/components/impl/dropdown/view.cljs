@@ -158,11 +158,13 @@
 (defn get-callbacks
   [{{custom-selected-click :selected-click
      custom-drop-entry-click :drop-entry-click
-     custom-search-fn :search} :callbacks
+     custom-search-fn :search
+     custom-unmount-fn :unmount} :callbacks
     on-change :on-change}]
   {:selected-click (or custom-selected-click default-selected-click)
    :drop-entry-click (or custom-drop-entry-click default-drop-entry-click)
    :search (or custom-search-fn default-search-fn)
+   :unmount custom-unmount-fn
    :on-change on-change})
 
 (defn get-classes
@@ -312,9 +314,12 @@
           (he/dispatch [:web|hemacs|dropdown-mounted dropdown-id])))
       :component-will-unmount
       (fn [comp]
-        (let [drop-el (.getElementById js/document dropdown-id)]
+        (let [drop-el (.getElementById js/document dropdown-id)
+              callback-unmount (dd-callback meta :unmount)]
           (del-tracker-event-listeners drop-el functions hemacs-enabled?)
-          (he/dispatch [:web|hemacs|dropdown-unmounted dropdown-id])))})))
+          (he/dispatch [:web|hemacs|dropdown-unmounted dropdown-id])
+          (when-not (nil? callback-unmount)
+            (callback-unmount comp))))})))
 
 (defn render-drop-search-input
   [meta state]

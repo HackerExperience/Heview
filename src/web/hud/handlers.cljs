@@ -30,12 +30,25 @@
  (fn [gdb [_ identifier]]
    (as-> (hud.db/get-context gdb) ldb
      (hud.db/ci-toggle-notification-panel ldb identifier)
-     (hud.db/set-context gdb ldb))
-   ))
+     (hud.db/set-context gdb ldb))))
 
 (he/reg-event-db
  :web|hud|connection-info|close-notification-panel
  (fn [gdb _]
    (as-> (hud.db/get-context gdb) ldb
      (hud.db/ci-close-notification-panel ldb)
+     (hud.db/set-context gdb ldb))))
+
+(he/reg-event-db
+ :web|hud|connection-info|toggle-server-selector
+ (fn [gdb [_ identifier]]
+   (as-> (hud.db/get-context gdb) ldb
+     (hud.db/ci-toggle-server-selector ldb identifier)
+     (hud.db/set-context gdb ldb))))
+
+(he/reg-event-db
+ :web|hud|connection-info|close-server-selector
+ (fn [gdb _]
+   (as-> (hud.db/get-context gdb) ldb
+     (hud.db/ci-close-server-selector ldb)
      (hud.db/set-context gdb ldb))))
