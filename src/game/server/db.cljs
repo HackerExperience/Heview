@@ -102,4 +102,4 @@
 ;; TODO (waiting backend support)
 (defn get-mainframe
   [db]
-  (first (get-gateways-ids db)))
+  (last (get-gateways-ids db)))

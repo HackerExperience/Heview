@@ -31,3 +31,14 @@
 (defn ^:export top-recalcado
   [[_ server-cid] data _meta]
   [:game|server|process|on-top-recalcado server-cid data])
+
+;; Game > Story
+
+(defn ^:export story-reply-sent
+  [a b c]
+  (println "Reply sent! " a b c)
+  [:dev|null])
+
+(defn ^:export story-email-sent
+  [_ email _]
+  [:game|story|email-sent email])

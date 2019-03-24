@@ -123,6 +123,17 @@
    body
    custom))
 
+;; Game > Story
+
+(defn story-reply
+  [contact-id reply-id custom]
+  (build-params
+   :post
+   "storyline/reply"
+   {:contact_id contact-id
+    :reply_id reply-id}
+   custom))
+
 ;;
 
 (defn server-login

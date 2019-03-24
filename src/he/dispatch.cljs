@@ -16,6 +16,7 @@
 
 (defn get-def
   [var-name]
+  (println var-name)
   (js/eval (->js var-name)))
 
 (defn call-me-maybe
@@ -35,4 +36,5 @@
 
 (defn function-exists?
   [function-name]
+  (println function-name)
   (not (nil? (js/eval (->js function-name)))))

@@ -2,6 +2,7 @@
   (:require [he.dispatch]
             [web.apps.software.view]
             [web.apps.browser.view]
+            [web.apps.chat.view]
             [web.apps.file-explorer.view]
             [web.apps.log-viewer.view]
             [web.apps.remote-access.view]

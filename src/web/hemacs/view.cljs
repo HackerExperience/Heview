@@ -1,6 +1,7 @@
 (ns web.hemacs.view
   (:require [cljs.core.match :refer-macros [match]]
-            [he.core :as he]))
+            [he.core :as he]
+            [web.hemacs.lang :as l]))
 
 (defn recalculate-mode-callback
   [wm-overview]
@@ -46,7 +47,7 @@
 (defn render-minibuffer []
   (let [mode-name (he/subscribe [:web|hemacs|mode|name])]
     [:div#hemacs-minibuffer
-     [:div.hemacs-mb-mode mode-name]
+     [:div.hemacs-mb-mode (l/_ mode-name)]
      [:div.hemacs-mb-separator]
      [render-minibuffer-keybuffer]
      [:div.hemacs-mb-separator]

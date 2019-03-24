@@ -40,6 +40,10 @@
     :name "Cracker (tmp)i"
     :can-display-fn nil
     :on-click-event [:web|wm|app|open :software-cracker]}
+   {:icon-class "far fa-folder"
+    :name "FloatingHead (tmp)"
+    :can-display-fn nil
+    :on-click-event [:web|wm|app|open :chat {:type :story :contact-id :friend}]}
    ])
 
 (defn fetch

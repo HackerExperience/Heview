@@ -34,8 +34,7 @@
         creation-date (:creation-date progress)
         completion-date (:completion-date progress)
         time-left (when-not (nil? completion-date)
-                    (int (/ (- completion-date creation-date) 1000)))
-        ]
+                    (int (/ (- completion-date creation-date) 1000)))]
     {:time-left time-left
      :time-left-str (format-timer-str time-left)}))
 

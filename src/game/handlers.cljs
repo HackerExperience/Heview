@@ -3,9 +3,10 @@
             [game.db]
             [game.requests]
             [game.account.handlers]
+            [game.network.handlers]
             [game.notification.handlers]
             [game.server.handlers]
-            [game.network.handlers]))
+            [game.story.handlers]))
 
 ;; Bootstrap ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

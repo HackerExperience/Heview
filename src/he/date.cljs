@@ -4,9 +4,13 @@
   (:use [cljs-time.coerce :only [from-long]]
         [cljs-time.format :only [unparse]]))
 
+;; (defn timestamp-to-datetime
+;;   [timestamp]
+;;   (from-long timestamp))
+
 (defn timestamp-to-datetime
   [timestamp]
-  (from-long timestamp))
+  (new js/Date timestamp))
 
 (defn format
   [datetime formatter]

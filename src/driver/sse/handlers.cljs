@@ -32,7 +32,10 @@
 
 (defn keywordize-keys
   [entry]
-  (if (map? entry)
+  (cond
+    (string? entry) entry
+
+    (map? entry)
     (into {}
           (for [[k v] entry]
             [(keyword k)
@@ -40,6 +43,8 @@
                      (vector? v))
                (keywordize-keys v)
                v)]))
+
+    :else
     (into []
           (for [v entry]
             (keywordize-keys v)))))

@@ -34,19 +34,19 @@
 
 (def desktop-mode
   {:id :desktop
-   :name "Desktop Mode"})
+   :name "desktop-mode"})
 
 (def insert-mode
   {:id :insert
-   :name "Insert Mode"})
+   :name "insert-mode"})
 
 (def dropdown-mode
   {:id :dropdown
-   :name "Dropdown Mode"})
+   :name "dropdown-mode"})
 
 (def notification-mode
   {:id :notification
-   :name "Notification Mode"})
+   :name "notification-mode"})
 
 (def initial-db
   {:enabled? true
