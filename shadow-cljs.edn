@@ -28,7 +28,11 @@
                 :output-dir "target/"
                 :asset-path "."
                 :target :browser
-                :modules {:main {:entries [main]}}
+                :modules {:main {:init-fn main/init
+                                 :entries [main]}
+                          :lang-en {:entries [lang.en] :depends-on #{:main}}
+                          :lang-pt {:entries [lang.pt] :depends-on #{:main}}}
+
                 :compiler-options {:closure-warnings {:global-this :off}
                                    :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true
                                                      "day8.re_frame.tracing.trace_enabled_QMARK_" true}}
@@ -58,11 +62,14 @@
           ;;      :compiler-options {:closure-warnings {:global-this :off}
           ;;                         :infer-externs :auto}}
 
-
           :prod {:output-dir "target/"
                  :asset-path "."
                  :target :browser
-                 :modules {:main {:entries [main]}}
+                :modules {:main {:init-fn main/init :entries [main]}
+                          :lang-en {:entries [lang.en] :depends-on #{:main}}
+                          :lang-pt {:entries [lang.pt] :depends-on #{:main}}}
+
+
                  :compiler-options {:optimizations :advanced
                                     :closure-warnings {:global-this :off}
                                     :infer-externs :auto
