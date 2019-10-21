@@ -135,7 +135,7 @@
      :min-width "80px"
      :white-space :nowrap
      :pointer-events :none
-     :z-index 99999
+     :z-index 999999
      :opacity 0
      :font-size "12px"
      :font-family ui/font-family
@@ -204,5 +204,10 @@
    ;; UI Global
    [:.ui-g-bold
     {:font-weight :bold}]
+
+   ;; Fonts
+   ["@font-face"
+    {:font-family "profont"
+     :src "url('../fonts/profont.woff') format('woff')"}]
 
    [(components.style/style)]])

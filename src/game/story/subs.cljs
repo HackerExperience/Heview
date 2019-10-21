@@ -8,6 +8,8 @@
 
 (defn with-contact-callback
   [[_ contact-id]]
+  (println "hmmmm")
+  (println contact-id)
   [(he/subscribed [:game|story|contact contact-id])])
 (def with-contact
   #(with-contact-callback %))
@@ -29,3 +31,11 @@
  with-contact
  (fn [[contact]]
    (:replies contact)))
+
+(rf/reg-sub
+ :game|story|contact|mission
+ with-contact
+ (fn [[contact]]
+   (println "Blarblarblar")
+   (println contact)
+   (:mission contact)))

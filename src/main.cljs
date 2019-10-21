@@ -27,9 +27,10 @@
     ;; notified, so we might as well proceed and see what else breaks.
     (:val error-data)))
 
-(defn ^:export init
-  []
-  (enable-re-frisk!)
+(defn ^:export init []
+  (enable-re-frisk! {:events? false
+                     :x -100
+                     :y 900})
   (js/console.log "init")
   (he/dispatch-sync [:initialize])
   (truss/set-error-fn! truss-error-handler)

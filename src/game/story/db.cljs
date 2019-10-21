@@ -26,6 +26,12 @@
         (update-in [:contact contact-id :emails] #(conj % email))
         (assoc-in [:contact contact-id :replies] []))))
 
+(defn on-reply-confirmation
+  [db raw-reply]
+  (let [contact-id (keyword (:contact_id raw-reply))
+        progress (:progress raw-reply)]
+    (assoc-in db [:contact contact-id :mission :progress] progress)))
+
 ;; Bootstrap
 
 (defn format-email-sender
@@ -41,6 +47,7 @@
         email {:id email-id
                :timestamp (he.date/timestamp-to-datetime (:timestamp raw-email))
                :sender (format-email-sender sender)
+               :progress (:progress raw-email)
                :meta (story.db.email/get-meta
                       contact-id email-id (:meta raw-email))}]
     (merge email
@@ -53,14 +60,20 @@
                (build-email contact-id (:sender raw-email) raw-email))
              raw-emails)))
 
+(defn build-mission
+  [contact-data]
+  {:code (:name contact-data)
+   :progress (:progress contact-data)})
+
 (defn on-email-sent
   [db raw-email]
   (let [contact-id (keyword (:contact_id raw-email))
-        email (build-email contact-id :contact raw-email)]
-    (println "Go go go " email)
+        email (build-email contact-id :contact raw-email)
+        progress (:progress raw-email)]
     (-> db
         (update-in [:contact contact-id :emails] #(conj % email))
-        (assoc-in [:contact contact-id :replies] (:replies raw-email)))))
+        (assoc-in [:contact contact-id :replies] (:replies raw-email))
+        (assoc-in [:contact contact-id :mission :progress] progress))))
 
 (defn bootstrap-account-contact-reducer
   [acc [contact-id contact-data]]
@@ -68,10 +81,12 @@
                :avatar "todo"
                :online? (or (:online? contact-data) true)
                :replies (:replies contact-data)
-               :emails (build-emails contact-id (:emails contact-data))}]
+               :emails (build-emails contact-id (:emails contact-data))
+               :mission (build-mission contact-data)}]
     (assoc acc contact-id entry)))
 
 (defn bootstrap-account
   [data]
+  (cljs.pprint/pprint data)
   (let [contacts (reduce bootstrap-account-contact-reducer {} data)]
     {:contact contacts}))

@@ -18,8 +18,8 @@
      :background-repeat :no-repeat
      :background-position "50% 50%"
      :background-size :cover
-     :background-color "#111"
-     :background-image "url(../background.jpg)"
+     :background-color "#050505"
+     ;; :background-image "url(../background.jpg)"
      :display :flex
      :flex-direction :column}]
    [:#os-bsod

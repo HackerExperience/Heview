@@ -16,7 +16,8 @@
 (defn init-os
   [db]
   (-> db
-      (assoc :open-errors [])))
+      (assoc :open-errors [])
+      (assoc :boot-time (.now js/Date))))
 
 (defn has-os-error?
   [db {reason :reason}]

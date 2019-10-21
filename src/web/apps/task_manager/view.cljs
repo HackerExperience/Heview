@@ -62,7 +62,7 @@
         ref-timer (js/setInterval
                    #(process-info-updater-fn-timer elements proc-id) 1000)
         ref-progress (js/setInterval
-                   #(process-info-updater-fn-progress elements proc-id) 250)]
+                      #(process-info-updater-fn-progress elements proc-id) 250)]
     (process-info-updater-fn-timer elements proc-id)
     (process-info-updater-fn-progress elements proc-id)
     [ref-timer ref-progress]))

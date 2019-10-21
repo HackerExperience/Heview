@@ -36,5 +36,4 @@
 
 (defn function-exists?
   [function-name]
-  (println function-name)
   (not (nil? (js/eval (->js function-name)))))

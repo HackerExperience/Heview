@@ -29,12 +29,12 @@
   (str time-left " seconds"))
 
 (defn process-timer-initial
-  [process-id process]
+  [process-id process cur-time]
   (let [progress (:progress process)
         creation-date (:creation-date progress)
         completion-date (:completion-date progress)
         time-left (when-not (nil? completion-date)
-                    (int (/ (- completion-date creation-date) 1000)))]
+                    (int (/ (- completion-date cur-time) 1000)))]
     {:time-left time-left
      :time-left-str (format-timer-str time-left)}))
 
@@ -45,18 +45,18 @@
      :time-left-str (format-timer-str new-time-left)}))
 
 (defn process-timer
-  [process-id process]
+  [process-id process cur-time]
   (let [var-name (timer-var-name process-id)
         prev-timer (get-var var-name)
         next-timer (if (nil? prev-timer)
-                     (process-timer-initial process-id process)
+                     (process-timer-initial process-id process cur-time)
                      (process-timer-iterate prev-timer))]
     (set-var var-name next-timer)))
 
 (defn create-process-timer
-  [process-id process]
-  (process-timer process-id process)
-  (js/setInterval #(process-timer process-id process) 1000))
+  [process-id process cur-time]
+  (process-timer process-id process cur-time)
+  (js/setInterval #(process-timer process-id process cur-time) 1000))
 
 ;; Progress ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -131,7 +131,7 @@
     (doseq [[process-id process] processes]
       (when-not (exists-ref? process-id)
         (let [progress-ref (create-process-progress process-id process cur-time)
-              timer-ref (create-process-timer process-id process)]
+              timer-ref (create-process-timer process-id process cur-time)]
           (save-ref process-id timer-ref progress-ref))))))
 
 (defn deregister-process-timers

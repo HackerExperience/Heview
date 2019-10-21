@@ -12,6 +12,18 @@
      (story.db/on-email-sent ldb email)
      (story.db/set-context gdb ldb))))
 
+;; This reacts to the `OnReplySent` event, which confirms that the player's
+;; response was registered. We do not have to add the message here, because we
+;; already added it "optimistically" on the original reply request
+;; (`:game|story|reply`). What we do have to do is extract the new progress and
+;; save it on the local db.
+(he/reg-event-db
+ :game|story|reply-sent
+ (fn [gdb [_ reply]]
+   (as-> (story.db/get-context gdb) ldb
+     (story.db/on-reply-confirmation ldb reply)
+     (story.db/set-context gdb ldb))))
+
 ;; Requests
 
 (he/reg-event-fx

@@ -1,11 +1,13 @@
 (ns web.hud.handlers
   (:require [he.core :as he]
+            [web.hud.conky.handlers]
             [web.hud.db :as hud.db]))
 
-(he/reg-event-db
+(he/reg-event-fx
  :web|hud|bootstrap
- (fn [gdb _]
-   (hud.db/set-context gdb (hud.db/bootstrap))))
+ (fn [{gdb :db} _]
+   {:db (hud.db/set-context gdb (hud.db/bootstrap))
+    :dispatch [:web|hud|conky|bootstrap]}))
 
 ;; Launcher
 

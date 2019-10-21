@@ -14,11 +14,23 @@
 
 (defn format
   [datetime formatter]
-  (unparse formatter datetime))
+  "todo"
+  ;; (unparse formatter datetime)
+  )
 
 (defn formatter
   [format-str]
   (cljs-time.format/formatter format-str))
+
+(defn format-uptime
+  [diff]
+  (let [m (mod (int (/ diff 60)) 60)
+        h (mod (int (/ diff 3600)) 3600)
+        d (mod (int (/ diff 86400)) 86400)
+        m-str (str m "m")
+        h-str (when (pos? h) (str h "h"))
+        d-str (when (pos? d) (str d "d"))]
+    (str d-str h-str m-str)))
 
 ;; JS.Date utils
 
@@ -91,3 +103,17 @@
       (<= diff 86399) (str (int (/ diff 60 60)) " hours ago")
       (<= diff 172800) (to-time-ago-yesterday ts-past)
       :else (to-time-ago-old ts-past))))
+
+(defn milliseconds-till-next-minute
+  "Returns the total milliseconds until the next second arrives. Example:
+  Current time: HH:00:54.250
+  Next minute: HH:01:00.00
+  Milliseconds till next minute: 5750 (+15 for lag purposes / frame diff)"
+  []
+  (let [now (new js/Date)]
+    (-> now
+        (.getSeconds)
+        (* 1000)
+        (->> (- 60000))
+        (- (.getMilliseconds now))
+        (+ 15))))

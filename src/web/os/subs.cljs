@@ -11,3 +11,9 @@
  :<- [:web|os]
  (fn [db _]
    (:runtime-error db)))
+
+(rf/reg-sub
+ :web|os|boot-time
+ :<- [:web|os]
+ (fn [db _]
+   (:boot-time db)))

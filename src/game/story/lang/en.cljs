@@ -21,4 +21,11 @@
    "email_reply"
    {"friend" {"welcome_p1" "Maybe"
               "welcome_p2" "I'm okay"
-              "welcome_p3" "Of course"}}})
+              "welcome_p3" "Of course"}}
+
+   "mission_name"
+   {"friend" {"tutorial" "Tutorial"}}
+
+   "step_name"
+   {"friend" {"setup_pc" "Welcome back!" ;; `setup_pc` is temporary
+              "welcome" "Welcome back!"}}})

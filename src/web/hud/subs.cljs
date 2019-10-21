@@ -1,6 +1,7 @@
 (ns web.hud.subs
   (:require [re-frame.core :as rf]
             [he.core :as he]
+            [web.hud.conky.subs]
             [web.hud.db :as hud.db]))
 
 (rf/reg-sub

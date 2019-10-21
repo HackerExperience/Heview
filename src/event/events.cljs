@@ -35,9 +35,8 @@
 ;; Game > Story
 
 (defn ^:export story-reply-sent
-  [a b c]
-  (println "Reply sent! " a b c)
-  [:dev|null])
+  [_ reply _]
+  [:game|story|reply-sent reply])
 
 (defn ^:export story-email-sent
   [_ email _]
